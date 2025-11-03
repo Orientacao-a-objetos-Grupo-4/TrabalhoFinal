@@ -1,4 +1,5 @@
 from Untils.Enums import StatusMulta
+
 class Multa:
     def __init__(self, id, valor, status: StatusMulta = StatusMulta.PENDENTE):
         self.__id = id
@@ -42,3 +43,13 @@ class Multa:
 
     def removeEmprestimo(self, emprestimo):
         self.__emprestimos.remove(emprestimo)
+
+    def calcularValor(self,dataEmprestimo, dataDevolucao):
+        diasAtraso = (dataDevolucao - dataEmprestimo).days
+        self.setValor(diasAtraso * 0.1) # Aplicando um acrecimo de 10% por dia de atraso
+    
+    def registrarPagamento(self):
+        self.setStatus(StatusMulta.PAGA)
+
+
+

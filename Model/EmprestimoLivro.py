@@ -1,5 +1,5 @@
 
-from Untils.Enums import StatusEmprestimo
+from Untils.Enums import StatusEmprestimo, StatusMulta
 
 
 class EmprestimoLivro:
@@ -50,3 +50,11 @@ class EmprestimoLivro:
 
     def removeMulta(self, multa):
         self.__multas.remove(multa)
+
+    def calcularMullta(self):
+        pass
+
+    def registrarDevolucao(self, dataDevolucao):
+        self.setDataDevolucao(dataDevolucao)
+        self.setStatus(StatusEmprestimo.DEVOLVIDO)
+     

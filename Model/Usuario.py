@@ -44,3 +44,10 @@ class Usuario(ABC):
             self.__tipo = tipo
         else:
             print("Tipo de usuário inválido")
+
+        # Metodos
+        def login(self, login, senha):
+            if login == self.__login and senha == self.__senha:
+                return True
+            else:
+                return False
