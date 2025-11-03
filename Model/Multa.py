@@ -1,55 +1,44 @@
-from enum import Enum
-
-
+from Untils.Enums import StatusMulta
 class Multa:
-    def __init__(self, valor,id,status = Enum('PAGA', 'PENDENTE', 'CANCELADA') ):
-        self.___id = id
-        self.___status = status
-        self.___valor = valor
+    def __init__(self, id, valor, status: StatusMulta = StatusMulta.PENDENTE):
+        self.__id = id
+        self.__valor = valor
+        self.__status = status
         self.__emprestimos = []
         self.__cliente = None
 
-    #Getters
+    # Getters
     def getValor(self):
-        return self.___valor
-    
+        return self.__valor
+
     def getStatus(self):
-        return self.___status
-    
+        return self.__status
+
     def getId(self):
-        return self.___id
-    
+        return self.__id
+
     def getEmprestimos(self):
         return self.__emprestimos
-    
+
     def getCliente(self):
         return self.__cliente
-    
-    #Setters
-    def setValor(self,valor):
-        self.___valor = valor
 
-    def setStatus(self,status):
-        if(status == Enum('PAGA', 'PENDENTE', 'CANCELADA')):
-            self.___status = status
+    # Setters
+    def setValor(self, valor):
+        self.__valor = valor
 
+    def setStatus(self, status):
+        if isinstance(status, StatusMulta):
+            self.__status = status
         else:
-            print('Status inválido')
+            print("Status inválido")
 
-    def setId(self,id):
-        self.___id = id
-
-    def setEmprestimos(self,emprestimos):
-        self.__emprestimos = emprestimos
-
-    def setCliente(self,cliente):
+    def setCliente(self, cliente):
         self.__cliente = cliente
 
-    #Untils
-    def addEmprestimo(self,emprestimo):
+    # Métodos auxiliares
+    def addEmprestimo(self, emprestimo):
         self.__emprestimos.append(emprestimo)
 
-    def removeEmprestimo(self,emprestimo):
+    def removeEmprestimo(self, emprestimo):
         self.__emprestimos.remove(emprestimo)
-
-    

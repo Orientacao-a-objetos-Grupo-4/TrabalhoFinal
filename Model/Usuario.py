@@ -1,49 +1,46 @@
 from abc import ABC
-from enum import Enum
 
+from Untils.Enums import TipoUsuario
 
-class Usuario(ABC.abc):
-    def __init__(self, nomeUsuario, login, senha,tipo = Enum('ADMINISTRADOR', 'CLIENTE', 'FUNCIONARIO') ):
+class Usuario(ABC):
+    def __init__(self, nomeUsuario, login, senha, tipo: TipoUsuario):
         self.__nomeUsuario = nomeUsuario
         self.__login = login
         self.__senha = senha
         self.__cpf = None
         self.__tipo = tipo
 
-    #Getters
+    # Getters
     def getNomeUsuario(self):
         return self.__nomeUsuario
-    
+
     def getLogin(self):
         return self.__login
-    
+
     def getSenha(self):
         return self.__senha
-    
+
     def getCpf(self):
         return self.__cpf
-    
+
     def getTipo(self):
         return self.__tipo
-    
-    #Setters
-    
-    def setNomeUsuario(self,nomeUsuario):
+
+    # Setters
+    def setNomeUsuario(self, nomeUsuario):
         self.__nomeUsuario = nomeUsuario
 
-    def setLogin(self,login):
+    def setLogin(self, login):
         self.__login = login
 
-    def setSenha(self,senha):
+    def setSenha(self, senha):
         self.__senha = senha
 
-    def setCpf(self,cpf):
+    def setCpf(self, cpf):
         self.__cpf = cpf
 
-    def setTipo(self,tipo):
-        if(tipo == 'ADMINISTRADOR' or tipo == 'CLIENTE' or tipo == 'FUNCIONARIO'):
+    def setTipo(self, tipo):
+        if isinstance(tipo, TipoUsuario):
             self.__tipo = tipo
         else:
-            print('Tipo de usuário inválido')
-
-
+            print("Tipo de usuário inválido")

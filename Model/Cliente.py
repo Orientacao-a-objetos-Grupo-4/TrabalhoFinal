@@ -1,56 +1,41 @@
-from enum import Enum
-from Model import Usuario
-
+from Model.Usuario import Usuario
+from Untils.Enums import TipoUsuario
 
 class Cliente(Usuario):
-    def __init__(self, nomeUsuario, login, senha,tipo = Enum('ADMINISTRADOR', 'CLIENTE', 'FUNCIONARIO') ):
-        super().__init__(nomeUsuario, login, senha,tipo)
-        self.__multa = []
+    def __init__(self, nomeUsuario, login, senha):
+        super().__init__(nomeUsuario, login, senha, TipoUsuario.CLIENTE)
+        self.__multas = []
         self.__emprestimos = []
 
+    # Multas
+    def getMultas(self):
+        return self.__multas
 
+    def addMulta(self, multa):
+        self.__multas.append(multa)
 
-    #Multa
+    def removeMulta(self, multa):
+        self.__multas.remove(multa)
 
-    def setMulta(self,multa):
-        self.__multa = multa
-
-    def getMulta(self):
-        return self.__multa
-    
-    def addMulta(self,multa):
-        self.__multa.append(multa)
-
-    
-    def removeMulta(self,multa):
-        self.__multa.remove(multa)
-
-    
-    #Emprestimo
-    def setEmprestimos(self,emprestimos):
-        self.__emprestimos = emprestimos
-
+    # Empréstimos
     def getEmprestimos(self):
         return self.__emprestimos
-    
-    def addEmprestimo(self,emprestimo):
+
+    def addEmprestimo(self, emprestimo):
         self.__emprestimos.append(emprestimo)
 
-    
-    def removeEmprestimo(self,emprestimo):
+    def removeEmprestimo(self, emprestimo):
         self.__emprestimos.remove(emprestimo)
 
-    #Funcctions
-
+    # Funções
     def buscarLivro(self):
         pass
 
-    
     def solicitarEmprestimo(self):
         pass
 
     def devolverLivro(self):
         pass
-    
+
     def pagarMulta(self):
-        pass   
+        pass

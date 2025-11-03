@@ -1,22 +1,22 @@
-from enum import Enum
-from Model import Usuario
 
 
-class FUncionario(Usuario):
-    def __init__(self, nomeUsuario, login, senha,matricula,tipo = Enum('ADMINISTRADOR', 'CLIENTE', 'FUNCIONARIO') ):
+from Model.Usuario import Usuario
+from Untils.Enums import TipoUsuario
+
+
+class Funcionario(Usuario):
+    def __init__(self, nomeUsuario, login, senha, matricula):
+        super().__init__(nomeUsuario, login, senha, TipoUsuario.FUNCIONARIO)
         self.__matricula = matricula
-        super().__init__(nomeUsuario, login, senha,tipo)
 
-    #Getters
+    # Getters e Setters
     def getMatricula(self):
         return self.__matricula
-    
-    #Setters
-    def setMatricula(self,matricula):
+
+    def setMatricula(self, matricula):
         self.__matricula = matricula
 
-
-    #Functions
+    # Funções (exemplo)
     def cadastrarLivro(self):
         pass
 
@@ -28,4 +28,3 @@ class FUncionario(Usuario):
 
     def registrarDevolucao(self):
         pass
-
