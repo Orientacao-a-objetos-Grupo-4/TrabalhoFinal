@@ -1,5 +1,6 @@
 class ItensEmprestimo:
     def __init__(self, livro, quantidade, emprestimoLivro):
+        self.__id = id
         self.__livro = livro
         self.__quantidade = quantidade
         self.__emprestimoLivro = emprestimoLivro
@@ -7,6 +8,9 @@ class ItensEmprestimo:
     # Getters
     def getLivro(self):
         return self.__livro
+    
+    def getId(self):
+        return self.__id
 
     def getQuantidade(self):
         return self.__quantidade
@@ -17,6 +21,9 @@ class ItensEmprestimo:
     # Setters
     def setLivro(self, livro):
         self.__livro = livro
+
+    def setId(self, id):
+        self.__id = id
 
     def setQuantidade(self, quantidade):
         self.__quantidade = quantidade

@@ -1,15 +1,36 @@
 from Model.Usuario import Usuario
-from Untils.Enums import TipoUsuario
+from Untils.Enums import StatusMulta, TipoUsuario
 
 class Cliente(Usuario):
-    def __init__(self, nomeUsuario, login, senha):
+    def __init__(self, nomeUsuario, login, senha,id):
+        self.__id = id
         super().__init__(nomeUsuario, login, senha, TipoUsuario.CLIENTE)
         self.__multas = []
         self.__emprestimos = []
 
+
+    def getId(self):
+        return self.__id
+    
+    def setId(self, id):
+        self.__id = id
+
     # Multas
     def getMultas(self):
         return self.__multas
+    
+    def getMultasPendentes(self):
+        return [multa for multa in self.__multas if multa.getStatus() == StatusMulta.PENDENTE]
+    
+    def getMultasPagas(self):
+        return [multa for multa in self.__multas if multa.getStatus() == StatusMulta.PAGA]
+    
+    def getMultasCanceladas(self):
+        return [multa for multa in self.__multas if multa.getStatus() == StatusMulta.CANCELADA]
+    
+    def getMulta(self, id):
+        return [multa for multa in self.__multas if multa.getId() == id][0]
+    
 
     def addMulta(self, multa):
         self.__multas.append(multa)
