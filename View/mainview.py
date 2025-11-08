@@ -1,4 +1,5 @@
 import customtkinter
+import time
 from customtkinter import *
 from PIL import Image
 
@@ -59,14 +60,30 @@ class Aplication():
         if usuario == "admin" and senha == "1234":
             self.label_status.configure(
                 text="✅ Login bem-sucedido!",
-                text_color="green"
-            )
+                text_color="green")
+            self.root.after(1000, self.janela_nova)
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
             )
+            
+    def janela_nova(self):
+    # Fecha completamente a janela de login
+        self.root.destroy()
 
-        
+        # Cria uma nova janela principal separada
+        nova_janela = customtkinter.CTk()
+        nova_janela.title("Sistema Principal")
+        nova_janela.geometry("800x500")
+
+        label = customtkinter.CTkLabel(
+        nova_janela, text="Bem-vindo ao sistema principal!", font=customtkinter.CTkFont(size=24, weight="bold"))
+        label.pack(pady=100)
+
+        botao_sair = customtkinter.CTkButton( nova_janela, text="Sair", command=nova_janela.destroy)
+        botao_sair.pack(pady=20)
+
+        nova_janela.mainloop()
 
 Aplication()
