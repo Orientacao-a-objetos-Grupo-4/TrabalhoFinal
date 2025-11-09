@@ -1,16 +1,22 @@
 
-from Untils.Enums import StatusEmprestimo, StatusMulta
+from Untils.Enums import StatusEmprestimo
+from Model.Multa import Multa
 
+#retirei o objeto livro porque ja tem na classe itensemprestimo, então o emprestimo contempla varios livros atraves dos itens
+
+#retirei a lista de multas, pq o emprestimo pode ter no maximo uma multa vinculada
+
+#aqui precisamos importar o StatusMulta? Ele não vai estar apenas na classe Multa?
 
 class EmprestimoLivro:
-    def __init__(self, id, cliente, livro, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
+    def __init__(self, id, cliente, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
         self.__id = id
         self.__cliente = cliente
-        self.__livro = livro
         self.__dataEmprestimo = dataEmprestimo
         self.__dataDevolucao = dataDevolucao
         self.__status = status
-        self.__multas = []
+        self.__multa = None
+        self.__itens = []
 
     # Getters
     def getId(self):
@@ -19,8 +25,8 @@ class EmprestimoLivro:
     def getCliente(self):
         return self.__cliente
 
-    def getLivro(self):
-        return self.__livro
+    def getItens(self):
+        return self.__itens
 
     def getDataEmprestimo(self):
         return self.__dataEmprestimo
@@ -31,8 +37,8 @@ class EmprestimoLivro:
     def getStatus(self):
         return self.__status
 
-    def getMultas(self):
-        return self.__multas
+    def getMulta(self):
+        return self.__multa
 
     # Setters
     def setStatus(self, status):
@@ -44,12 +50,13 @@ class EmprestimoLivro:
     def setDataDevolucao(self, dataDevolucao):
         self.__dataDevolucao = dataDevolucao
 
-    # Métodos auxiliares
-    def addMulta(self, multa):
-        self.__multas.append(multa)
+    def setMulta(self, multa):
+        self.__multa = multa
 
-    def removeMulta(self, multa):
-        self.__multas.remove(multa)
+    # Métodos auxiliares
+    
+    def add_item(self, item_emprestimo):
+        self.__itens.append(item_emprestimo)
 
     def calcularMullta(self):
         pass

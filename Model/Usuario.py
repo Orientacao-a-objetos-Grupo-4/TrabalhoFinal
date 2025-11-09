@@ -3,7 +3,8 @@ from abc import ABC
 from Untils.Enums import TipoUsuario
 
 class Usuario(ABC):
-    def __init__(self, nomeUsuario, login, senha, tipo: TipoUsuario):
+    def __init__(self, id, nomeUsuario, login, senha, tipo: TipoUsuario):
+        self.__id = id
         self.__nomeUsuario = nomeUsuario
         self.__login = login
         self.__senha = senha
@@ -25,6 +26,9 @@ class Usuario(ABC):
 
     def getTipo(self):
         return self.__tipo
+    
+    def getId(self):
+        return self.__id
 
     # Setters
     def setNomeUsuario(self, nomeUsuario):

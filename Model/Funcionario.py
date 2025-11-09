@@ -5,8 +5,8 @@ from Untils.Enums import TipoUsuario
 
 
 class Funcionario(Usuario):
-    def __init__(self, nomeUsuario, login, senha, matricula):
-        super().__init__(nomeUsuario, login, senha, TipoUsuario.FUNCIONARIO)
+    def __init__(self, id, nomeUsuario, login, senha, matricula):
+        super().__init__(id, nomeUsuario, login, senha, TipoUsuario.FUNCIONARIO)
         self.__matricula = matricula
 
     # Getters e Setters
