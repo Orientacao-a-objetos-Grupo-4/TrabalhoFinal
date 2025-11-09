@@ -1,6 +1,5 @@
 
 from Untils.Enums import StatusEmprestimo
-from Model.Multa import Multa
 
 #retirei o objeto livro porque ja tem na classe itensemprestimo, então o emprestimo contempla varios livros atraves dos itens
 

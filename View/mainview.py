@@ -61,12 +61,11 @@ class Aplication():
                 text="✅ Login bem-sucedido!",
                 text_color="green"
             )
+
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
             )
-
-        
 
 Aplication()
