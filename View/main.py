@@ -56,6 +56,8 @@ print("\n=== Criando Itens de Empréstimo ===")
 item1 = ItensEmprestimo(str(uuid.uuid4()), livro1, emprestimo1)
 item2 = ItensEmprestimo(str(uuid.uuid4()), livro2, emprestimo1)
 
+
+#(TODO) SIMPLIFICAR AQUI
 itensController.addItem(item1)
 itensController.addItem(item2)
 

@@ -61,7 +61,6 @@ class MultaController:
                 except (ValueError, KeyError):
                     continue  
 
-                # Busca objetos reais via controllers, se disponíveis
                 emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo) if self.__emprestimoController else EmprestimoLivro(idEmprestimo, None, None, None)
                 cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else Cliente(idCliente, "", "", "")
 
