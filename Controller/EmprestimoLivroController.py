@@ -10,8 +10,11 @@ class EmprestimoLivroController:
         self.__itensController = None
         self.__clienteController = None
         self.__multaController = None
-        self.__garantirArquivo()
         self.carregarEmprestimos()
+
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
 
     # ---------------- Setters para controllers cruzados ----------------
     def setItensController(self, itensController):
@@ -57,14 +60,14 @@ class EmprestimoLivroController:
         self.salvarEmprestimos()
 
     # ---------------- Persistência em arquivo ----------------
-def salvarEmprestimos(self):
-    with open(self.__arquivo, "w", encoding="utf-8") as f:
-        for e in self.__emprestimos:
-            dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
-            dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
-            multa_id = e.getMulta().getId() if e.getMulta() else ""
-            itens_str = ",".join(str(i.getId()) for i in e.getItens()) if e.getItens() else ""
-            f.write(f"{e.getId()};{e.getCliente().getId()};{dataEmprestimo};{dataDevolucao};{e.getStatus().name};{multa_id};{itens_str}\n")
+    def salvarEmprestimos(self):
+        with open(self.__arquivo, "w", encoding="utf-8") as f:
+            for e in self.__emprestimos:
+                dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
+                dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
+                multa_id = e.getMulta().getId() if e.getMulta() else ""
+                itens_str = ",".join(str(i.getId()) for i in e.getItens()) if e.getItens() else ""
+                f.write(f"{e.getId()};{e.getCliente().getId()};{dataEmprestimo};{dataDevolucao};{e.getStatus().name};{multa_id};{itens_str}\n")
 
 
     def carregarEmprestimos(self):
