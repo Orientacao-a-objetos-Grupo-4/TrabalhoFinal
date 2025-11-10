@@ -1,11 +1,5 @@
-
 from Untils.Enums import StatusEmprestimo
-
-#retirei o objeto livro porque ja tem na classe itensemprestimo, então o emprestimo contempla varios livros atraves dos itens
-
-#retirei a lista de multas, pq o emprestimo pode ter no maximo uma multa vinculada
-
-#aqui precisamos importar o StatusMulta? Ele não vai estar apenas na classe Multa?
+from datetime import date
 
 class EmprestimoLivro:
     def __init__(self, id, cliente, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
@@ -15,9 +9,9 @@ class EmprestimoLivro:
         self.__dataDevolucao = dataDevolucao
         self.__status = status
         self.__multa = None
-        self.__itens = []
+        self.__itens = [] 
 
-    # Getters
+    # ---------------- Getters ----------------
     def getId(self):
         return self.__id
 
@@ -39,7 +33,7 @@ class EmprestimoLivro:
     def getMulta(self):
         return self.__multa
 
-    # Setters
+    # ---------------- Setters ----------------
     def setStatus(self, status):
         self.__status = status
 
@@ -52,15 +46,10 @@ class EmprestimoLivro:
     def setMulta(self, multa):
         self.__multa = multa
 
-    # Métodos auxiliares
-    
-    def add_item(self, item_emprestimo):
+    # ---------------- Métodos auxiliares ----------------
+    def addItem(self, item_emprestimo):
         self.__itens.append(item_emprestimo)
-
-    def calcularMullta(self):
-        pass
 
     def registrarDevolucao(self, dataDevolucao):
         self.setDataDevolucao(dataDevolucao)
         self.setStatus(StatusEmprestimo.DEVOLVIDO)
-     
