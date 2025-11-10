@@ -32,8 +32,8 @@ itensController.setEmprestimoController(emprestimoController)
 
 # -------------------- Criando usuários --------------------
 print("=== Criando Usuários ===")
-cliente1 = usuarioController.cadastrar_usuario("João", "joao123", "senha123", TipoUsuario.CLIENTE)
-funcionario1 = usuarioController.cadastrar_usuario("Maria", "maria123", "senha123", TipoUsuario.FUNCIONARIO)
+cliente1 = usuarioController.cadastrar_usuario("ricardo", "ricardmm1235", "senha123", TipoUsuario.CLIENTE)
+funcionario1 = usuarioController.cadastrar_usuario("Ricardo", "ricardo1234", "senha123", TipoUsuario.FUNCIONARIO)
 
 clienteController.addCliente(cliente1)
 funcionarioController.addFuncionario(funcionario1)

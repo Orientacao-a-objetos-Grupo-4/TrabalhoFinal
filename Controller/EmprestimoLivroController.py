@@ -18,7 +18,6 @@ class EmprestimoLivroController:
             os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
             open(self.__arquivo, "w", encoding="utf-8").close()
 
-    # ---------------- Setters para controllers cruzados ----------------
     def setItensController(self, itensController):
         self.__itensController = itensController
 
@@ -28,11 +27,9 @@ class EmprestimoLivroController:
     def setMultaController(self, multaController):
         self.__multaController = multaController
 
-    # ---------------- Getters ----------------
     def getEmprestimos(self):
         return self.__emprestimos.copy()
 
-    # ---------------- Funções CRUD ----------------
     def addEmprestimo(self, emprestimo):
         self.__emprestimos.append(emprestimo)
         self.salvarEmprestimos()
@@ -65,7 +62,6 @@ class EmprestimoLivroController:
         self.salvarEmprestimos()
         print(f"Empréstimo {idEmprestimo} devolvido com sucesso.")
 
-    # ---------------- Persistência em arquivo ----------------
     def salvarEmprestimos(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:
             for e in self.__emprestimos:
