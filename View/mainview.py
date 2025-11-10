@@ -64,8 +64,7 @@ class Aplication():
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
-            )
-    '''TUTORIAL PARTE 1'''      
+            )   
     def janela_nova(self):
     
     # Fecha completamente a janela de login
@@ -273,6 +272,7 @@ class Aplication():
                             anchor=tk.W)
         about_lb.place(x=45, y=370, width=100, height=40)
         about_lb.bind("<Button-1>", lambda e: switch_indication(indicator_lb=about_btn_indicator, page=about_page))
+        
         # posicionando o menu bar frame
         menu_bar_frame.pack(side=tk.LEFT, fill=tk.Y, pady=4, padx=3)
         menu_bar_frame.pack_propagate(flag=False)
