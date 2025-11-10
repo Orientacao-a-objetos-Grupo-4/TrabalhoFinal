@@ -10,6 +10,10 @@ class ClienteController:
         self.__clientes = []
         self.carregarClientes()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
     # Retorna cópia da lista de clientes
     def getClientes(self):
         return self.__clientes.copy()

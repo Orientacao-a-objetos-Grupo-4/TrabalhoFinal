@@ -1,6 +1,4 @@
 
-#precisamos de quantidade pq pode ser que o cliente pegue mais de um exemplar do mesmo livro?
-#podemos criar o ID utilizando o ID do emprestimo + ID do livro
 
 class ItensEmprestimo:
     def __init__(self, id,livro,  emprestimoLivro):

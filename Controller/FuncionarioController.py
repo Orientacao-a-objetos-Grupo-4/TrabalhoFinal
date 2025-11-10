@@ -7,6 +7,11 @@ class FuncionarioController:
         self.__funcionarios = []
         self.carregarFuncionarios()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
+
     def getFuncionarios(self):
         return self.__funcionarios.copy()
 

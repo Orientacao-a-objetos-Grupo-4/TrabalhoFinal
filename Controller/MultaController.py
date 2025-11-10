@@ -10,6 +10,10 @@ class MultaController:
         self.__emprestimoController = emprestimoController
         self.carregarMultas()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
     def getMultas(self):
         return self.__multas.copy()
 

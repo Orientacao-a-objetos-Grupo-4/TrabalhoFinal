@@ -7,6 +7,10 @@ class LivroController:
         self.__livros = []
         self.carregarLivros()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
     def getLivros(self):
         return self.__livros.copy()
 
@@ -14,6 +18,8 @@ class LivroController:
         if self.buscarPorId(livro.getId()) is None:
             self.__livros.append(livro)
             self.salvarLivros()
+
+            
 
     def removerLivroPorId(self, id):
         livro = self.buscarPorId(id)

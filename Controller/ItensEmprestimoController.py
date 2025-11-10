@@ -10,6 +10,10 @@ class ItensEmprestimoController:
         self.__emprestimoController = emprestimoController  # passado externamente
         self.carregarItens()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
     def setEmprestimoController(self, emprestimoController):
         self.__emprestimoController = emprestimoController
 
