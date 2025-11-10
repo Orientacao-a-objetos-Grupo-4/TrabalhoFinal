@@ -14,11 +14,9 @@ class ClienteController:
             os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
             open(self.__arquivo, "w", encoding="utf-8").close()
 
-    # Retorna cópia da lista de clientes
     def getClientes(self):
         return self.__clientes.copy()
 
-    # Adiciona cliente se o ID ainda não existir
     def addCliente(self, cliente):
         if self.buscarPorId(cliente.getId()) is None:
             self.__clientes.append(cliente)
@@ -26,14 +24,12 @@ class ClienteController:
         else:
             print(f"Cliente com ID {cliente.getId()} já existe!")
 
-    # Busca cliente pelo ID
     def buscarPorId(self, id):
         for c in self.__clientes:
             if c.getId() == id:
                 return c
         return None
 
-    # Carrega clientes do arquivo
     def carregarClientes(self):
         if not os.path.exists(self.__arquivo):
             return
@@ -50,11 +46,9 @@ class ClienteController:
 
                     cliente = Cliente(id, nome, login, senha)
 
-                    # IDs de multas (apenas armazenar como lista de ints)
                     if len(partes) > 4 and partes[4]:
                         cliente._Cliente__multas = [mid for mid in partes[4].split(",")]
 
-                    # IDs de empréstimos (apenas armazenar como lista de ints)
                     if len(partes) > 5 and partes[5]:
                         cliente._Cliente__emprestimos = [eid for eid in partes[5].split(",")]
 
@@ -63,7 +57,6 @@ class ClienteController:
                     print(f"Linha inválida ignorada: {linha}")
                     continue
 
-    # Salva clientes no arquivo
     def salvarClientes(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:
             for c in self.__clientes:
@@ -78,7 +71,6 @@ class ClienteController:
                 )
                 f.write(f"{c.getId()};{c.getNomeUsuario()};{c.getLogin()};{c.getSenha()};{multas_str};{emprestimos_str}\n")
 
-    # Converte IDs de multas em objetos reais usando MultaController
     def carregarMultasReais(self, multa_controller):
         for cliente in self.__clientes:
             novas_multas = []
@@ -88,7 +80,6 @@ class ClienteController:
                     novas_multas.append(multa_obj)
             cliente._Cliente__multas = novas_multas
 
-    # Converte IDs de empréstimos em objetos reais usando EmprestimoLivroController
     def carregarEmprestimosReais(self, emprestimo_controller):
         for cliente in self.__clientes:
             novos_emprestimos = []
