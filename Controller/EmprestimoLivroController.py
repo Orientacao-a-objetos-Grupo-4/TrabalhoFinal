@@ -71,8 +71,7 @@ class EmprestimoLivroController:
         emprestimo.registrarDevolucao(dataDevolucao)
         self.salvarEmprestimos()
 
-        # Criar multa se houver atraso
-        dataPrevista = emprestimo.getDataDevolucao()  # Data de devolução prevista
+        dataPrevista = emprestimo.getDataDevolucao()  
         if dataPrevista and dataDevolucao > dataPrevista:
             diasAtraso = (dataDevolucao - dataPrevista).days
             if diasAtraso > 0:
