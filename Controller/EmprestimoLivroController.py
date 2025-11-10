@@ -97,10 +97,3 @@ class EmprestimoLivroController:
                     StatusEmprestimo[status]
                 )
                 self.__emprestimos.append(emprestimo)
-
-    # ---------------- Auxiliares ----------------
-    def __garantirArquivo(self):
-        os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
-        if not os.path.exists(self.__arquivo):
-            with open(self.__arquivo, "w", encoding="utf-8"):
-                pass
