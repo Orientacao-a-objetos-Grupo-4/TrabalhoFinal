@@ -1,6 +1,7 @@
 import os
 import pickle
 import hashlib
+import uuid
 from Model.Usuario import Usuario
 from Untils.Enums import TipoUsuario
 from Model.Cliente import Cliente
@@ -44,7 +45,8 @@ class UsuarioController:
         if tipo == TipoUsuario.CLIENTE:
             usuario = Cliente(self.__ultimo_id, nomeUsuario, login, senha_hash)
         elif tipo == TipoUsuario.FUNCIONARIO:
-            usuario = Funcionario(self.__ultimo_id, nomeUsuario, login, senha_hash)
+            matricula = uuid.uuid4()
+            usuario = Funcionario(self.__ultimo_id, nomeUsuario, login, senha_hash,matricula=matricula)
         else:
             raise ValueError("Tipo de usuário inválido!")
 

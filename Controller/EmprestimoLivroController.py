@@ -1,7 +1,9 @@
 import os
 from datetime import date
+import uuid
 from Model.EmprestimoLivro import EmprestimoLivro
-from Untils.Enums import StatusEmprestimo
+from Model.Multa import Multa
+from Untils.Enums import StatusEmprestimo, StatusMulta
 
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt"):
@@ -41,23 +43,28 @@ class EmprestimoLivroController:
                 return e
         return None
 
-    def registrarDevolucao(self, idEmprestimo, dataDevolucao: date):
+    def registrarDevolucao(self, idEmprestimo, data_devolucao):
         emprestimo = self.buscarPorId(idEmprestimo)
-        if not emprestimo:
-            print("Empréstimo não encontrado!")
+        if emprestimo is None:
+            print("Empréstimo não encontrado.")
             return
 
-        dataPrevista = emprestimo.getDataPrevistaDevolucao()  # precisa existir no model
-        emprestimo.registrarDevolucao(dataDevolucao)
+        emprestimo.setDataDevolucao(data_devolucao)
+        emprestimo.setStatus(StatusEmprestimo.DEVOLVIDO)
 
-        if dataPrevista and dataDevolucao > dataPrevista and self.__multaController:
-            diasAtraso = (dataDevolucao - dataPrevista).days
-            if diasAtraso > 0:
-                from Model.Multa import Multa
-                multa = Multa(f"M-{emprestimo.getId()}", diasAtraso * 0.1, emprestimo, emprestimo.getCliente())
-                self.__multaController.addMulta(multa)
+        for item in emprestimo.getItens():
+            item.getLivro().devolverExemplar()
+
+        atraso = (data_devolucao - emprestimo.getDataEmprestimo()).days - 7  
+        #(TODO) Arrumar aqui
+        print(emprestimo.getCliente())
+        if atraso > 0:
+            multa = Multa(str(uuid.uuid4()), emprestimo, emprestimo.getCliente(), atraso * 2.0, StatusMulta.PENDENTE)
+            self.__multaController.addMulta(multa)
+            emprestimo.getCliente().addMulta(multa)
 
         self.salvarEmprestimos()
+        print(f"Empréstimo {idEmprestimo} devolvido com sucesso.")
 
     # ---------------- Persistência em arquivo ----------------
     def salvarEmprestimos(self):

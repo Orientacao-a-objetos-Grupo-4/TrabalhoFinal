@@ -7,7 +7,7 @@ class ItensEmprestimoController:
         self.__arquivo = arquivo
         self.__itens = []
         self.__livroController = LivroController()
-        self.__emprestimoController = emprestimoController  # passado externamente
+        self.__emprestimoController = emprestimoController  
         self.carregarItens()
 
         if not os.path.exists(self.__arquivo):
@@ -23,7 +23,9 @@ class ItensEmprestimoController:
     def addItem(self, item):
         if self.buscarPorId(item.getId()) is None:
             self.__itens.append(item)
+            item.getLivro().retirarExemplar()
             self.salvarItens()
+
 
     def buscarPorId(self, id):
         for item in self.__itens:

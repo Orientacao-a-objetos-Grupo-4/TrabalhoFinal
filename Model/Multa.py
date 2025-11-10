@@ -46,13 +46,7 @@ class Multa:
     # Métodos auxiliares
 
     def calcularValor(self):
-        dataEmprestimo = self.__emprestimo.getDataEmprestimo()
-        dataDevolucao = self.__emprestimo.getDataDevolucao()
-        diasAtraso = (dataDevolucao - dataEmprestimo).days
-        if diasAtraso > 0:
-            self.__valor = diasAtraso * 0.1
-        else:
-            self.__valor = 0
+        pass
 
     
     def registrarPagamento(self):
