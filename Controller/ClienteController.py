@@ -8,11 +8,15 @@ class ClienteController:
         self.carregarClientes()
 
     def getClientes(self):
-        return self.__clientes
+        # Retorna uma cópia da lista para evitar alterações externas
+        return self.__clientes.copy()
 
     def addCliente(self, cliente):
-        self.__clientes.append(cliente)
-        self.salvarClientes()
+        if self.buscarPorId(cliente.getId()) is None:
+            self.__clientes.append(cliente)
+            self.salvarClientes()
+        else:
+            print(f"Cliente com ID {cliente.getId()} já existe!")
 
     def buscarPorId(self, id):
         for c in self.__clientes:
@@ -25,8 +29,13 @@ class ClienteController:
             return
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
-                id, nome, login, senha = linha.strip().split(";")
-                self.__clientes.append(Cliente(id, nome, login, senha))
+                try:
+                    id_str, nome, login, senha = linha.strip().split(";")
+                    id = int(id_str)  # converter ID para inteiro, se necessário
+                    self.__clientes.append(Cliente(id, nome, login, senha))
+                except ValueError:
+                    # Ignora linhas mal formatadas
+                    continue
 
     def salvarClientes(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:

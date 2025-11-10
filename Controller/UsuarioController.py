@@ -1,14 +1,16 @@
 import os
 import pickle
+import hashlib
 from Model.Usuario import Usuario
 from Untils.Enums import TipoUsuario
 from Model.Cliente import Cliente
 from Model.Funcionario import Funcionario
 
 class UsuarioController:
-    def __init__(self, arquivo="/Data/usuarios.txt"):
+    def __init__(self, arquivo="Data/usuarios.txt"):
         self.__arquivo = arquivo
         self.__usuarios = self.__carregar_dados()
+        self.__ultimo_id = self.__calcular_ultimo_id()
 
     def __carregar_dados(self):
         if not os.path.exists(self.__arquivo):
@@ -23,29 +25,40 @@ class UsuarioController:
         with open(self.__arquivo, "wb") as f:
             pickle.dump(self.__usuarios, f)
 
+    def __calcular_ultimo_id(self):
+        if not self.__usuarios:
+            return 0
+        return max(usuario.getId() for usuario in self.__usuarios)
+
+    def __hash_senha(self, senha):
+        """Gera hash seguro da senha."""
+        return hashlib.sha256(senha.encode()).hexdigest()
+
     def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario):
-        novo_id = len(self.__usuarios) + 1
+        # Verifica se login já existe
+        if any(u.getLogin() == login for u in self.__usuarios):
+            raise ValueError(f"Login '{login}' já está em uso!")
+
+        self.__ultimo_id += 1
+        senha_hash = self.__hash_senha(senha)
 
         if tipo == TipoUsuario.CLIENTE:
-            usuario = Cliente(novo_id, nomeUsuario, login, senha)
+            usuario = Cliente(self.__ultimo_id, nomeUsuario, login, senha_hash)
         elif tipo == TipoUsuario.FUNCIONARIO:
-            usuario = Funcionario(novo_id, nomeUsuario, login, senha)
+            usuario = Funcionario(self.__ultimo_id, nomeUsuario, login, senha_hash)
         else:
-            usuario = Funcionario(novo_id, nomeUsuario, login, senha)
-      
+            raise ValueError("Tipo de usuário inválido!")
 
         self.__usuarios.append(usuario)
         self.__salvar_dados()
         return usuario
 
-
     def listar_usuarios(self):
         return self.__usuarios
 
     def login(self, login, senha):
+        senha_hash = self.__hash_senha(senha)
         for usuario in self.__usuarios:
-            if usuario.getLogin() == login and usuario.getSenha() == senha:
-                print(f"Login bem-sucedido! Bem-vindo, {usuario.getNomeUsuario()}")
+            if usuario.getLogin() == login and usuario.getSenha() == senha_hash:
                 return usuario
-        print("Login ou senha inválidos!")
         return None

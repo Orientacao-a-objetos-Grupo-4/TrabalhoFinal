@@ -11,11 +11,13 @@ class LivroController:
         return self.__livros
 
     def addLivro(self, livro):
-        self.__livros.append(livro)
-        self.salvarLivros()
+        if self.buscarPorId(livro.getId()) is None:  # evita duplicados
+            self.__livros.append(livro)
+            self.salvarLivros()
 
-    def removerLivro(self, livro):
-        if livro in self.__livros:
+    def removerLivroPorId(self, id):
+        livro = self.buscarPorId(id)
+        if livro:
             self.__livros.remove(livro)
             self.salvarLivros()
 
