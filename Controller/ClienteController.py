@@ -8,7 +8,6 @@ class ClienteController:
         self.carregarClientes()
 
     def getClientes(self):
-        # Retorna uma cópia da lista para evitar alterações externas
         return self.__clientes.copy()
 
     def addCliente(self, cliente):

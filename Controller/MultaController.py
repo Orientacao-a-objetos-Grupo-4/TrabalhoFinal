@@ -53,9 +53,8 @@ class MultaController:
                     valor = float(valor)
                     status_enum = StatusMulta[status]
                 except (ValueError, KeyError):
-                    continue  # Ignora linha inválida
+                    continue  
 
-                # Busca objetos completos se os controllers existirem
                 emprestimo = None
                 cliente = None
 
@@ -64,7 +63,6 @@ class MultaController:
                 if self.__clienteController:
                     cliente = self.__clienteController.buscarPorId(idCliente)
 
-                # Se não encontrou, cria objeto mínimo com id
                 if not emprestimo:
                     emprestimo = EmprestimoLivro(idEmprestimo, None, None, None)
                 if not cliente:

@@ -31,11 +31,9 @@ class UsuarioController:
         return max(usuario.getId() for usuario in self.__usuarios)
 
     def __hash_senha(self, senha):
-        """Gera hash seguro da senha."""
         return hashlib.sha256(senha.encode()).hexdigest()
 
     def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario):
-        # Verifica se login já existe
         if any(u.getLogin() == login for u in self.__usuarios):
             raise ValueError(f"Login '{login}' já está em uso!")
 

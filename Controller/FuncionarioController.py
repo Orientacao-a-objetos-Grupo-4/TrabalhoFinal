@@ -11,9 +11,9 @@ class FuncionarioController:
         return self.__funcionarios
 
     def buscarPorId(self, id):
-        for f in self.__funcionarios:
-            if f.getId() == id:
-                return f
+        for funcionario in self.__funcionarios:
+            if funcionario.getId() == id:
+                return funcionario
         return None
 
     def addFuncionario(self, funcionario):
@@ -33,7 +33,7 @@ class FuncionarioController:
             for linha in f:
                 try:
                     id_str, nome, login, senha, matricula = linha.strip().split(";")
-                    id = int(id_str)  # Garante que ID seja inteiro
+                    id = int(id_str) 
                     self.__funcionarios.append(Funcionario(id, nome, login, senha, matricula))
                 except ValueError:
                     print(f"Linha inválida no arquivo: {linha.strip()}")

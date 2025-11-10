@@ -44,7 +44,7 @@ class EmprestimoLivroController:
                 id, idCliente, dataEmprestimo, dataDevolucao, status = dados
                 cliente = self.__clienteController.buscarPorId(idCliente)
                 if not cliente:
-                    continue  # Ignora empréstimos com cliente inexistente
+                    continue  
                 emprestimo = EmprestimoLivro(
                     id,
                     cliente,
