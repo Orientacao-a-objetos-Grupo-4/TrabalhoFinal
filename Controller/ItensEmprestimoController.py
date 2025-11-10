@@ -1,18 +1,17 @@
 import os
 from Model.ItensEmprestimo import ItensEmprestimo
 from Controller.LivroController import LivroController
-from Controller.EmprestimoLivroController import EmprestimoController
 
 class ItensEmprestimoController:
-    def __init__(self, arquivo="Data/itensEmprestimo.txt"):
+    def __init__(self, arquivo="Data/itensEmprestimo.txt", emprestimoController=None):
         self.__arquivo = arquivo
         self.__itens = []
         self.__livroController = LivroController()
-        self.__emprestimoController = EmprestimoController()
+        self.__emprestimoController = emprestimoController  # passado externamente
         self.carregarItens()
 
     def getItens(self):
-        return self.__itens
+        return self.__itens.copy()
 
     def addItem(self, item):
         if self.buscarPorId(item.getId()) is None:
@@ -37,15 +36,21 @@ class ItensEmprestimoController:
         
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
-                id, idLivro, idEmprestimo = linha.strip().split(";")
-                
-                # Busca os objetos reais via controllers
-                livro = self.__livroController.buscarPorId(idLivro)
-                emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo)
-                
-                if livro and emprestimo:  # só adiciona se ambos existirem
-                    item = ItensEmprestimo(id, livro, 1, emprestimo)
-                    self.__itens.append(item)
+                try:
+                    id_str, idLivro_str, idEmprestimo_str = linha.strip().split(";")
+                    id = int(id_str)
+                    idLivro = int(idLivro_str)
+                    idEmprestimo = int(idEmprestimo_str)
+
+                    livro = self.__livroController.buscarPorId(idLivro)
+                    emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo) if self.__emprestimoController else None
+
+                    if livro and emprestimo:
+                        item = ItensEmprestimo(id, livro, 1, emprestimo)
+                        self.__itens.append(item)
+                except ValueError:
+                    print(f"Linha inválida ignorada: {linha.strip()}")
+                    continue
 
     def salvarItens(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:

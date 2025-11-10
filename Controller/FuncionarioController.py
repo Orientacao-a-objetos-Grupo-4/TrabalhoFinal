@@ -8,7 +8,7 @@ class FuncionarioController:
         self.carregarFuncionarios()
 
     def getFuncionarios(self):
-        return self.__funcionarios
+        return self.__funcionarios.copy()
 
     def buscarPorId(self, id):
         for funcionario in self.__funcionarios:
@@ -22,7 +22,7 @@ class FuncionarioController:
             self.salvarFuncionarios()
             return True
         else:
-            print(f"Erro: Funcionario com ID {funcionario.getId()} já existe!")
+            print(f"Erro: Funcionário com ID {funcionario.getId()} já existe!")
             return False
 
     def carregarFuncionarios(self):
@@ -32,11 +32,17 @@ class FuncionarioController:
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
                 try:
-                    id_str, nome, login, senha, matricula = linha.strip().split(";")
-                    id = int(id_str) 
-                    self.__funcionarios.append(Funcionario(id, nome, login, senha, matricula))
+                    partes = linha.strip().split(";")
+                    if len(partes) != 5:
+                        print(f"Linha inválida ignorada: {linha.strip()}")
+                        continue
+                    id_str, nome, login, senha, matricula = partes
+                    id = int(id_str)
+                    funcionario = Funcionario(id, nome, login, senha, matricula)
+                    self.__funcionarios.append(funcionario)
                 except ValueError:
                     print(f"Linha inválida no arquivo: {linha.strip()}")
+                    continue
 
     def salvarFuncionarios(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:

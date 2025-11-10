@@ -6,17 +6,25 @@ from Controller.MultaController import MultaController
 from Controller.ClienteController import ClienteController
 from Untils.Enums import StatusEmprestimo
 
+
+
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt"):
         self.__arquivo = arquivo
         self.__emprestimos = []
         self.__itensController = ItensEmprestimoController()
-        self.__multaController = MultaController()
-        self.__clienteController = ClienteController()
+        self.__multaController = None  # Será setado externamente para evitar circular import
+        self.__clienteController = None  # Será setado externamente
         self.carregarEmprestimos()
 
+    def setMultaController(self, multaController):
+        self.__multaController = multaController
+
+    def setClienteController(self, clienteController):
+        self.__clienteController = clienteController
+
     def getEmprestimos(self):
-        return self.__emprestimos
+        return self.__emprestimos.copy()
 
     def addEmprestimo(self, emprestimo):
         self.__emprestimos.append(emprestimo)
@@ -41,10 +49,17 @@ class EmprestimoLivroController:
                 dados = linha.strip().split(";")
                 if len(dados) != 5:
                     continue
-                id, idCliente, dataEmprestimo, dataDevolucao, status = dados
-                cliente = self.__clienteController.buscarPorId(idCliente)
+                id_str, idCliente_str, dataEmprestimo, dataDevolucao, status = dados
+                try:
+                    id = int(id_str)
+                    idCliente = int(idCliente_str)
+                except ValueError:
+                    continue
+
+                cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else None
                 if not cliente:
-                    continue  
+                    continue
+
                 emprestimo = EmprestimoLivro(
                     id,
                     cliente,
@@ -61,7 +76,6 @@ class EmprestimoLivroController:
                 dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
                 f.write(f"{e.getId()};{e.getCliente().getId()};{dataEmprestimo};{dataDevolucao};{e.getStatus().name}\n")
 
-    # -------- Métodos adicionais integrados --------
     def registrarDevolucao(self, idEmprestimo, dataDevolucao: date):
         emprestimo = self.buscarPorId(idEmprestimo)
         if not emprestimo:
@@ -71,12 +85,15 @@ class EmprestimoLivroController:
         emprestimo.registrarDevolucao(dataDevolucao)
         self.salvarEmprestimos()
 
-        dataPrevista = emprestimo.getDataDevolucao()  
-        if dataPrevista and dataDevolucao > dataPrevista:
+        dataPrevista = emprestimo.getDataDevolucao()
+        if dataPrevista and dataDevolucao > dataPrevista and self.__multaController:
             diasAtraso = (dataDevolucao - dataPrevista).days
             if diasAtraso > 0:
                 # Evita duplicar multa para o mesmo empréstimo
-                multasExistentes = [m for m in self.__multaController.getMultas() if m.getEmprestimo().getId() == emprestimo.getId()]
+                multasExistentes = [
+                    m for m in self.__multaController.getMultas()
+                    if m.getEmprestimo().getId() == emprestimo.getId()
+                ]
                 if not multasExistentes:
                     from Model.Multa import Multa
                     valor = diasAtraso * 0.1

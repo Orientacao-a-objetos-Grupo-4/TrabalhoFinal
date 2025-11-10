@@ -2,12 +2,15 @@ import os
 from Model.Multa import Multa
 from Untils.Enums import StatusMulta
 
+from Controller.EmprestimoLivroController import EmprestimoLivroController
+from Controller.ClienteController import ClienteController
+
 class MultaController:
     def __init__(self, arquivo="Data/multas.txt", clienteController=None, emprestimoController=None):
         self.__arquivo = arquivo
         self.__multas = []
-        self.__clienteController = clienteController
-        self.__emprestimoController = emprestimoController
+        self.__clienteController = ClienteController()
+        self.__emprestimoController = EmprestimoLivroController()
         self.carregarMultas()
 
     def getMultas(self):
