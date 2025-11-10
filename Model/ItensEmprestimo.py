@@ -3,10 +3,9 @@
 #podemos criar o ID utilizando o ID do emprestimo + ID do livro
 
 class ItensEmprestimo:
-    def __init__(self, livro, quantidade, emprestimoLivro):
+    def __init__(self, id,livro,  emprestimoLivro):
         self.__id = id
         self.__livro = livro
-        self.__quantidade = quantidade
         self.__emprestimoLivro = emprestimoLivro
 
     # Getters
@@ -16,8 +15,6 @@ class ItensEmprestimo:
     def getId(self):
         return self.__id
 
-    def getQuantidade(self):
-        return self.__quantidade
 
     def getEmprestimoLivro(self):
         return self.__emprestimoLivro
@@ -29,8 +26,6 @@ class ItensEmprestimo:
     def setId(self, id):
         self.__id = id
 
-    def setQuantidade(self, quantidade):
-        self.__quantidade = quantidade
 
     def setEmprestimoLivro(self, emprestimoLivro):
         self.__emprestimoLivro = emprestimoLivro
