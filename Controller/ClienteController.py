@@ -39,7 +39,7 @@ class ClienteController:
                     partes = linha.strip().split(";")
                     if len(partes) < 4:
                         continue  # Linha inválida
-                    id = int(partes[0])
+                    id = partes[0]
                     nome = partes[1]
                     login = partes[2]
                     senha = partes[3]
@@ -48,11 +48,11 @@ class ClienteController:
 
                     # IDs de multas (apenas armazenar como lista de ints)
                     if len(partes) > 4 and partes[4]:
-                        cliente._Cliente__multas = [int(mid) for mid in partes[4].split(",")]
+                        cliente._Cliente__multas = [mid for mid in partes[4].split(",")]
 
                     # IDs de empréstimos (apenas armazenar como lista de ints)
                     if len(partes) > 5 and partes[5]:
-                        cliente._Cliente__emprestimos = [int(eid) for eid in partes[5].split(",")]
+                        cliente._Cliente__emprestimos = [eid for eid in partes[5].split(",")]
 
                     self.__clientes.append(cliente)
                 except ValueError:

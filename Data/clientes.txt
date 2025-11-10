@@ -1,0 +1,6 @@
+a8af1d5d-045e-4601-a325-16db59b1c805;Patrick;patrick123;senha123;;
+623d4b88-7384-42b9-a096-d8442e9719c1;Patrick;patrick123;senha123;;
+0130d671-69c7-4dd0-b839-036d624e54e3;Patrick;patrick123;senha123;;
+5b4cb3c4-69b0-4b31-81c8-04894a8474a3;Patrick;patrick123;senha123;;
+b35509eb-dd37-4afd-8c64-d0d3180beba6;Patrick;patrick123;senha123;;
+88340612-05c2-48e7-a12b-cc66da5c70f8;Patrick;patrick123;senha123;;

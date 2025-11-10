@@ -2,19 +2,16 @@ import os
 from Model.Multa import Multa
 from Untils.Enums import StatusMulta
 
-from Controller.EmprestimoLivroController import EmprestimoLivroController
-from Controller.ClienteController import ClienteController
-
 class MultaController:
     def __init__(self, arquivo="Data/multas.txt", clienteController=None, emprestimoController=None):
         self.__arquivo = arquivo
         self.__multas = []
-        self.__clienteController = ClienteController()
-        self.__emprestimoController = EmprestimoLivroController()
+        self.__clienteController = clienteController
+        self.__emprestimoController = emprestimoController
         self.carregarMultas()
 
     def getMultas(self):
-        return self.__multas
+        return self.__multas.copy()
 
     def addMulta(self, multa):
         self.__multas.append(multa)
@@ -40,7 +37,7 @@ class MultaController:
     def carregarMultas(self):
         if not os.path.exists(self.__arquivo):
             return
-        
+
         from Model.EmprestimoLivro import EmprestimoLivro
         from Model.Cliente import Cliente
 
@@ -49,27 +46,20 @@ class MultaController:
                 dados = linha.strip().split(";")
                 if len(dados) != 5:
                     continue
-                
-                id, valor, idEmprestimo, idCliente, status = dados
+
+                id, valor_str, idEmprestimo_str, idCliente_str, status_str = dados
 
                 try:
-                    valor = float(valor)
-                    status_enum = StatusMulta[status]
+                    valor = float(valor_str)
+                    status_enum = StatusMulta[status_str]
+                    idEmprestimo = idEmprestimo_str
+                    idCliente = idCliente_str
                 except (ValueError, KeyError):
                     continue  
 
-                emprestimo = None
-                cliente = None
-
-                if self.__emprestimoController:
-                    emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo)
-                if self.__clienteController:
-                    cliente = self.__clienteController.buscarPorId(idCliente)
-
-                if not emprestimo:
-                    emprestimo = EmprestimoLivro(idEmprestimo, None, None, None)
-                if not cliente:
-                    cliente = Cliente(idCliente, "", "", "")
+                # Busca objetos reais via controllers, se disponíveis
+                emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo) if self.__emprestimoController else EmprestimoLivro(idEmprestimo, None, None, None)
+                cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else Cliente(idCliente, "", "", "")
 
                 multa = Multa(id, valor, emprestimo, cliente, status_enum)
                 self.__multas.append(multa)

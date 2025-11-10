@@ -1,15 +1,15 @@
 from Untils.Enums import StatusEmprestimo
-from datetime import date
+from datetime import date, timedelta
 
 class EmprestimoLivro:
-    def __init__(self, id, cliente, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
+    def __init__(self, id, cliente, dataEmprestimo, dataDevolucao=None, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
         self.__id = id
         self.__cliente = cliente
         self.__dataEmprestimo = dataEmprestimo
         self.__dataDevolucao = dataDevolucao
         self.__status = status
         self.__multa = None
-        self.__itens = [] 
+        self.__itens = []
 
     # ---------------- Getters ----------------
     def getId(self):
@@ -32,6 +32,11 @@ class EmprestimoLivro:
 
     def getMulta(self):
         return self.__multa
+
+    # -------- Novo método para data prevista --------
+    def getDataPrevistaDevolucao(self):
+        # Regra: 7 dias após a data do empréstimo
+        return self.__dataEmprestimo + timedelta(days=7)
 
     # ---------------- Setters ----------------
     def setStatus(self, status):

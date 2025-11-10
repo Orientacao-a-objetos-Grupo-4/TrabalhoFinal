@@ -37,7 +37,7 @@ class FuncionarioController:
                         print(f"Linha inválida ignorada: {linha.strip()}")
                         continue
                     id_str, nome, login, senha, matricula = partes
-                    id = int(id_str)
+                    id = id_str
                     funcionario = Funcionario(id, nome, login, senha, matricula)
                     self.__funcionarios.append(funcionario)
                 except ValueError:

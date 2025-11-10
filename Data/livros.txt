@@ -1,51 +1,18 @@
-ID,TITULO,GENERO,EDITORA,AUTOR,N_EXEMPLARES
-1,1984,Ficção Científica,Companhia das Letras,George Orwell,5
-2,O Senhor dos Anéis: A Sociedade do Anel,Fantasia,Martins Fontes,J.R.R. Tolkien,4
-3,Cem Anos de Solidão,Realismo Mágico,Record,Gabriel García Márquez,3
-4,Orgulho e Preconceito,Romance Clássico,Penguin-Cia das Letras,Jane Austen,6
-5,A Revolução dos Bichos,Fábula Política,Companhia das Letras,George Orwell,7
-6,Dom Casmurro,Romance Brasileiro,Editora Ateliê,Machado de Assis,3
-7,O Pequeno Príncipe,Fábula,Agir,Antoine de Saint-Exupéry,10
-8,Crime e Castigo,Romance Filosófico,34,Fiódor Dostoiévski,2
-9,A Metamorfose,Ficção Absurda,Companhia das Letras,Franz Kafka,4
-10,Drácula,Terror Gótico,Zahar,Bram Stoker,1
-11,A Cor Púrpura,Drama,Rocco,Alice Walker,5
-12,O Iluminado,Terror,Suma,Stephen King,6
-13,Neuromancer,Cyberpunk,Aleph,William Gibson,2
-14,Viagem ao Centro da Terra,Aventura,FTD,Júlio Verne,8
-15,O Diário de Anne Frank,Autobiografia,Record,Anne Frank,4
-16,Memórias Póstumas de Brás Cubas,Romance Brasileiro,Editora Ateliê,Machado de Assis,3
-17,Mundo Novo,Ficção Científica,Globo,Aldous Huxley,5
-18,O Sol é Para Todos,Drama,José Olympio,Harper Lee,7
-19,O Nome da Rosa,Romance Histórico,Record,Umberto Eco,2
-20,Ensaio sobre a Cegueira,Drama Filosófico,Companhia das Letras,José Saramago,4
-21,O Alquimista,Ficção Filosófica,Sextante,Paulo Coelho,12
-22,O Retrato de Dorian Gray,Ficção Gótica,Penguin,Oscar Wilde,3
-23,Fahrenheit 451,Ficção Científica,Globo,Ray Bradbury,5
-24,As Crônicas de Nárnia: O Leão, a Feiticeira e o Guarda-Roupa,Fantasia,WMF Martins Fontes,C.S. Lewis,6
-25,Mulherzinhas,Romance Jovem Adulto,Principis,Louisa May Alcott,4
-26,A Cidade e as Serras,Romance,Lello Editores,Eça de Queirós,2
-27,Capitães da Areia,Romance Brasileiro,Global,Jorge Amado,8
-28,O Código Da Vinci,Suspense,Sextante,Dan Brown,7
-29,A Menina que Roubava Livros,Drama Histórico,Intrínseca,Markus Zusak,5
-30,O Morro dos Ventos Uivantes,Romance Gótico,Martin Claret,Emily Brontë,3
-31,Vinte Mil Léguas Submarinas,Aventura,FTD,Júlio Verne,4
-32,O Processo,Ficção Absurda,Companhia das Letras,Franz Kafka,2
-33,Admirável Mundo Novo,Ficção Científica,Globo,Aldous Huxley,5
-34,As Vinhas da Ira,Drama Social,Rocco,John Steinbeck,6
-35,O Apanhador no Campo de Centeio,Romance Jovem Adulto,Companhia das Letras,J.D. Salinger,4
-36,O Grande Gatsby,Romance,Companhia das Letras,F. Scott Fitzgerald,3
-37,A Odisséia,Épico,Penguin-Cia das Letras,Homero,5
-38,O Estrangeiro,Ficção Filosófica,Record,Albert Camus,7
-39,Frankenstein,Ficção Gótica,Zahar,Mary Shelley,2
-40,Guerra e Paz,Romance Histórico,Companhia das Letras,Liev Tolstói,1
-41,Moby Dick,Aventura,Penguin-Cia das Letras,Herman Melville,3
-42,Para Sempre,Romance,Intrínseca,Kim Eun-sook,5
-43,As Aventuras de Sherlock Holmes,Mistério,Zahar,Arthur Conan Doyle,6
-44,O Nome do Vento,Fantasia,Arqueiro,Patrick Rothfuss,4
-45,Sapiens: Uma Breve História da Humanidade,Não Ficção,Companhia das Letras,Yuval Noah Harari,5
-46,Pai Rico, Pai Pobre,Finanças Pessoais,Alta Books,Robert Kiyosaki,8
-47,A Arte da Guerra,Estratégia,Record,Sun Tzu,7
-48,O Poder do Hábito,Não Ficção,Objetiva,Charles Duhigg,5
-49,Mindset: A Nova Psicologia do Sucesso,Psicologia,Objetiva,Carol S. Dweck,6
-50,A Sutil Arte de Ligar o Foda-se,Autoajuda,Intrínseca,Mark Manson,9
+14399248-1820-415e-8dc9-e140f8c48108;Python Avançado;Tecnologia;Editora A;Autor X;5
+b95d93f7-def6-43bf-a556-bda00a6aa7e7;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+1681198a-15c9-4eb9-8a55-32c642b1add3;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3
+cd18ccc8-5742-419d-a464-02d3cb190f92;Python Avançado;Tecnologia;Editora A;Autor X;5
+d20ac500-0f3d-4b7c-b71f-a236625c11ae;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+774f8317-e220-43e6-9ac2-d9f3ee123962;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3
+2b2d13db-9a5a-4271-affb-489beebb543f;Python Avançado;Tecnologia;Editora A;Autor X;5
+fa4f065f-f1c1-4ed1-83c8-1196a7823ae2;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+d379f9f1-081e-4c36-b792-048ddfaff29c;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3
+7f1c60e0-7604-4d11-98ae-dd6cd3fdaf1c;Python Avançado;Tecnologia;Editora A;Autor X;5
+9fca3028-61d4-4ccc-96d2-5ed611390e2d;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+c18e0773-46f0-4f54-a814-33e495fdf9de;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3
+43de6f74-e467-4163-bbd6-d2a3332ff5da;Python Avançado;Tecnologia;Editora A;Autor X;5
+3964d1ee-f8e5-4b8d-ad04-ecc19da8ec4a;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+b7de2bbc-7713-4109-b26a-44746cd88b01;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3
+dc0a057e-3659-4e5c-9363-7237acd53a67;Python Avançado;Tecnologia;Editora A;Autor X;5
+46081094-214a-4319-b261-2f1a670030ea;Aprenda Java;Tecnologia;Editora B;Autor Y;3
+4bdec8a6-3941-4008-9f35-189f2b762132;Aprenda Javascript;Tecnologia;Editora B;Autor Y;3

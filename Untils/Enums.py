@@ -14,5 +14,6 @@ class StatusMulta(Enum):
 
 class StatusEmprestimo(Enum):
     DEVOLVIDO = "Devolvido"
-    ATIVO = "Ativo"
+    ATIVO = "ATIVO"
     CANCELADO = "Cancelado"
+
