@@ -8,3 +8,9 @@ a4cb96ff-a85e-4a73-93b3-2898e9d630d5;O Senhor dos Anéis;Fantasia;Martins;J.R.R.
 afc84b14-1959-40c0-a2f9-67fddd0e9554;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
 eb76a537-f5ec-4bc0-9bf0-2cdfc8cd464e;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
 89ae6752-06bb-4b60-b08e-ee2af830480a;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+504b4297-3fe8-4645-91c6-4b58fdbf9f04;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+eff37918-af2f-41d5-8887-1fd617a3e167;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+9b31991b-02da-4153-9695-040d6e27abd1;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+fe6cc0d4-e0f3-4f5b-8505-42de0ab7db63;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+2ebd5a83-b2bf-4d32-b430-da39a5639d92;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+ab51942a-8415-4eac-aef8-68f8e0414bc3;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3

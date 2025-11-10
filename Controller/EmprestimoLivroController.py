@@ -59,7 +59,7 @@ class EmprestimoLivroController:
         #(TODO) Arrumar aqui
         print(emprestimo.getCliente())
         if atraso > 0:
-            multa = Multa(str(uuid.uuid4()), emprestimo, emprestimo.getCliente(), atraso * 2.0, StatusMulta.PENDENTE)
+            multa = Multa(str(uuid.uuid4()), atraso * 2.0, emprestimo, emprestimo.getCliente(), StatusMulta.PENDENTE)
             self.__multaController.addMulta(multa)
             emprestimo.getCliente().addMulta(multa)
 
