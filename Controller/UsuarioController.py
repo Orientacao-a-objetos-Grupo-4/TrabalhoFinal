@@ -1,5 +1,5 @@
+import hashlib
 import os
-import pickle
 from Model.Usuario import Usuario
 from Untils.Enums import TipoUsuario
 
@@ -7,42 +7,45 @@ from Untils.Enums import TipoUsuario
 class UsuarioController:
     def __init__(self, arquivo="Data/usuarios.txt"):
         self.__arquivo = arquivo
+        os.makedirs(os.path.dirname(arquivo), exist_ok=True)
         self.__usuarios = self.__carregar_dados()
         self.__ultimo_id = self.__calcular_ultimo_id()
 
-        # Garante que o diretório exista
-        os.makedirs(os.path.dirname(arquivo), exist_ok=True)
 
- 
     def __carregar_dados(self):
-        if not os.path.exists(self.__arquivo):
-            return []
-        with open(self.__arquivo, "rb") as f:
-            try:
-                return pickle.load(f)
-            except EOFError:
-                return []
+        usuarios = []
+        if os.path.exists(self.__arquivo):
+            with open(self.__arquivo, "r", encoding="utf-8") as f:
+                for linha in f:
+                    usuario = Usuario.from_line(linha)
+                    if usuario:
+                        usuarios.append(usuario)
+        return usuarios
 
     def __salvar_dados(self):
-        with open(self.__arquivo, "wb") as f:
-            pickle.dump(self.__usuarios, f)
+        with open(self.__arquivo, "w", encoding="utf-8") as f:
+            for usuario in self.__usuarios:
+                f.write(usuario.to_line())
 
     def __calcular_ultimo_id(self):
         if not self.__usuarios:
             return 0
         return max(usuario.getId() for usuario in self.__usuarios)
-
+    
+    def __hash_senha(self, senha):
+        return hashlib.sha256(senha.encode()).hexdigest()
 
     def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario):
-        """Chama o model para criar usuário e salva"""
+        """Cria e salva novo usuário"""
         if any(u.getLogin() == login for u in self.__usuarios):
             raise ValueError(f"Login '{login}' já está em uso!")
 
         self.__ultimo_id += 1
+        senha = self.__hash_senha(senha)
+        
         novo_usuario = Usuario.criar_usuario(
             self.__ultimo_id, nomeUsuario, login, senha, tipo
         )
-
         self.__usuarios.append(novo_usuario)
         self.__salvar_dados()
         return novo_usuario
@@ -51,5 +54,7 @@ class UsuarioController:
         return self.__usuarios
 
     def autenticar_usuario(self, login, senha):
-        """Chama o model para autenticar"""
-        return Usuario.autenticar(login, senha, self.__usuarios)
+        for usuario in self.__usuarios:
+            if usuario.autenticar(login, senha):
+                return usuario
+        return None

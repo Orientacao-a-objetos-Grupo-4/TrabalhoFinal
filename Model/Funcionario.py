@@ -1,9 +1,7 @@
-
-
+import uuid
+from datetime import date
 from Model.Usuario import Usuario
 from Untils.Enums import TipoUsuario
-import uuid
-
 
 
 class Funcionario(Usuario):
@@ -11,14 +9,14 @@ class Funcionario(Usuario):
         super().__init__(id, nomeUsuario, login, senha, TipoUsuario.FUNCIONARIO)
         self.__matricula = matricula
 
-    # Getters e Setters
+    # ---------------- Getters e Setters ----------------
     def getMatricula(self):
         return self.__matricula
 
     def setMatricula(self, matricula):
         self.__matricula = matricula
 
-    # Funções (exemplo)
+    # ---------------- Regras de negócio ----------------
     def cadastrarLivro(self, livroController, titulo, genero, editora, autor, n_exemplares):
         """Funcionário cadastra um novo livro."""
         from Model.Livro import Livro
@@ -26,15 +24,16 @@ class Funcionario(Usuario):
         livroController.addLivro(novo_livro)
         return novo_livro
 
-    def cadastrarCliente(self, clienteController,usuarioController ,nome, login, senha):
-        """Funcionário cadastra um novo cliente."""
+    def cadastrarCliente(self, clienteController, usuarioController, nome, login, senha):
+        """Funcionário cadastra um novo cliente usando o controller."""
         from Model.Cliente import Cliente
-        novo_cliente = clienteController.addCliente(Cliente.criar_usuario(str(uuid.uuid4()), nome, login, senha, TipoUsuario.CLIENTE))
+        novo_cliente = Cliente.criar_usuario(str(uuid.uuid4()), nome, login, senha, TipoUsuario.CLIENTE)
+        clienteController.addCliente(novo_cliente)
+        usuarioController.cadastrar_usuario(nome, login, senha, TipoUsuario.CLIENTE)
         return novo_cliente
 
     def cadastrarEmprestimo(self, emprestimoController, cliente, itens):
         """Funcionário cria um novo empréstimo."""
-        from datetime import date
         from Model.EmprestimoLivro import EmprestimoLivro
         emprestimo = EmprestimoLivro(str(uuid.uuid4()), cliente, date.today())
         for item in itens:
@@ -45,5 +44,4 @@ class Funcionario(Usuario):
 
     def registrarDevolucao(self, emprestimoController, id_emprestimo):
         """Funcionário registra devolução de um empréstimo."""
-        from datetime import date
         emprestimoController.registrarDevolucao(id_emprestimo, date.today())
