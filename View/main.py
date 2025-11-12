@@ -1,64 +1,100 @@
-
-import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from Model.Funcionario import Funcionario
-from Model.Cliente import Cliente
-from Model.Livro import Livro
-from Model.EmprestimoLivro import EmprestimoLivro
-from Model.ItensEmprestimo import ItensEmprestimo
-from Model.Multa import Multa
-from Untils.Enums import StatusMulta, StatusEmprestimo
-
+import uuid
 from datetime import date, timedelta
 
+from Controller.UsuarioController import UsuarioController
+from Controller.ClienteController import ClienteController
+from Controller.FuncionarioController import FuncionarioController
+from Controller.LivroController import LivroController
+from Controller.ItensEmprestimoController import ItensEmprestimoController
+from Controller.EmprestimoLivroController import EmprestimoLivroController
+from Controller.MultaController import MultaController
 
-def main():
-    print("===== SISTEMA DE BIBLIOTECA =====\n")
+from Untils.Enums import TipoUsuario
+from Model.ItensEmprestimo import ItensEmprestimo
+from Model.EmprestimoLivro import EmprestimoLivro
+from Model.Livro import Livro
 
-    funcionario = Funcionario(1,"Ana Paula", "ana_admin", "1234", "FUNC001")
-    print(f"Funcionário cadastrado: {funcionario.getNomeUsuario()} | Matrícula: {funcionario.getMatricula()}")
+# -------------------- Inicialização dos controllers --------------------
+usuarioController = UsuarioController()
+clienteController = ClienteController()
+funcionarioController = FuncionarioController()
+livroController = LivroController()
+emprestimoController = EmprestimoLivroController()
+itensController = ItensEmprestimoController(emprestimoController=emprestimoController)
+multaController = MultaController(clienteController=clienteController, emprestimoController=emprestimoController)
 
-    cliente = Cliente("João Silva", "joao123", "senha123",1)
-    cliente.setCpf("123.456.789-10")
-    print(f"Cliente cadastrado: {cliente.getNomeUsuario()} | CPF: {cliente.getCpf()}\n")
+# Setando controllers cruzados
+emprestimoController.setClienteController(clienteController)
+emprestimoController.setMultaController(multaController)
+emprestimoController.setItensController(itensController)
+itensController.setEmprestimoController(emprestimoController)
 
-    livro = Livro(1, "Dom Casmurro", "Romance", "Editora Clássica", "Machado de Assis", 3)
-    print(f"Livro cadastrado: {livro.getTitulo()} ({livro.getNExemplares()} exemplares disponíveis)\n")
+# -------------------- Criando usuários --------------------
+print("=== Criando Usuários ===")
+cliente1 = usuarioController.cadastrar_usuario("ricardo", "ricardmm1235", "senha123", TipoUsuario.CLIENTE)
+funcionario1 = usuarioController.cadastrar_usuario("Ricardo", "ricardo1234", "senha123", TipoUsuario.FUNCIONARIO)
 
-    data_emprestimo = date.today()
-    data_devolucao = data_emprestimo + timedelta(days=7)
+clienteController.addCliente(cliente1)
+funcionarioController.addFuncionario(funcionario1)
 
-    emprestimo = EmprestimoLivro(
-        id=101,
-        cliente=cliente,
-        dataEmprestimo=data_emprestimo,
-        dataDevolucao=data_devolucao,
-        status=StatusEmprestimo.ATIVO
-    )
+# -------------------- Criando livros --------------------
+print("\n=== Criando Livros ===")
+livro1 = Livro(str(uuid.uuid4()), "Harry Potter", "Fantasia", "Rocco", "J.K. Rowling", 5)
+livro2 = Livro(str(uuid.uuid4()), "O Senhor dos Anéis", "Fantasia", "Martins", "J.R.R. Tolkien", 3)
 
-    livro.retirarExemplar()
+livroController.addLivro(livro1)
+livroController.addLivro(livro2)
 
-    print(f"Empréstimo criado para {cliente.getNomeUsuario()}")
-    print(f"Livro: {livro.getTitulo()}")
-    print(f"Data de devolução: {emprestimo.getDataDevolucao()}")
-    print(f"Exemplares restantes: {livro.getNExemplares()}\n")
+print("\n=== Criando Empréstimo ===")
+data_hoje = date.today()
+emprestimo1 = EmprestimoLivro(str(uuid.uuid4()), cliente1, data_hoje)
+emprestimoController.addEmprestimo(emprestimo1)
+cliente1.addEmprestimo(emprestimo1)
 
-    multa = Multa(id=501, valor=25.0, status=StatusMulta.PENDENTE, emprestimo=emprestimo, cliente=cliente)
-    multa.setCliente(cliente)
-    cliente.addMulta(multa)
-
-    print(f"💰 Multa gerada para {cliente.getNomeUsuario()} no valor de R$ {multa.getValor()}")
-    print(f"Status da multa: {multa.getStatus().value}\n")
-
-    print("===== RESUMO FINAL =====")
-    print(f"Cliente: {cliente.getNomeUsuario()}")
-    print(f"Livros emprestados: {[emp.getLivro().getTitulo() for emp in cliente.getEmprestimos()]}")
-    print(f"Multas pendentes: {len(cliente.getMultas())}")
-    print(f"Status do empréstimo: {emprestimo.getStatus().value}")
-    print(f"Status da multa: {multa.getStatus().value}")
+print("\n=== Criando Itens de Empréstimo ===")
+item1 = ItensEmprestimo(str(uuid.uuid4()), livro1, emprestimo1)
+item2 = ItensEmprestimo(str(uuid.uuid4()), livro2, emprestimo1)
 
 
-if __name__ == "__main__":
-    main()
+#(TODO) SIMPLIFICAR AQUI
+itensController.addItem(item1)
+itensController.addItem(item2)
+
+emprestimo1.addItem(item1)
+emprestimo1.addItem(item2)
+
+print("\n=== Registrando Devolução com Atraso ===")
+data_devolucao = data_hoje + timedelta(days=10)
+emprestimoController.registrarDevolucao(emprestimo1.getId(), data_devolucao)
+
+print("\n=== LISTAGEM DE USUÁRIOS ===")
+for u in usuarioController.listar_usuarios():
+    print(f"{u.getId()} - {u.getNomeUsuario()} ({u.getTipo().name})")
+
+print("\n=== LISTAGEM DE CLIENTES ===")
+for c in clienteController.getClientes():
+    emprestimos_ids = [e.getId() for e in c.getEmprestimos()] if hasattr(c, "getEmprestimos") else []
+    multas_ids = [m.getId() for m in c.getMultas()] if hasattr(c, "getMultas") else []
+    print(f"{c.getId()} - {c.getNomeUsuario()} - Empréstimos: {emprestimos_ids} - Multas: {multas_ids}")
+
+print("\n=== LISTAGEM DE FUNCIONÁRIOS ===")
+for f in funcionarioController.getFuncionarios():
+    print(f"{f.getId()} - {f.getNomeUsuario()}")
+
+print("\n=== LISTAGEM DE LIVROS ===")
+for l in livroController.getLivros():
+    print(f"{l.getId()} - {l.getTitulo()} - Exemplares disponíveis: {l.getNExemplares()}")
+
+print("\n=== LISTAGEM DE EMPRÉSTIMOS ===")
+for e in emprestimoController.getEmprestimos():
+    itens = [i.getLivro().getTitulo() for i in e.getItens()] if e.getItens() else []
+    print(f"{e.getId()} - Cliente: {e.getCliente().getNomeUsuario()} - Status: {e.getStatus().name} - Itens: {itens}")
+
+print("\n=== LISTAGEM DE ITENS DE EMPRÉSTIMO ===")
+for i in itensController.getItens():
+    print(f"{i.getId()} - Livro: {i.getLivro().getTitulo()} - Empréstimo: {i.getEmprestimoLivro().getId()}")
+
+print("\n=== LISTAGEM DE MULTAS ===")
+for m in multaController.getMultas():
+    print(f"{m.getId()} - Cliente: {m.getCliente().getNomeUsuario()} - Valor: {m.getValor():.2f} - Status: {m.getStatus().name}")

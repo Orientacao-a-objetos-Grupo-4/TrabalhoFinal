@@ -7,36 +7,62 @@ class ClienteController:
         self.__clientes = []
         self.carregarClientes()
 
-    def getClientes(self):
-        return self.__clientes.copy()
-
-    def addCliente(self, cliente):
-        if self.buscarPorId(cliente.getId()) is None:
-            self.__clientes.append(cliente)
-            self.salvarClientes()
-        else:
-            print(f"Cliente com ID {cliente.getId()} já existe!")
-
     def buscarPorId(self, id):
-        for c in self.__clientes:
-            if c.getId() == id:
-                return c
-        return None
+        return next((c for c in self.__clientes if c.getId() == id), None)
+
+    def criarCliente(self, id, nome, login, senha):
+        if self.buscarPorId(id):
+            raise Exception("Cliente com esse ID já existe.")
+        cliente = Cliente(id, nome, login, senha)
+        self.__clientes.append(cliente)
+        self.salvarClientes()
+        return cliente
+    
+    def addCliente(self, cliente):
+        self.__clientes.append(cliente)
+        self.salvarClientes()
+    
+    def getClientes(self):
+        return self.__clientes
+
+    def registrarMulta(self, cliente_id, multa):
+        cliente = self.buscarPorId(cliente_id)
+        if not cliente:
+            raise Exception("Cliente não encontrado.")
+        cliente.registrar_multa(multa)
+        self.salvarClientes()
+
+    def realizarEmprestimo(self, cliente_id, emprestimo):
+        cliente = self.buscarPorId(cliente_id)
+        if not cliente:
+            raise Exception("Cliente não encontrado.")
+        cliente.realizar_emprestimo(emprestimo)
+        self.salvarClientes()
+
+    def pagarMulta(self, cliente_id, multa_id):
+        cliente = self.buscarPorId(cliente_id)
+        if not cliente:
+            raise Exception("Cliente não encontrado.")
+        cliente.pagar_multa(multa_id)
+        self.salvarClientes()
+
+    # === Persistência ===
+    def salvarClientes(self):
+        os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+        with open(self.__arquivo, "w", encoding="utf-8") as f:
+            for cliente in self.__clientes:
+                multas_ids = ",".join(str(m.getId()) for m in cliente.getMultas())
+                emprestimos_ids = ",".join(str(e.getId()) for e in cliente.getEmprestimos())
+                f.write(f"{cliente.getId()};{cliente.getNomeUsuario()};{cliente.getLogin()};{cliente.getSenha()};{multas_ids};{emprestimos_ids}\n")
 
     def carregarClientes(self):
         if not os.path.exists(self.__arquivo):
             return
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
-                try:
-                    id_str, nome, login, senha = linha.strip().split(";")
-                    id = int(id_str)  # converter ID para inteiro, se necessário
-                    self.__clientes.append(Cliente(id, nome, login, senha))
-                except ValueError:
-                    # Ignora linhas mal formatadas
+                partes = linha.strip().split(";")
+                if len(partes) < 4:
                     continue
-
-    def salvarClientes(self):
-        with open(self.__arquivo, "w", encoding="utf-8") as f:
-            for c in self.__clientes:
-                f.write(f"{c.getId()};{c.getNomeUsuario()};{c.getLogin()};{c.getSenha()}\n")
+                id, nome, login, senha = partes[:4]
+                cliente = Cliente(id, nome, login, senha)
+                self.__clientes.append(cliente)

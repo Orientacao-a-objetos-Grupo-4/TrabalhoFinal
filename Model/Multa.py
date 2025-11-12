@@ -1,5 +1,4 @@
 from Untils.Enums import StatusMulta
-from Model.EmprestimoLivro import EmprestimoLivro
 
 
 class Multa:
@@ -54,9 +53,25 @@ class Multa:
         else:
             self.__valor = 0
 
-    
+        data_prevista = self.getEmprestimo().getDataPrevistaDevolucao()
+        data_devolucao = self.getEmprestimo().getDataDevolucao()
+
+        if data_prevista and data_devolucao and data_devolucao > data_prevista:
+            dias_atraso = (data_devolucao - data_prevista).days
+            self.setValor(dias_atraso * valor_por_dia)
+        else:
+            self.setValor(0.0)  
     def registrarPagamento(self):
-        self.setStatus(StatusMulta.PAGA)
+        """
+        Marca a multa como paga.
+        """
+        if self.getStatus() == StatusMulta.PENDENTE:
+            self.setStatus(StatusMulta.PAGA)  
+        else:
+            print(f"A multa {self.getId()} já está paga ou cancelada.")
 
-
-
+    def to_txt(self):
+        """
+        Retorna uma linha formatada para salvar no arquivo.
+        """
+        return f"{self.getId()};{self.getValor()};{self.getEmprestimo().getId()};{self.getCliente().getId()};{self.getStatus().name}\n"

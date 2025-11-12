@@ -28,4 +28,22 @@ class ItensEmprestimo:
 
 
     def setEmprestimoLivro(self, emprestimoLivro):
-        self.__emprestimoLivro = emprestimoLivro
+        self.setEmprestimoLivro = emprestimoLivro
+
+    def registrarEmprestimo(self):
+        """
+        Reduz o número de exemplares disponíveis do livro emprestado.
+        """
+        self.getLivro().retirarExemplar()
+
+    def registrarDevolucao(self):
+        """
+        Aumenta o número de exemplares disponíveis do livro devolvido.
+        """
+        self.getLivro().devolverExemplar()
+
+    def to_txt(self):
+        """
+        Retorna o formato de texto para salvar no arquivo.
+        """
+        return f"{self.getId()};{self.getLivro().getId()};{self.getEmprestimoLivro().getId()}\n"

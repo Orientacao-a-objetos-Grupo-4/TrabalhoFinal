@@ -11,9 +11,17 @@ class LivroController:
         return self.__livros
 
     def addLivro(self, livro):
-        if self.buscarPorId(livro.getId()) is None:  # evita duplicados
+        if self.buscarPorId(livro.getId()) is None:
             self.__livros.append(livro)
             self.salvarLivros()
+        else:
+            livro.setNExemplares(livro.getNExemplares() + 1)
+            self.salvarLivros()
+
+    def buscarPorId(self, id):
+        for livro in self.__livros:
+            if livro.getId() == id:
+                return livro
 
     def removerLivroPorId(self, id):
         livro = self.buscarPorId(id)
@@ -21,11 +29,26 @@ class LivroController:
             self.__livros.remove(livro)
             self.salvarLivros()
 
-    def buscarPorId(self, id):
-        for livro in self.__livros:
-            if livro.getId() == id:
-                return livro
-        return None
+    def retirarExemplar(self, id):
+        """
+        Solicita a retirada de um exemplar de um livro.
+        """
+        livro = self.buscarPorId(id)
+        if livro and livro.retirarExemplar():
+            self.salvarLivros()
+            return True
+        return False
+
+    def devolverExemplar(self, id):
+        """
+        Solicita a devolução de um exemplar de um livro.
+        """
+        livro = self.buscarPorId(id)
+        if livro:
+            livro.devolverExemplar()
+            self.salvarLivros()
+            return True
+        return False
 
     def carregarLivros(self):
         if not os.path.exists(self.__arquivo):
@@ -39,5 +62,4 @@ class LivroController:
     def salvarLivros(self):
         with open(self.__arquivo, "w", encoding="utf-8") as f:
             for livro in self.__livros:
-                f.write(f"{livro.getId()};{livro.getTitulo()};{livro.getGenero()};"
-                        f"{livro.getEditora()};{livro.getAutor()};{livro.getNExemplares()}\n")
+                f.write(livro.to_txt())

@@ -41,14 +41,29 @@ class Cliente(Usuario):
         self.__emprestimos.remove(emprestimo)
 
     # Funções
-    def buscarLivro(self):
-        pass
+    def pode_realizar_emprestimo(self):
+        """Cliente só pode pegar emprestado se não tiver multas pendentes."""
+        return all(m.getStatus() != StatusMulta.PENDENTE for m in self.__multas)
 
-    def solicitarEmprestimo(self):
-        pass
+    def realizar_emprestimo(self, emprestimo):
+        """Regra de negócio: só empresta se não tiver multas pendentes."""
+        if not self.pode_realizar_emprestimo():
+            raise Exception(f"{self.getNomeUsuario()} tem multas pendentes e não pode realizar empréstimos.")
+        self.__emprestimos.append(emprestimo)
 
-    def devolverLivro(self):
-        pass
+    def devolver_livro(self, emprestimo):
+        """Remove o empréstimo da lista."""
+        if emprestimo in self.__emprestimos:
+            self.__emprestimos.remove(emprestimo)
 
-    def pagarMulta(self):
-        pass
+    def pagar_multa(self, multa_id):
+        """Define uma multa como paga."""
+        for multa in self.__multas:
+            if multa.getId() == multa_id:
+                multa.setStatus(StatusMulta.PAGA)
+                return True
+        raise Exception("Multa não encontrada")
+
+    def registrar_multa(self, multa):
+        """Adiciona uma nova multa."""
+        self.__multas.append(multa)

@@ -1,24 +1,29 @@
 import os
 from datetime import date
 from Model.EmprestimoLivro import EmprestimoLivro
-from Controller.ItensEmprestimoController import ItensEmprestimoController
-from Controller.MultaController import MultaController
-from Controller.ClienteController import ClienteController
-from Untils.Enums import StatusEmprestimo
 
 class EmprestimoLivroController:
-    def __init__(self, arquivo="Data/emprestimos.txt"):
+    def __init__(self, arquivo="Data/emprestimos.txt", itensController=None, clienteController=None, multaController=None):
         self.__arquivo = arquivo
         self.__emprestimos = []
-        self.__itensController = ItensEmprestimoController()
-        self.__multaController = MultaController()
-        self.__clienteController = ClienteController()
+        self.__itensController = itensController
+        self.__clienteController =  clienteController
+        self.__multaController = multaController
         self.carregarEmprestimos()
 
-    def getEmprestimos(self):
-        return self.__emprestimos
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
 
-    def addEmprestimo(self, emprestimo):
+    # -------- Setters de dependências --------
+    def setItensController(self, itensController): self.__itensController = itensController
+    def setClienteController(self, clienteController): self.__clienteController = clienteController
+    def setMultaController(self, multaController): self.__multaController = multaController
+
+    # -------- Métodos principais --------
+    def getEmprestimos(self): return self.__emprestimos.copy()
+
+    def addEmprestimo(self, emprestimo: EmprestimoLivro):
         self.__emprestimos.append(emprestimo)
         self.salvarEmprestimos()
 
@@ -33,25 +38,49 @@ class EmprestimoLivroController:
                 return e
         return None
 
+    def registrarDevolucao(self, idEmprestimo, data_devolucao):
+        emprestimo = self.buscarPorId(idEmprestimo)
+        if not emprestimo:
+            print("Empréstimo não encontrado.")
+            return
+
+        multa = emprestimo.registrarDevolucao(data_devolucao)
+
+        if multa and self.__multaController:
+            self.__multaController.addMulta(multa)
+
+        self.salvarEmprestimos()
+        print(f"Empréstimo {idEmprestimo} devolvido com sucesso.")
+        if multa:
+            print(f"Multa gerada: R${multa.getValor():.2f}")
+
+    # -------- Persistência --------
+    def salvarEmprestimos(self):
+        with open(self.__arquivo, "w", encoding="utf-8") as f:
+            for e in self.__emprestimos:
+                dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
+                dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
+                multa_id = e.getMulta().getId() if e.getMulta() else ""
+                itens_str = ",".join(str(i.getId()) for i in e.getItens()) if e.getItens() else ""
+                f.write(f"{e.getId()};{e.getCliente().getId()};{dataEmprestimo};{dataDevolucao};{e.getStatus().name};{multa_id};{itens_str}\n")
+
     def carregarEmprestimos(self):
         if not os.path.exists(self.__arquivo):
             return
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
                 dados = linha.strip().split(";")
-                if len(dados) != 5:
+                if len(dados) < 5:
                     continue
-                id, idCliente, dataEmprestimo, dataDevolucao, status = dados
-                cliente = self.__clienteController.buscarPorId(idCliente)
-                if not cliente:
-                    continue  
+                id, idCliente, dataEmprestimo, dataDevolucao, status = dados[:5]
+                cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else Cliente(idCliente, "", "", "")
                 emprestimo = EmprestimoLivro(
                     id,
                     cliente,
                     date.fromisoformat(dataEmprestimo) if dataEmprestimo else None,
                     date.fromisoformat(dataDevolucao) if dataDevolucao else None,
-                    StatusEmprestimo[status]
                 )
+                emprestimo.setStatus(status)
                 self.__emprestimos.append(emprestimo)
 
     def salvarEmprestimos(self):

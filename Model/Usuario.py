@@ -1,51 +1,145 @@
-from abc import ABC
+import os
+from datetime import date
+from Controller.UsuarioController import UsuarioController
+from Controller.ClienteController import ClienteController
+from Controller.LivroController import LivroController
+from Controller.EmprestimoLivroController import EmprestimoLivroController
+from Controller.MultaController import MultaController
+from Controller.ItensEmprestimoController import ItensEmprestimoController
+from Model.Cliente import Cliente
+from Model.Usuario import Usuario
+from Model.Livro import Livro
+from Model.EmprestimoLivro import EmprestimoLivro
 
-from Untils.Enums import TipoUsuario
+# ---------------------
+# Inicialização
+# ---------------------
+usuarioController = UsuarioController()
+clienteController = ClienteController()
+livroController = LivroController()
+emprestimoController = EmprestimoLivroController()
+multaController = MultaController(clienteController=clienteController, emprestimoController=emprestimoController)
+itensEmprestimoController = ItensEmprestimoController(emprestimoController=emprestimoController)
 
-class Usuario(ABC):
-    def __init__(self, id, nomeUsuario, login, senha, tipo: TipoUsuario):
-        self.__id = id
-        self.__nomeUsuario = nomeUsuario
-        self.__login = login
-        self.__senha = senha
-        self.__cpf = None
-        self.__tipo = tipo
+emprestimoController.setItensController(itensEmprestimoController)
+emprestimoController.setClienteController(clienteController)
+emprestimoController.setMultaController(multaController)
 
-    # Getters
-    def getNomeUsuario(self):
-        return self.__nomeUsuario
+# ---------------------
+# Funções auxiliares
+# ---------------------
+def limpar_tela():
+    os.system("cls" if os.name == "nt" else "clear")
 
-    def getLogin(self):
-        return self.__login
+def pausar():
+    input("\nPressione ENTER para continuar...")
 
-    def getSenha(self):
-        return self.__senha
+# ---------------------
+# Menus
+# ---------------------
+def menu_principal():
+    while True:
+        limpar_tela()
+        print("===== SISTEMA DE BIBLIOTECA =====")
+        print("1 - Usuários")
+        print("2 - Clientes")
+        print("3 - Livros")
+        print("4 - Empréstimos")
+        print("5 - Multas")
+        print("0 - Sair")
 
-    def getCpf(self):
-        return self.__cpf
+        opc = input("Escolha uma opção: ")
 
-    def getTipo(self):
-        return self.__tipo
-    
-    def getId(self):
-        return self.__id
-
-    # Setters
-    def setNomeUsuario(self, nomeUsuario):
-        self.__nomeUsuario = nomeUsuario
-
-    def setLogin(self, login):
-        self.__login = login
-
-    def setSenha(self, senha):
-        self.__senha = senha
-
-    def setCpf(self, cpf):
-        self.__cpf = cpf
-
-    def setTipo(self, tipo):
-        if isinstance(tipo, TipoUsuario):
-            self.__tipo = tipo
+        if opc == "1":
+            menu_usuarios()
+        elif opc == "2":
+            menu_clientes()
+        elif opc == "3":
+            menu_livros()
+        elif opc == "4":
+            menu_emprestimos()
+        elif opc == "5":
+            menu_multas()
+        elif opc == "0":
+            break
         else:
-            print("Tipo de usuário inválido")
+            print("Opção inválida!")
+            pausar()
 
+# ---------------------
+# Menus específicos
+# ---------------------
+def menu_usuarios():
+    limpar_tela()
+    print("=== CADASTRO DE USUÁRIOS ===")
+    nome = input("Nome: ")
+    email = input("Email: ")
+    senha = input("Senha: ")
+
+    usuario = Usuario(nome=nome, email=email, senha=senha)
+    usuarioController.cadastrar(usuario)
+    print("Usuário cadastrado com sucesso!")
+    pausar()
+
+def menu_clientes():
+    limpar_tela()
+    print("=== CADASTRO DE CLIENTES ===")
+    nome = input("Nome: ")
+    cpf = input("CPF: ")
+
+    cliente = Cliente(nome=nome, cpf=cpf)
+    clienteController.addCliente(cliente)
+    print("Cliente cadastrado com sucesso!")
+    pausar()
+
+def menu_livros():
+    limpar_tela()
+    print("=== CADASTRO DE LIVROS ===")
+    titulo = input("Título: ")
+    autor = input("Autor: ")
+    ano = int(input("Ano: "))
+
+    livro = Livro(titulo=titulo, autor=autor, ano=ano)
+    livroController.addLivro(livro)
+    print("Livro cadastrado com sucesso!")
+    pausar()
+
+def menu_emprestimos():
+    limpar_tela()
+    print("=== NOVO EMPRÉSTIMO ===")
+    id_cliente = input("ID do cliente: ")
+    cliente = clienteController.buscarPorId(id_cliente)
+
+    if not cliente:
+        print("Cliente não encontrado!")
+        return pausar()
+
+    id_livro = input("ID do livro: ")
+    livro = livroController.buscarPorId(id_livro)
+
+    if not livro:
+        print("Livro não encontrado!")
+        return pausar()
+
+    emprestimo = EmprestimoLivro(cliente=cliente, dataEmprestimo=date.today())
+    emprestimoController.addEmprestimo(emprestimo)
+    itensEmprestimoController.adicionarItem(emprestimo, livro)
+    print("Empréstimo realizado com sucesso!")
+    pausar()
+
+def menu_multas():
+    limpar_tela()
+    print("=== MULTAS ===")
+    multas = multaController.getMultas()
+    if not multas:
+        print("Nenhuma multa registrada.")
+    else:
+        for m in multas:
+            print(f"ID: {m.getId()} | Cliente: {m.getCliente().getNome()} | Valor: R${m.getValor():.2f} | Status: {m.getStatus().name}")
+    pausar()
+
+# ---------------------
+# Execução principal
+# ---------------------
+if __name__ == "__main__":
+    menu_principal()

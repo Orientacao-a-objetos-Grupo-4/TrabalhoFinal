@@ -45,13 +45,29 @@ class Livro:
 
     # Métodos auxiliares
     def verificarDisponibilidade(self):
-        return self.__nExemplares > 0
+            """
+            Retorna True se houver exemplares disponíveis.
+            """
+            return self.getNExemplares() > 0
 
     def retirarExemplar(self):
+        """
+        Retira um exemplar do estoque.
+        """
         if self.verificarDisponibilidade():
-            self.__nExemplares -= 1
-        else:
-            print("Nenhum exemplar disponível.")
+            self.setNExemplares(self.getNExemplares() - 1)
+            return True
+        print(f"O livro '{self.getTitulo()}' está indisponível no momento.")
+        return False
 
     def devolverExemplar(self):
-        self.__nExemplares += 1
+        """
+        Devolve um exemplar ao estoque.
+        """
+        self.setNExemplares(self.getNExemplares() + 1) 
+
+    def to_txt(self):
+        """
+        Retorna o formato de texto do livro para salvar no arquivo.
+        """
+        return f"{self.getId()};{self.getTitulo()};{self.getGenero()};{self.getEditora()};{self.getAutor()};{self.getNExemplares()}\n"

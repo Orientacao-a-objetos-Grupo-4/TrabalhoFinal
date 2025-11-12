@@ -1,5 +1,7 @@
-from Untils.Enums import StatusEmprestimo
-from datetime import date
+import uuid
+from Untils.Enums import StatusEmprestimo, StatusMulta
+from datetime import date, timedelta
+from Model.Multa import Multa
 
 class EmprestimoLivro:
     def __init__(self, id, cliente, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
@@ -50,6 +52,35 @@ class EmprestimoLivro:
     def addItem(self, item_emprestimo):
         self.__itens.append(item_emprestimo)
 
-    def registrarDevolucao(self, dataDevolucao):
-        self.setDataDevolucao(dataDevolucao)
+    def calcularAtraso(self, data_devolucao: date) -> int:
+        """Calcula o número de dias de atraso."""
+        dias = (data_devolucao - self.getDataPrevistaDevolucao()).days
+        return dias if dias > 0 else 0
+
+    def gerarMulta(self, dias_atraso):
+        """Gera uma multa com base no atraso."""
+        if dias_atraso <= 0:
+            return None
+
+        valor_multa = dias_atraso * 2.0
+        multa = Multa(
+            str(uuid.uuid4()),
+            valor_multa,
+            self,
+            self.__cliente,
+            StatusMulta.PENDENTE
+        )
+        self.__multa = multa
+        self.__cliente.addMulta(multa)
+        return multa
+
+    def registrarDevolucao(self, data_devolucao: date):
+        """Registra devolução e aplica multa se necessário."""
+        self.setDataDevolucao(data_devolucao)
         self.setStatus(StatusEmprestimo.DEVOLVIDO)
+
+        for item in self.__itens:
+            item.getLivro().devolverExemplar()
+
+        dias_atraso = self.calcularAtraso(data_devolucao)
+        return self.gerarMulta(dias_atraso)
