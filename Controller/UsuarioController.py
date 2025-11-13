@@ -6,55 +6,58 @@ from Untils.Enums import TipoUsuario
 
 class UsuarioController:
     def __init__(self, arquivo="Data/usuarios.txt"):
-        self.__arquivo = arquivo
+        self.arquivo = arquivo
         os.makedirs(os.path.dirname(arquivo), exist_ok=True)
-        self.__usuarios = self.__carregar_dados()
-        self.__ultimo_id = self.__calcular_ultimo_id()
+        self.usuarios = self.carregar_dados()
 
-
-    def __carregar_dados(self):
+    def carregar_dados(self):
         usuarios = []
-        if os.path.exists(self.__arquivo):
-            with open(self.__arquivo, "r", encoding="utf-8") as f:
+        if os.path.exists(self.arquivo):
+            with open(self.arquivo, "r", encoding="utf-8") as f:
                 for linha in f:
                     usuario = Usuario.from_line(linha)
                     if usuario:
                         usuarios.append(usuario)
         return usuarios
 
-    def __salvar_dados(self):
-        with open(self.__arquivo, "w", encoding="utf-8") as f:
-            for usuario in self.__usuarios:
+    def salvar_dados(self):
+        with open(self.arquivo, "w", encoding="utf-8") as f:
+            for usuario in self.usuarios:
                 f.write(usuario.to_line())
 
-    def __calcular_ultimo_id(self):
-        if not self.__usuarios:
-            return 0
-        return max(usuario.getId() for usuario in self.__usuarios)
-    
-    def __hash_senha(self, senha):
+    def hash_senha(self, senha):
         return hashlib.sha256(senha.encode()).hexdigest()
+    
+    def cadastrar_adm(self, nome, login, senha, tipo: TipoUsuario):
+        self.existe_login(login)
+        senha_hash = self.hash_senha(senha)
+        novo_usuario = Usuario.criar_usuario(nomeUsuario=nome, login=login, senha=senha_hash, tipo=tipo)
+        self.usuarios.append(novo_usuario)
+        self.salvar_dados()
+        return novo_usuario
 
-    def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario):
-        """Cria e salva novo usuário"""
-        if any(u.getLogin() == login for u in self.__usuarios):
-            raise ValueError(f"Login '{login}' já está em uso!")
+    def existe_login(self, login):
+           if any(user.getLogin() == login for user in self.usuarios):
+            print(f"Login '{login}' já está em uso!")
+           
 
-        self.__ultimo_id += 1
-        senha = self.__hash_senha(senha)
-        
-        novo_usuario = Usuario.criar_usuario(
-            self.__ultimo_id, nomeUsuario, login, senha, tipo
-        )
-        self.__usuarios.append(novo_usuario)
-        self.__salvar_dados()
+    def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario,pessoaLogada):
+     
+        senha_hash = self.hash_senha(senha)
+        novo_usuario = Usuario.cadastrarUsuario(nome=nomeUsuario, pessoaLogada=pessoaLogada,login=login, senha=senha_hash, tipo=tipo)
+        self.usuarios.append(novo_usuario)
+        self.salvar_dados()
         return novo_usuario
 
     def listar_usuarios(self):
-        return self.__usuarios
+        return self.usuarios
+
+    def buscar_por_login(self, login):
+        return next((u for u in self.usuarios if u.getLogin() == login), None)
 
     def autenticar_usuario(self, login, senha):
-        for usuario in self.__usuarios:
-            if usuario.autenticar(login, senha):
+        senha_hash = self.hash_senha(senha)
+        for usuario in self.usuarios:
+            if usuario.getLogin() == login and usuario.getSenha() == senha_hash:
                 return usuario
         return None

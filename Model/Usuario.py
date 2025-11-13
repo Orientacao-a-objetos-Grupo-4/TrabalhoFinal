@@ -1,17 +1,19 @@
+# Model/Usuario.py
+from datetime import date
+import uuid
 from Untils.Enums import TipoUsuario
 
 
 class Usuario:
-    def __init__(self, id, nomeUsuario, login, senha, tipo: TipoUsuario):
+    def __init__(self, id, nomeUsuario, login, senha, tipo: TipoUsuario, multas=None, emprestimos=None):
         self.__id = id
         self.setNomeUsuario(nomeUsuario)
         self.setLogin(login)
         self.setSenha(senha)
         self.setTipo(tipo)
+        self.__multas = multas if multas is not None else []
+        self.__emprestimos = emprestimos if emprestimos is not None else []
 
-    # -----------------------------
-    # Getters
-    # -----------------------------
     def getId(self):
         return self.__id
 
@@ -27,7 +29,12 @@ class Usuario:
     def getTipo(self):
         return self.__tipo
 
- 
+    def getMultas(self):
+        return self.__multas.copy()
+
+    def getEmprestimos(self):
+        return self.__emprestimos.copy()
+
     def setNomeUsuario(self, nomeUsuario):
         if not nomeUsuario or len(nomeUsuario.strip()) < 3:
             raise ValueError("O nome de usuário deve ter pelo menos 3 caracteres.")
@@ -48,32 +55,66 @@ class Usuario:
             raise ValueError("Tipo de usuário inválido.")
         self.__tipo = tipo
 
-  
     def autenticar(self, login, senha):
         return self.__login == login and self.__senha == senha
 
-
     def to_line(self):
-        """Converte o objeto para uma linha de texto."""
-        return f"{self.__id};{self.__nomeUsuario};{self.__login};{self.__senha};{self.__tipo.name}\n"
+        multas_str = ",".join(str(m) for m in self.getMultas())
+        emprestimos_str = ",".join(str(e) for e in self.getEmprestimos())
+        return f"{self.getId()};{self.getNomeUsuario()};{self.getLogin()};{self.getSenha()};{self.getTipo().name};{multas_str};{emprestimos_str}\n"
 
     @staticmethod
     def from_line(line):
-        """Cria um objeto Usuario a partir de uma linha de texto."""
         partes = line.strip().split(";")
         if len(partes) < 5:
             return None
-        id = int(partes[0])
+        id = partes[0]
         nomeUsuario = partes[1]
         login = partes[2]
         senha = partes[3]
-        tipo = TipoUsuario[partes[4]] 
-        return Usuario(id, nomeUsuario, login, senha, tipo)
+        tipo = TipoUsuario[partes[4]]
+        multas = []
+        emprestimos = []
+        if len(partes) > 5 and partes[5].strip():
+            multas = [m for m in partes[5].split(",") if m.strip().isdigit()]
+        if len(partes) > 6 and partes[6].strip():
+            emprestimos = [e for e in partes[6].split(",") if e.strip().isdigit()]
+        return Usuario(id, nomeUsuario, login, senha, tipo, multas, emprestimos)
 
-  
     @staticmethod
-    def criar_usuario(id, nomeUsuario, login, senha, tipo: TipoUsuario):
-        return Usuario(id, nomeUsuario, login, senha, tipo)
+    def criar_usuario(nomeUsuario, login, senha, tipo: TipoUsuario):
+        return Usuario(str(uuid.uuid4()), nomeUsuario, login, senha, tipo)
 
-    def __str__(self):
-        return f"[{self.__id}] {self.__nomeUsuario} ({self.__tipo.name})"
+    def addEmprestimo(self, emprestimo):
+        self.__emprestimos.append(emprestimo)
+
+    def addMulta(self, multa):
+        self.__multas.append(multa)
+
+    def cadastrarLivro(self, livroController, titulo, genero, editora, autor, n_exemplares):
+        pass
+
+    @staticmethod
+    def cadastrarUsuario(pessoaLogada, nome, login, senha, tipo: TipoUsuario):
+        if pessoaLogada.getTipo() == TipoUsuario.FUNCIONARIO and tipo == TipoUsuario.CLIENTE:
+            return Usuario.criar_usuario(nome, login, senha, tipo)
+        elif pessoaLogada.getTipo() == TipoUsuario.ADMINISTRADOR:
+            return Usuario.criar_usuario(nome, login, senha, tipo)
+        else:
+            return None
+
+    def cadastrarEmprestimo(self, emprestimoController, cliente, itens):
+        pass
+
+    def registrarDevolucao(self, usuarioLogado, id_emprestimo):
+        pass
+
+    def devolverLivro(self, id_emprestimo):
+        pass
+
+
+
+
+
+
+

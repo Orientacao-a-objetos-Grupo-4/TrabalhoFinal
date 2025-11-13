@@ -2,6 +2,8 @@ import customtkinter
 import time
 from customtkinter import *
 from PIL import Image
+from Controller.UsuarioController import UsuarioController
+
 
 root = CTk()
 
@@ -14,6 +16,8 @@ class Aplication():
         self.root = root
         self.tela_login()
         root.mainloop()
+
+    userCtrl = UsuarioController()
 
     def tela_login(self):
         self.root.geometry("900x600")
@@ -57,7 +61,7 @@ class Aplication():
         self.label_status.configure(text="")
 
         # Verifica se os dados estão corretos
-        if usuario == "admin" and senha == "1234":
+        if  self.userCtrl.autenticar_usuario(usuario, senha):
             self.label_status.configure(
                 text="✅ Login bem-sucedido!",
                 text_color="green"
