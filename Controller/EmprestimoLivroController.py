@@ -83,13 +83,6 @@ class EmprestimoLivroController:
                 emprestimo.setStatus(status)
                 self.__emprestimos.append(emprestimo)
 
-    def salvarEmprestimos(self):
-        with open(self.__arquivo, "w", encoding="utf-8") as f:
-            for e in self.__emprestimos:
-                dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
-                dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
-                f.write(f"{e.getId()};{e.getCliente().getId()};{dataEmprestimo};{dataDevolucao};{e.getStatus().name}\n")
-
     # -------- Métodos adicionais integrados --------
     def registrarDevolucao(self, idEmprestimo, dataDevolucao: date):
         emprestimo = self.buscarPorId(idEmprestimo)

@@ -91,8 +91,7 @@ class Usuario:
     def addMulta(self, multa):
         self.__multas.append(multa)
 
-    def cadastrarLivro(self, livroController, titulo, genero, editora, autor, n_exemplares):
-        pass
+    
 
     @staticmethod
     def cadastrarUsuario(pessoaLogada, nome, login, senha, tipo: TipoUsuario):
@@ -103,14 +102,6 @@ class Usuario:
         else:
             return None
 
-    def cadastrarEmprestimo(self, emprestimoController, cliente, itens):
-        pass
-
-    def registrarDevolucao(self, usuarioLogado, id_emprestimo):
-        pass
-
-    def devolverLivro(self, id_emprestimo):
-        pass
 
 
 

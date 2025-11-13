@@ -7,8 +7,8 @@ class ItensEmprestimoController:
     def __init__(self, arquivo="Data/itensEmprestimo.txt", emprestimoController=None, livroController=None):
         self.__arquivo = arquivo
         self.__itens = []
-        self.__livroController = livroController
-        self.__emprestimoController = emprestimoController
+        self.livroController = livroController
+        self.emprestimoController = emprestimoController
         self.carregarItens()
 
     def getItens(self):
@@ -21,10 +21,10 @@ class ItensEmprestimoController:
         return None
     
     def setLivroController(self, livroController):
-        self.__livroController = livroController
+        self.livroController = livroController
 
     def setEmprestimoController(self, emprestimoController):
-        self.__emprestimoController = emprestimoController
+        self.emprestimoController = emprestimoController
 
     def addItem(self, item: ItensEmprestimo):
         if self.buscarPorId(item.getId()) is None:

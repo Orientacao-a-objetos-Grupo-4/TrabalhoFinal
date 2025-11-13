@@ -39,7 +39,7 @@ class UsuarioController:
     def existe_login(self, login):
            if any(user.getLogin() == login for user in self.usuarios):
             print(f"Login '{login}' já está em uso!")
-           
+
 
     def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario,pessoaLogada):
      

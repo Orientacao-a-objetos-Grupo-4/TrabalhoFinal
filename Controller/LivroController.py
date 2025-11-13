@@ -10,6 +10,12 @@ class LivroController:
     def getLivros(self):
         return self.__livros
 
+
+    def criarLivro(self, titulo, genero, editora, autor, n_exemplares):
+        livro = Livro(titulo, genero, editora, autor, n_exemplares)
+        self.addLivro(livro)
+        return livro
+
     def addLivro(self, livro):
         if self.buscarPorId(livro.getId()) is None:
             self.__livros.append(livro)

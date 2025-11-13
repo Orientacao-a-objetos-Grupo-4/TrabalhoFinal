@@ -11,7 +11,6 @@ class MultaController:
         self.__emprestimoController = emprestimoController
         self.carregarMultas()
 
-        # Garante que o diretório e o arquivo existam
         if not os.path.exists(os.path.dirname(self.__arquivo)):
             os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
         if not os.path.exists(self.__arquivo):
@@ -22,6 +21,16 @@ class MultaController:
     # ========== Operações básicas ==========
     def getMultas(self):
         return self.__multas
+    
+    def criarMulta(self, valor, emprestimo, cliente):
+        multa = Multa.criarMulta(valor, emprestimo, cliente)
+        if(multa):
+            print("Multa criada com sucesso!")
+            self.addMulta(multa)
+            return multa
+        else:
+            print("Erro ao criar a multa.")
+            return None
 
     def buscarPorId(self, id):
         for multa in self.__multas:
@@ -69,8 +78,8 @@ class MultaController:
             return
         
         from Model.EmprestimoLivro import EmprestimoLivro
-        from Model.Cliente import Cliente
         from Model.EmprestimoLivro import EmprestimoLivro
+        from Model.Usuario import Usuario
 
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
@@ -97,7 +106,7 @@ class MultaController:
                 if not emprestimo:
                     emprestimo = EmprestimoLivro(idEmprestimo, None, None, None)
                 if not cliente:
-                    cliente = Cliente(idCliente, "", "", "")
+                    cliente = Usuario(idCliente, "", "", "")
 
                 multa = Multa(id, valor, emprestimo, cliente, status_enum)
                 self.__multas.append(multa)
