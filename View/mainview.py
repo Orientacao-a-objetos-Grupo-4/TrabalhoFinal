@@ -10,8 +10,7 @@ class Aplication():
     def __init__(self):
         super().__init__()
         self.root = root
-        #self.tela_login()
-        self.janela_nova()
+        self.tela_login()
         root.mainloop()
 
     def tela_login(self):
@@ -47,6 +46,28 @@ class Aplication():
         self.label_status.grid(row=0, column=1, pady=430, sticky="n")
 
     #Função de verificação de login
+
+    #Função de verificação de login
+    def verificar_login(self):
+        """Verifica as credenciais ao clicar no botão"""
+        usuario = self.label_username.get()
+        senha = self.label_password.get()
+
+        # Limpa mensagem anterior
+        self.label_status.configure(text="")
+
+        # Verifica se os dados estão corretos
+        if usuario == "admin" and senha == "1234":
+            self.label_status.configure(
+                text="✅ Login bem-sucedido!",
+                text_color="green")
+            self.root.after(1000, self.janela_nova)
+        else:
+            self.label_status.configure(
+                text="❌ Nome de usuário ou senha incorretos.",
+                text_color="red"
+            )   
+
     def janela_nova(self): 
     # Fecha completamente a janela de login
         self.root.destroy()
@@ -188,7 +209,7 @@ class Aplication():
         multas_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3)
         multas_btn_indicator.place(x=3, y=250)
 
-        multas_lb = CTkLabel(menu_bar_frame, text="Contato", fg_color=menu_bar_color,
+        multas_lb = CTkLabel(menu_bar_frame, text="Multas", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
         multas_lb.place(x=45, y=310)
         multas_lb.bind("<Button-1>", lambda e: switch_indication(multas_btn_indicator, multas_page))
