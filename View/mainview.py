@@ -1,4 +1,5 @@
 import customtkinter
+import time
 from customtkinter import *
 import tkinter as tk
 from PIL import Image
