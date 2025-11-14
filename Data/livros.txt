@@ -1,51 +1,24 @@
-ID,TITULO,GENERO,EDITORA,AUTOR,N_EXEMPLARES
-1,1984,Ficção Científica,Companhia das Letras,George Orwell,5
-2,O Senhor dos Anéis: A Sociedade do Anel,Fantasia,Martins Fontes,J.R.R. Tolkien,4
-3,Cem Anos de Solidão,Realismo Mágico,Record,Gabriel García Márquez,3
-4,Orgulho e Preconceito,Romance Clássico,Penguin-Cia das Letras,Jane Austen,6
-5,A Revolução dos Bichos,Fábula Política,Companhia das Letras,George Orwell,7
-6,Dom Casmurro,Romance Brasileiro,Editora Ateliê,Machado de Assis,3
-7,O Pequeno Príncipe,Fábula,Agir,Antoine de Saint-Exupéry,10
-8,Crime e Castigo,Romance Filosófico,34,Fiódor Dostoiévski,2
-9,A Metamorfose,Ficção Absurda,Companhia das Letras,Franz Kafka,4
-10,Drácula,Terror Gótico,Zahar,Bram Stoker,1
-11,A Cor Púrpura,Drama,Rocco,Alice Walker,5
-12,O Iluminado,Terror,Suma,Stephen King,6
-13,Neuromancer,Cyberpunk,Aleph,William Gibson,2
-14,Viagem ao Centro da Terra,Aventura,FTD,Júlio Verne,8
-15,O Diário de Anne Frank,Autobiografia,Record,Anne Frank,4
-16,Memórias Póstumas de Brás Cubas,Romance Brasileiro,Editora Ateliê,Machado de Assis,3
-17,Mundo Novo,Ficção Científica,Globo,Aldous Huxley,5
-18,O Sol é Para Todos,Drama,José Olympio,Harper Lee,7
-19,O Nome da Rosa,Romance Histórico,Record,Umberto Eco,2
-20,Ensaio sobre a Cegueira,Drama Filosófico,Companhia das Letras,José Saramago,4
-21,O Alquimista,Ficção Filosófica,Sextante,Paulo Coelho,12
-22,O Retrato de Dorian Gray,Ficção Gótica,Penguin,Oscar Wilde,3
-23,Fahrenheit 451,Ficção Científica,Globo,Ray Bradbury,5
-24,As Crônicas de Nárnia: O Leão, a Feiticeira e o Guarda-Roupa,Fantasia,WMF Martins Fontes,C.S. Lewis,6
-25,Mulherzinhas,Romance Jovem Adulto,Principis,Louisa May Alcott,4
-26,A Cidade e as Serras,Romance,Lello Editores,Eça de Queirós,2
-27,Capitães da Areia,Romance Brasileiro,Global,Jorge Amado,8
-28,O Código Da Vinci,Suspense,Sextante,Dan Brown,7
-29,A Menina que Roubava Livros,Drama Histórico,Intrínseca,Markus Zusak,5
-30,O Morro dos Ventos Uivantes,Romance Gótico,Martin Claret,Emily Brontë,3
-31,Vinte Mil Léguas Submarinas,Aventura,FTD,Júlio Verne,4
-32,O Processo,Ficção Absurda,Companhia das Letras,Franz Kafka,2
-33,Admirável Mundo Novo,Ficção Científica,Globo,Aldous Huxley,5
-34,As Vinhas da Ira,Drama Social,Rocco,John Steinbeck,6
-35,O Apanhador no Campo de Centeio,Romance Jovem Adulto,Companhia das Letras,J.D. Salinger,4
-36,O Grande Gatsby,Romance,Companhia das Letras,F. Scott Fitzgerald,3
-37,A Odisséia,Épico,Penguin-Cia das Letras,Homero,5
-38,O Estrangeiro,Ficção Filosófica,Record,Albert Camus,7
-39,Frankenstein,Ficção Gótica,Zahar,Mary Shelley,2
-40,Guerra e Paz,Romance Histórico,Companhia das Letras,Liev Tolstói,1
-41,Moby Dick,Aventura,Penguin-Cia das Letras,Herman Melville,3
-42,Para Sempre,Romance,Intrínseca,Kim Eun-sook,5
-43,As Aventuras de Sherlock Holmes,Mistério,Zahar,Arthur Conan Doyle,6
-44,O Nome do Vento,Fantasia,Arqueiro,Patrick Rothfuss,4
-45,Sapiens: Uma Breve História da Humanidade,Não Ficção,Companhia das Letras,Yuval Noah Harari,5
-46,Pai Rico, Pai Pobre,Finanças Pessoais,Alta Books,Robert Kiyosaki,8
-47,A Arte da Guerra,Estratégia,Record,Sun Tzu,7
-48,O Poder do Hábito,Não Ficção,Objetiva,Charles Duhigg,5
-49,Mindset: A Nova Psicologia do Sucesso,Psicologia,Objetiva,Carol S. Dweck,6
-50,A Sutil Arte de Ligar o Foda-se,Autoajuda,Intrínseca,Mark Manson,9
+fb6e0204-e7a8-4c45-a9f4-1393be8547d3;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+cb23f6fb-3022-4f65-b848-c4e28a57989c;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+8e04ce35-c538-43e4-a4c2-1599d4286754;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+9e38f400-a0e7-4af0-8c9b-ee4f6fbdab2b;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+141f9b15-193d-4fd5-beef-92a7c362fe2b;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+a4cb96ff-a85e-4a73-93b3-2898e9d630d5;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+27906b46-8f10-4593-b8a2-6a22bb87a06c;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+afc84b14-1959-40c0-a2f9-67fddd0e9554;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+eb76a537-f5ec-4bc0-9bf0-2cdfc8cd464e;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+89ae6752-06bb-4b60-b08e-ee2af830480a;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+504b4297-3fe8-4645-91c6-4b58fdbf9f04;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+eff37918-af2f-41d5-8887-1fd617a3e167;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+9b31991b-02da-4153-9695-040d6e27abd1;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+fe6cc0d4-e0f3-4f5b-8505-42de0ab7db63;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+2ebd5a83-b2bf-4d32-b430-da39a5639d92;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+ab51942a-8415-4eac-aef8-68f8e0414bc3;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+fe9b59ac-c768-480b-af44-ac5a2c1242b0;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+1009d1fd-ab99-4520-847a-d0ef718ababe;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+1243fe55-9402-4bfb-8809-fa0a3b7dc193;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+bfd4c0e9-0d7b-4e63-bae3-188a5b38ee53;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+f09d252a-dae2-49c5-9633-6d26a7a82f14;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+16d974f6-7157-45d2-8026-10fa3c264834;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3
+52a18afe-8403-474a-9855-298d779c2e59;Harry Potter;Fantasia;Rocco;J.K. Rowling;5
+77e3f6f3-037d-484a-9bd4-3880f88a3ed5;O Senhor dos Anéis;Fantasia;Martins;J.R.R. Tolkien;3

@@ -1,7 +1,6 @@
 from Untils.Enums import StatusMulta
 from Model.EmprestimoLivro import EmprestimoLivro
 
-#retirei a lista de emprestimos, pq a multa está vinculada a um emprestimo especifico
 
 class Multa:
     def __init__(self, id, valor, emprestimo, cliente, status: StatusMulta = StatusMulta.PENDENTE):
@@ -37,17 +36,18 @@ class Multa:
         else:
             print("Status inválido")
     
-    def setEmrpestimo(self, emprestimo):
+    def setEmprestimo(self, emprestimo):
         self.__emprestimo = emprestimo
+
 
     def setCliente(self, cliente):
         self.__cliente = cliente
 
     # Métodos auxiliares
 
-    def calcularValor(self,dataEmprestimo, dataDevolucao):
-        diasAtraso = (dataDevolucao - dataEmprestimo).days
-        self.setValor(diasAtraso * 0.1) # Aplicando um acrecimo de 10% por dia de atraso
+    def calcularValor(self):
+        pass
+
     
     def registrarPagamento(self):
         self.setStatus(StatusMulta.PAGA)
