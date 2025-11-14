@@ -6,6 +6,7 @@ class Livro:
         self.__editora = editora
         self.__autor = autor
         self.__nExemplares = nExemplares
+       
 
     # Getters
     def getId(self):
@@ -49,6 +50,9 @@ class Livro:
             Retorna True se houver exemplares disponíveis.
             """
             return self.getNExemplares() > 0
+    
+    def criarLivro(self, id, titulo, genero, editora, autor, nExemplares):
+        return Livro(id, titulo, genero, editora, autor, nExemplares)
 
     def retirarExemplar(self):
         """

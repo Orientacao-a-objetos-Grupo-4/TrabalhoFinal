@@ -11,7 +11,7 @@ class EmprestimoLivro:
         self.__dataDevolucao = dataDevolucao
         self.__status = status
         self.__multa = None
-        self.__itens = [] 
+        self.__livros = [] 
 
     # ---------------- Getters ----------------
     def getId(self):
@@ -21,7 +21,7 @@ class EmprestimoLivro:
         return self.__cliente
 
     def getItens(self):
-        return self.__itens
+        return self.__livros
 
     def getDataEmprestimo(self):
         return self.__dataEmprestimo
@@ -50,7 +50,7 @@ class EmprestimoLivro:
 
     # ---------------- Métodos auxiliares ----------------
     def addItem(self, item_emprestimo):
-        self.__itens.append(item_emprestimo)
+        self.__livros.append(item_emprestimo)
 
     def calcularAtraso(self, data_devolucao: date) -> int:
         """Calcula o número de dias de atraso."""
@@ -79,7 +79,7 @@ class EmprestimoLivro:
         self.setDataDevolucao(data_devolucao)
         self.setStatus(StatusEmprestimo.DEVOLVIDO)
 
-        for item in self.__itens:
+        for item in self.__livros:
             item.getLivro().devolverExemplar()
 
         dias_atraso = self.calcularAtraso(data_devolucao)

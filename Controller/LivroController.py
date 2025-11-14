@@ -1,4 +1,5 @@
 import os
+import uuid
 from Model.Livro import Livro
 
 class LivroController:
@@ -12,7 +13,8 @@ class LivroController:
 
 
     def criarLivro(self, titulo, genero, editora, autor, n_exemplares):
-        livro = Livro(titulo, genero, editora, autor, n_exemplares)
+        
+        livro = Livro.criarLivro(uuid.uuid4(), titulo, genero, editora, autor, n_exemplares)
         self.addLivro(livro)
         return livro
 
