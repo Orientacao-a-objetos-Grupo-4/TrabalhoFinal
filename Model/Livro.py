@@ -15,6 +15,7 @@ class Livro:
         return self.__titulo
 
     def getGenero(self):
+        
         return self.__genero
 
     def getEditora(self):

@@ -2,18 +2,10 @@ from Model.Usuario import Usuario
 from Untils.Enums import StatusMulta, TipoUsuario
 
 class Cliente(Usuario):
-    def __init__(self, nomeUsuario, login, senha,id):
-        self.__id = id
-        super().__init__(nomeUsuario, login, senha, TipoUsuario.CLIENTE)
+    def __init__(self, id, nomeUsuario, login, senha):
+        super().__init__(id, nomeUsuario, login, senha, TipoUsuario.CLIENTE)
         self.__multas = []
         self.__emprestimos = []
-
-
-    def getId(self):
-        return self.__id
-    
-    def setId(self, id):
-        self.__id = id
 
     # Multas
     def getMultas(self):

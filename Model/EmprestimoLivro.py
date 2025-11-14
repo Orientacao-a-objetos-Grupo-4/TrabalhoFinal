@@ -1,26 +1,25 @@
-
-from Untils.Enums import StatusEmprestimo, StatusMulta
-
+from Untils.Enums import StatusEmprestimo
+from datetime import date, timedelta
 
 class EmprestimoLivro:
-    def __init__(self, id, cliente, livro, dataEmprestimo, dataDevolucao, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
+    def __init__(self, id, cliente, dataEmprestimo, dataDevolucao=None, status: StatusEmprestimo = StatusEmprestimo.ATIVO):
         self.__id = id
         self.__cliente = cliente
-        self.__livro = livro
         self.__dataEmprestimo = dataEmprestimo
         self.__dataDevolucao = dataDevolucao
         self.__status = status
-        self.__multas = []
+        self.__multa = None
+        self.__itens = []
 
-    # Getters
+    # ---------------- Getters ----------------
     def getId(self):
         return self.__id
 
     def getCliente(self):
         return self.__cliente
 
-    def getLivro(self):
-        return self.__livro
+    def getItens(self):
+        return self.__itens
 
     def getDataEmprestimo(self):
         return self.__dataEmprestimo
@@ -31,10 +30,15 @@ class EmprestimoLivro:
     def getStatus(self):
         return self.__status
 
-    def getMultas(self):
-        return self.__multas
+    def getMulta(self):
+        return self.__multa
 
-    # Setters
+    # -------- Novo método para data prevista --------
+    def getDataPrevistaDevolucao(self):
+        # Regra: 7 dias após a data do empréstimo
+        return self.__dataEmprestimo + timedelta(days=7)
+
+    # ---------------- Setters ----------------
     def setStatus(self, status):
         self.__status = status
 
@@ -44,17 +48,13 @@ class EmprestimoLivro:
     def setDataDevolucao(self, dataDevolucao):
         self.__dataDevolucao = dataDevolucao
 
-    # Métodos auxiliares
-    def addMulta(self, multa):
-        self.__multas.append(multa)
+    def setMulta(self, multa):
+        self.__multa = multa
 
-    def removeMulta(self, multa):
-        self.__multas.remove(multa)
-
-    def calcularMullta(self):
-        pass
+    # ---------------- Métodos auxiliares ----------------
+    def addItem(self, item_emprestimo):
+        self.__itens.append(item_emprestimo)
 
     def registrarDevolucao(self, dataDevolucao):
         self.setDataDevolucao(dataDevolucao)
         self.setStatus(StatusEmprestimo.DEVOLVIDO)
-     
