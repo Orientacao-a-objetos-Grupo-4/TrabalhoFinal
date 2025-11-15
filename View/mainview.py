@@ -19,8 +19,8 @@ class Aplication():
         self.root.title("Login")
         
         #Definindo o modo de aparência e o tamanho da imagem
-        image_login = customtkinter.CTkImage(light_image = Image.open("View\images\img-login.png"),
-                                             dark_image= Image.open("View\images\img-login.png"),
+        image_login = customtkinter.CTkImage(light_image = Image.open("View/images/img-login.png"),
+                                             dark_image= Image.open("View/images/img-login.png"),
                                              size=(400, 400))
         
         #Adicionando os elementos na tela
