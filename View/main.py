@@ -47,7 +47,8 @@ def menu_cliente(usuario, emprestimoController, livroController):
             print("\n=== MENU CLIENTE ===")
             print("1 - Listar Livros")
             print("2 - Listar Meus Empréstimos")
-            print("3 - Pagar Multa (se houver)")
+            print("3 - Listar Minhas Multas")
+            print("4 - Pagar Multa (se houver)")
             print("0 - Voltar / Sair")
             op = input("Escolha: ").strip()
 
@@ -69,7 +70,14 @@ def menu_cliente(usuario, emprestimoController, livroController):
                         print(f"ID {e.getId()} - Status: {status_name} - Devolução prevista: {devolucao}")
 
             elif op == "3":
-                print("Função simplificada. Multas são tratadas no menu admin.")
+                print("\n--- MINHAS MULTAS ---")
+                multas = usuario.getMultas()
+                for m in multas:
+                    print(f"ID {m.getId()} - Valor: R${m.getValor()}")
+            
+            elif op == "4":
+                id_multa = input("ID da multa: ").strip()
+                multaController.pagarMulta(id_multa)
 
             elif op == "0":
                 break
@@ -86,10 +94,11 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
         try:
             print("\n=== MENU FUNCIONÁRIO ===")
             print("1 - Cadastrar Cliente")
-            print("2 - Registrar Empréstimo")
-            print("3 - Registrar Devolução")
-            print("4 - Listar Livros")
-            print("5 - Listar Empréstimos")
+            print("2 - Cadastrar Livro")
+            print("3 - Registrar Empréstimo")
+            print("4 - Registrar Devolução")
+            print("5 - Listar Livros")
+            print("6 - Listar Empréstimos")
             print("0 - Voltar / Sair")
             op = input("Escolha: ").strip()
 
@@ -106,8 +115,19 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 except Exception as ex:
                     print(f"Erro ao cadastrar cliente: {ex}")
 
-            # -------------------- REGISTRAR EMPRÉSTIMO (com vários livros) --------------------
             elif op == "2":
+                print("\n=== CADASTRAR LIVRO ===")
+                try:
+                    titulo = input("Título: ").strip()
+                    autor = input("Autor: ").strip()
+                    editora = input("Editora: ").strip()
+                    livroController.cadastrar_livro(titulo, autor, editora)
+                    print("Livro cadastrado com sucesso!")
+                except Exception as ex:
+                    print(f"Erro ao cadastrar livro: {ex}")
+
+            # -------------------- REGISTRAR EMPRÉSTIMO (com vários livros) --------------------
+            elif op == "3":
                 try:
                     id_login = input("ID do cliente: ").strip()
                     cliente = usuarioController.buscar_por_login(id_login)
@@ -163,7 +183,7 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 except Exception as ex:
                     print(f"Erro ao registrar empréstimo: {ex}")
 
-            elif op == "3":
+            elif op == "4":
                 try:
                     id_emp = input("ID Empréstimo: ").strip()
                     emprestimoController.registrarDevolucao(id_emp, date.today())
@@ -171,13 +191,13 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 except Exception as ex:
                     print(f"Erro ao registrar devolução: {ex}")
 
-            elif op == "4":
+            elif op == "5":
                 livros = livroController.getLivros()
                 print("\n--- LIVROS ---")
                 for l in livros:
                     print(f"{l.getId()} - {l.getTitulo()} - Exemplares: {l.getNExemplares()}")
 
-            elif op == "5":
+            elif op == "6":
                 emprestimos = emprestimoController.getEmprestimos()
                 print("\n--- EMPRÉSTIMOS ---")
                 for e in emprestimos:
@@ -205,7 +225,6 @@ def menu_admin(usuarioController, livroController, emprestimoController, multaCo
             print("4 - Listar Usuários")
             print("5 - Listar Empréstimos")
             print("6 - Listar Multas")
-            print("7 - Pagar Multa")
             print("0 - Voltar / Sair")
             op = input("Escolha: ").strip()
 
@@ -257,9 +276,7 @@ def menu_admin(usuarioController, livroController, emprestimoController, multaCo
                 for m in multas:
                     print(f"{m.getId()} - R${m.getValor():.2f} - Status: {m.getStatus().name}")
 
-            elif op == "7":
-                id_multa = input("ID da multa: ").strip()
-                multaController.pagarMulta(id_multa)
+    
 
             elif op == "0":
                 break
