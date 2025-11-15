@@ -1,5 +1,6 @@
 import customtkinter
 from customtkinter import *
+from tkinter import messagebox
 import tkinter as tk
 from PIL import Image
 
@@ -119,7 +120,7 @@ class Aplication():
         # Animação de recolhimento do menu
         def folding_animation():
             current_width = menu_bar_frame.winfo_width()
-            if current_width > 45:
+            if current_width != 45:
                 current_width -= 10
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=8, func=folding_animation)
@@ -131,25 +132,66 @@ class Aplication():
         # Páginas
         def home_page():
             home_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(home_page_fm,text=f"Bem-vindo 'Nome do Usuário' - 'Cargo' ", font=("Bold", 20))
+            lb = CTkLabel(home_page_fm,text=f"Bem-vindo ao Home Page!", font=("Bold", 20))
             lb.place(x=10, y=10)
 
-            vid = CTkEntry(home_page_fm, placeholder_text="Digite algo...", width=200)
-            vid.place(x=10, y=50)
             
-            btn_adcionar = CTkButton(home_page_fm, text="Add Clientes", width=100)
-            btn_adcionar.place(x=220, y=50)
-
-            btn_remover = CTkButton(home_page_fm, text="Remover Clientes", width=120)
-            btn_remover.place(x=340, y=50)  
 
             home_page_fm.pack(fill="both", expand=True)
 
-        def livros_page():
+        def livros_page():  
+            def add_livro():
+                    if vid.get() == "":
+                        messagebox.showwarning("Entrada Inválida", "Por favor, insira um valor válido.")
+                        return
+                    tv.insert(parent='', index='end', iid=vid.get(), text='',
+                              values=(vid.get(), "Game of Thrones", "Fantasia", "Suma de Letras", "George R. R.", "10"))
+                    vid.delete(0, 'end')
+                    vid.focus()   
+                        
+            def delete_livro():
+                pass
+            def buscar_livro():
+                pass   
+
             livros_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(livros_page_fm, text="Livros Page", font=("Bold", 20))
-            lb.place(x=100, y=200)
+            lb = CTkLabel(livros_page_fm, text="Bem-vindo 'Nome do Usuário' - 'Cargo' ", font=("Bold", 20))
+            lb.place(x=10, y=10)
             livros_page_fm.pack(fill="both", expand=True)
+
+            vid = CTkEntry(livros_page_fm, placeholder_text="Digite algo...", width=200)
+            vid.place(x=10, y=50)
+            
+            btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
+            btn_adcionar.place(x=250, y=50)
+
+            btn_remover = CTkButton(livros_page_fm, text="Remover Livros", width=120)
+            btn_remover.place(x=380, y=50) 
+
+            btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
+            btn_buscar.place(x=600, y=50)
+
+            tv = tk.ttk.Treeview(livros_page_fm)
+            tv.place(x=100, y=130, width=860, height=400)
+            tv.column("#0", width=0, stretch="no")
+            tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares" )
+            tv.column("ID", anchor="center", width=50)
+            tv.column("Título", anchor="w", width=200)
+            tv.column("Gênero", anchor="center", width=100)
+            tv.column("Editora", anchor="w", width=150)
+            tv.column("Autor", anchor="w", width=150)
+            tv.column("Exemplares", anchor="center", width=100)
+
+            tv.heading("ID", text="ID", anchor="center")
+            tv.heading("Título", text="Título", anchor="center")
+            tv.heading("Gênero", text="Gênero", anchor="center")
+            tv.heading("Editora", text="Editora", anchor="center")
+            tv.heading("Autor", text="Autor", anchor="center")
+            tv.heading("Exemplares", text="Exemplares", anchor="center")
+
+            btn_adcionar.configure(command=add_livro)
+            btn_remover.configure(command=delete_livro)
+            btn_buscar.configure(command=buscar_livro)
 
         def multas_page():
             multas_page_fm = CTkFrame(page_frame)
@@ -159,13 +201,11 @@ class Aplication():
 
         def about_page():
         # Frame principal da página
-            about_page_fm = CTkFrame(page_frame, bg_color="transparent")
+            about_page_fm = CTkFrame(page_frame)
             about_page_fm.pack(fill="both", expand=True)
 
-            # Título no topo
-
             # Frame central
-            frame_sobre = customtkinter.CTkFrame(about_page_fm, bg_color="transparent")
+            frame_sobre = customtkinter.CTkFrame(about_page_fm)
             frame_sobre.grid(row=0, column=0, sticky='nsew', pady=80)
 
             # Expandir corretamente
