@@ -30,6 +30,11 @@ class LivroController:
         for livro in self.__livros:
             if livro.getId() == id:
                 return livro
+            
+    def buscarPorTitulo(self, titulo):
+        for livro in self.__livros:
+            if livro.getTitulo() == titulo:
+                return livro
 
     def removerLivroPorId(self, id):
         livro = self.buscarPorId(id)
