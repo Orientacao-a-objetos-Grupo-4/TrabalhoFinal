@@ -1,5 +1,4 @@
 import customtkinter
-import time
 from customtkinter import *
 import tkinter as tk
 from PIL import Image
@@ -10,7 +9,8 @@ class Aplication():
     def __init__(self):
         super().__init__()
         self.root = root
-        self.tela_login()
+        #self.tela_login()
+        self.janela_nova()
         root.mainloop()
 
     def tela_login(self):
@@ -80,11 +80,11 @@ class Aplication():
 
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
-        home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(25, 25))
+        home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
         livro_icon = customtkinter.CTkImage(Image.open("View/images/livro_btn3.png"), size=(25, 25))
         multas_icon = customtkinter.CTkImage(Image.open("View/images/multas_btn.png"), size=(25, 25))
-        about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(25, 25))
-        close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(25, 25))
+        about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
+        close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
 
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
@@ -95,8 +95,8 @@ class Aplication():
 
             indicator_lb.configure(fg_color='white')
 
-            if menu_bar_frame.winfo_width() > 45:
-                fold_menu_bar()
+            #if menu_bar_frame.winfo_width() > 45:
+                #fold_menu_bar()
 
             for frame in page_frame.winfo_children():
                 frame.destroy()
@@ -106,7 +106,7 @@ class Aplication():
         # Animação de extensão do menu
         def extending_animation():
             current_width = menu_bar_frame.winfo_width()
-            if not current_width > 200:
+            if not current_width < 200:
                 current_width += 10
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=8, func=extending_animation)
@@ -118,7 +118,7 @@ class Aplication():
         # Animação de recolhimento do menu
         def folding_animation():
             current_width = menu_bar_frame.winfo_width()
-            if current_width != 45:
+            if current_width > 45:
                 current_width -= 10
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=8, func=folding_animation)
@@ -130,8 +130,18 @@ class Aplication():
         # Páginas
         def home_page():
             home_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(home_page_fm, text="Home Page", font=("Bold", 20))
-            lb.place(x=100, y=200)
+            lb = CTkLabel(home_page_fm,text=f"Bem-vindo 'Nome do Usuário' - 'Cargo' ", font=("Bold", 20))
+            lb.place(x=10, y=10)
+
+            vid = CTkEntry(home_page_fm, placeholder_text="Digite algo...", width=200)
+            vid.place(x=10, y=50)
+            
+            btn_adcionar = CTkButton(home_page_fm, text="Add Clientes", width=100)
+            btn_adcionar.place(x=220, y=50)
+
+            btn_remover = CTkButton(home_page_fm, text="Remover Clientes", width=120)
+            btn_remover.place(x=340, y=50)  
+
             home_page_fm.pack(fill="both", expand=True)
 
         def livros_page():
@@ -159,9 +169,9 @@ class Aplication():
 
         # Menu lateral
         menu_bar_frame = CTkFrame(nova_janela, fg_color=menu_bar_color)
-        menu_bar_frame.pack(side="left", fill="y", pady=5, padx=3)
+        menu_bar_frame.pack(side="left", fill="y", pady=5, padx=2)
         menu_bar_frame.pack_propagate(False)
-        menu_bar_frame.configure(width=50)
+        menu_bar_frame.configure(width=45)
 
         # Botão do menu
         toggle_menu_btn = CTkButton(menu_bar_frame, image=toggle_icon, text="",
@@ -176,7 +186,7 @@ class Aplication():
                             width=30, height=40)
         home_btn.place(x=9, y=130)
 
-        home_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color='white', width=3)
+        home_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color='white', width=3, height=40)
         home_btn_indicator.place(x=3, y=130)
 
         home_page_lb = CTkLabel(menu_bar_frame, text="Home", fg_color=menu_bar_color,
@@ -189,10 +199,10 @@ class Aplication():
                                 fg_color=menu_bar_color, hover_color=menu_bar_color,
                                 command=lambda: switch_indication(livro_btn_indicator, livros_page),
                                 width=30)
-        livro_btn.place(x=9, y=190)
+        livro_btn.place(x=9, y=185)
 
-        livro_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3)
-        livro_btn_indicator.place(x=3, y=190)
+        livro_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        livro_btn_indicator.place(x=3, y=185)
 
         livro_lb = CTkLabel(menu_bar_frame, text="Serviços", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
@@ -206,12 +216,12 @@ class Aplication():
                                 width=30)
         multas_btn.place(x=9, y=250)
 
-        multas_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3)
+        multas_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
         multas_btn_indicator.place(x=3, y=250)
 
         multas_lb = CTkLabel(menu_bar_frame, text="Multas", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        multas_lb.place(x=45, y=310)
+        multas_lb.place(x=45, y=250)
         multas_lb.bind("<Button-1>", lambda e: switch_indication(multas_btn_indicator, multas_page))
 
         # Botão Sobre
@@ -221,15 +231,15 @@ class Aplication():
                             width=30, height=40)
         about_btn.place(x=9, y=310)
 
-        about_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3)
+        about_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
         about_btn_indicator.place(x=3, y=310)
 
         about_lb = CTkLabel(menu_bar_frame, text="Sobre", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        about_lb.place(x=45, y=370)
+        about_lb.place(x=45, y=310)
         about_lb.bind("<Button-1>", lambda e: switch_indication(about_btn_indicator, about_page))
 
-        # posicionando o menu bar frame (usando customtkinter)
+        # posicionando o menu bar frame
         menu_bar_frame.pack(side="left", fill="y", pady=4, padx=3)
         menu_bar_frame.pack_propagate(False)
         menu_bar_frame.configure(width=45, fg_color=menu_bar_color)
