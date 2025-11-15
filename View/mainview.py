@@ -9,8 +9,9 @@ class Aplication():
     def __init__(self):
         super().__init__()
         self.root = root
-        self.tela_login()
+        #self.tela_login()
         #self.janela_nova()
+        self.sobre_nos()
         root.mainloop()
 
     def tela_login(self):
@@ -44,6 +45,110 @@ class Aplication():
 
         self.label_status = customtkinter.CTkLabel(self.root, text="")
         self.label_status.grid(row=0, column=1, pady=430, sticky="n")
+
+    def sobre_nos(self):
+
+        self.root.geometry("900x600")
+        self.root.resizable(False, False)
+        self.root.title("Sobre Nós")
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
+        
+        
+        frame_sobre = customtkinter.CTkFrame(self.root)
+        frame_sobre.grid(row=0, column=0, stick='nsew')
+        #Monta o frame centralizado na coluna 1 enquando as colunas 0 e 2 absorvem o espaço restante
+        frame_sobre.grid_columnconfigure(0, weight=1)
+        frame_sobre.grid_columnconfigure(1, weight=0)
+        frame_sobre.grid_columnconfigure(2, weight=1)
+        
+        
+        logo_img = customtkinter.CTkImage(light_image=Image.open("View/images/logo_about.png"),
+                                          dark_image=Image.open("View/images/logo_about.png"),
+                                          size=(170, 170))
+        icon_sarch = customtkinter.CTkImage(light_image=Image.open("View/images/icon_sarch.png"),
+                                            dark_image=Image.open("View/images/icon_sarch.png"),
+                                            size=(20, 20))
+        icon_shield = customtkinter.CTkImage(light_image=Image.open("View/images/icon_shield.png"),
+                                             dark_image=Image.open("View/images/icon_shield.png"),
+                                             size=(20, 20))
+        icon_user = customtkinter.CTkImage(light_image=Image.open("View/images/icon_user.png"),
+                                           dark_image=Image.open("View/images/icon_user.png"),
+                                           size=(20, 20))
+        
+        label_logo = customtkinter.CTkLabel(frame_sobre, image=logo_img, text="")
+        label_logo.grid(row=0, column=1, padx=0, pady=(20,0), stick='n')
+
+        label_title = customtkinter.CTkLabel(frame_sobre,
+                                             text="Sobre Nós",
+                                             font=customtkinter.CTkFont(size=30,
+                                             weight="bold"),
+                                             height=30,
+                                             fg_color="transparent",
+                                             text_color="#012E58")
+        
+        label_title.grid(row=1, column=1, stick='nsw')
+
+         # Caixa de texto para exibir o conteúdo sobre nós
+        label_sobre_1 = customtkinter.CTkLabel(frame_sobre,
+                                               text="O NexoCode é uma solução tecnológica avançada desenvolvida para enfrentar o desafio da gestão de acervos informacionais complexos. Sua arquitetura foi concebida com o propósito fundamental de transformar o caos de dados em conhecimento acessível e rastreável.",
+                                               width=650,
+                                               height=80,
+                                               wraplength=600,
+                                               justify="left",
+                                               fg_color="transparent")
+        label_sobre_2 = customtkinter.CTkLabel(frame_sobre,
+                                               text="Nossos Pilares",
+                                               height=50,
+                                               justify="left",
+                                               fg_color="transparent",
+                                               font=customtkinter.CTkFont(size=14, weight="bold"),)
+        frame_sarch = customtkinter.CTkFrame(frame_sobre,
+                                             fg_color="transparent",
+                                             width=650)
+
+        frame_sarch.grid(row=4, column=1, stick='nsw', padx=(40,0), pady=(0,10))
+        frame_sarch.grid_columnconfigure(0, weight=1)
+        frame_sarch.grid_columnconfigure(1, weight=0)
+        frame_sarch.grid_columnconfigure(2, weight=0)
+        frame_sarch.grid_columnconfigure(3, weight=1)
+
+        label_img_sarch = customtkinter.CTkLabel(frame_sarch, image=icon_sarch, text="")
+
+        label_sobre_3 = customtkinter.CTkLabel(frame_sarch,
+                                               fg_color="transparent",
+                                               text="Otimização de Busca: Algoritmos de indexação e pesquisa otimizados garantem a recuperação de documentos em alta velocidade.",
+                                               height=40,
+                                               wraplength=550,
+                                               justify="left",)
+        
+        label_img_shield = customtkinter.CTkLabel(frame_sarch, image=icon_shield, text="")
+
+        label_sobre_4 = customtkinter.CTkLabel(frame_sarch,
+                                               fg_color="transparent",
+                                               text="Integridade e Segurança: A plataforma assegura que o acesso aos registros seja seguro e auditável, protegendo a integridade dos dados sensíveis.",
+                                               height=40,
+                                               wraplength=550,
+                                               justify="left",)
+        
+        label_img_user = customtkinter.CTkLabel(frame_sarch, image=icon_user, text="")
+
+        label_sobre_5 = customtkinter.CTkLabel(frame_sarch,
+                                               fg_color="transparent",
+                                               text="Experiência do Usuário: A interface de busca é limpa e eficiente, permitindo o uso sem a necessidade de treinamento em TI.",
+                                               height=40,
+                                               wraplength=550,
+                                               justify="left",)
+        
+
+        label_sobre_1.grid(row=2, column=1, stick='nsw')
+        label_sobre_2.grid(row=3, column=1, stick='nsw')
+        label_img_sarch.grid(row=0, column=0, stick='nsw')
+        label_sobre_3.grid(row=0, column=1, stick='nsw', padx=(10,0), pady=5)
+        label_img_shield.grid(row=1, column=0, stick='nsw')
+        label_sobre_4.grid(row=1, column=1, stick='nsw', padx=(10,0), pady=5)
+        label_img_user.grid(row=2, column=0, stick='nsw')
+        label_sobre_5.grid(row=2, column=1, stick='nsw', padx=(10,0))
 
     #Função de verificação de login
     def verificar_login(self):
