@@ -1,3 +1,5 @@
+# Código refatorado usando o padrão getId(), getValor(), etc.
+
 import uuid
 from datetime import datetime
 from Untils.Enums import StatusMulta
@@ -12,87 +14,81 @@ class Multa:
         self.__data_criacao = datetime.now()
 
     # Getters
-    def get_valor(self):
+    def getValor(self):
         return self.__valor
 
-    def get_status(self):
+    def getStatus(self):
         return self.__status
 
-    def get_id(self):
+    def getId(self):
         return self.__id
 
-    def get_emprestimo(self):
+    def getEmprestimo(self):
         return self.__emprestimo
 
-    def get_cliente(self):
+    def getCliente(self):
         return self.__cliente
 
-    def get_data_criacao(self):
+    def getDataCriacao(self):
         return self.__data_criacao
 
-    # Setters with validation
-    def set_valor(self, valor):
+    # Setters
+    def setValor(self, valor):
         if valor < 0:
             raise ValueError("Valor da multa não pode ser negativo")
         self.__valor = valor
 
-    def set_status(self, status):
+    def setStatus(self, status):
         if not isinstance(status, StatusMulta):
             raise ValueError("Status deve ser uma instância de StatusMulta")
         self.__status = status
 
-    def calcular_valor(self):
-        """Calcula o valor da multa baseado no atraso"""
-        data_prevista = self.__emprestimo.get_data_prevista_devolucao()
-        data_devolucao = self.__emprestimo.get_data_devolucao()
+    # Lógica
+    def calcularValor(self):
+        data_prevista = self.__emprestimo.getDataPrevistaDevolucao()
+        data_devolucao = self.__emprestimo.getDataDevolucao()
 
         if not data_prevista or not data_devolucao:
-            self.set_valor(0.0)
+            self.setValor(0.0)
             return
 
         if data_devolucao > data_prevista:
             dias_atraso = (data_devolucao - data_prevista).days
             valor_por_dia = 0.1
-            self.set_valor(dias_atraso * valor_por_dia)
+            self.setValor(dias_atraso * valor_por_dia)
         else:
-            self.set_valor(0.0)
+            self.setValor(0.0)
 
-    def registrar_pagamento(self):
-        """Marca a multa como paga"""
+    def registrarPagamento(self):
         if self.__status == StatusMulta.PENDENTE:
-            self.set_status(StatusMulta.PAGA)
+            self.setStatus(StatusMulta.PAGA)
             return True
         return False
 
-    def esta_ativa(self):
-        """Verifica se a multa está ativa (pendente)"""
+    def estaAtiva(self):
         return self.__status == StatusMulta.PENDENTE
 
     @staticmethod
-    def criar_multa(emprestimo, cliente, valor_inicial=0.0):
-        """Factory method para criar multas"""
+    def criarMulta(emprestimo, cliente, valor_inicial=0.0):
         if not emprestimo or not cliente:
             raise ValueError("Empréstimo e cliente são obrigatórios")
-        
-        try:
-            id_multa = str(uuid.uuid4())
-            return Multa(id_multa, valor_inicial, emprestimo, cliente)
-        except Exception as e:
-            raise Exception(f"Erro ao criar multa: {e}")
 
-    def to_txt(self):
-        return f"{self.get_id()};{self.get_valor()};{self.__emprestimo.get_id()};{self.__cliente.get_id()};{self.get_status().name}\n"
+        id_multa = str(uuid.uuid4())
+        return Multa(id_multa, valor_inicial, emprestimo, cliente)
+
+    def toTxt(self):
+        return f"{self.getId()};{self.getValor()};{self.__emprestimo.getId()};{self.__cliente.getId()};{self.getStatus().name}\n"
 
     def __str__(self):
         return f"Multa {self.__id} - Valor: R${self.__valor:.2f} - Status: {self.__status.name}"
 
-    def to_dict(self):
-        """Converte para dicionário (útil para views)"""
+    def toDict(self):
         return {
-            'id': self.get_id(),
-            'valor': self.get_id(),
-            'status': self.get_status().name,
-            'emprestimo_id': self.get_emprestimo().get_id(),
-            'cliente_id': self.get_cliente().get_id(),
-            'data_criacao': self.getdata_criacao().strftime("%d/%m/%Y %H:%M")
+            'id': self.getId(),
+            'valor': self.getValor(),
+            'status': self.getStatus().name,
+            'emprestimo_id': self.getEmprestimo().getId(),
+            'cliente_id': self.getCliente().getId(),
+            'data_criacao': self.getDataCriacao().strftime("%d/%m/%Y %H:%M")
         }
+

@@ -1,129 +1,307 @@
-from Controller.UsuarioController import UsuarioController
+# view_cli.py
+import uuid
+from datetime import date, timedelta
+
 from Untils.Enums import TipoUsuario
+from Controller.UsuarioController import UsuarioController
+from Controller.LivroController import LivroController
+from Controller.EmprestimoLivroController import EmprestimoLivroController
+from Controller.MultaController import MultaController
 
 
-def escolher_tipo_usuario(usuario_logado):
-    tipos = list(TipoUsuario)
-    print("\nTipos de usuário disponíveis:")
+class ItemEmprestimo:
+    def __init__(self, livro):
+        self._livro = livro
 
-    for i, tipo in enumerate(tipos, start=1):
-        print(f"{i} - {tipo.name}")
+    def getId(self):
+        return self._livro.getId()
 
+    def getLivro(self):
+        return self._livro
+    
+
+usuarioLogado = None
+
+# -------------------- Telas / Menus --------------------
+def tela_login(usuarioController):
     try:
-        opcao = int(input("Escolha o número do tipo de usuário: ").strip())
-        if opcao < 1 or opcao > len(tipos):
-            print("❌ Opção inválida! Escolha um número entre 1 e", len(tipos))
+        print("=== LOGIN ===")
+        login = input("Login: ").strip()
+        senha = input("Senha: ").strip()
+        usuario = usuarioController.autenticar_usuario(login, senha)
+        if usuario:
+            print(f"\nBem-vindo, {usuario.getNomeUsuario()}! ({usuario.getTipo().name})\n")
+            return usuario
+        else:
+            print("\nLogin ou senha incorretos!\n")
             return None
-
-        tipo_escolhido = tipos[opcao - 1]
-
-        if usuario_logado.getTipo() == TipoUsuario.FUNCIONARIO and tipo_escolhido != TipoUsuario.CLIENTE:
-            print("⚠️ Funcionários só podem cadastrar clientes.")
-            return None
-
-        return tipo_escolhido
-    except ValueError:
-        print("❌ Digite um número válido.")
+    except Exception as e:
+        print(f"Erro no login: {e}")
         return None
 
 
-def menu_principal(usuario_logado, controller: UsuarioController):
+# -------------------- MENU CLIENTE --------------------
+def menu_cliente(usuario, emprestimoController, livroController):
     while True:
-        print("\n=== MENU PRINCIPAL ===")
-        print(f"👤 Usuário logado: {usuario_logado.getNomeUsuario()} ({usuario_logado.getTipo().name})")
-        print("1 - Cadastrar novo usuário")
-        print("2 - Listar usuários")
-        print("3 - Sair")
+        try:
+            print("\n=== MENU CLIENTE ===")
+            print("1 - Listar Livros")
+            print("2 - Listar Meus Empréstimos")
+            print("3 - Pagar Multa (se houver)")
+            print("0 - Voltar / Sair")
+            op = input("Escolha: ").strip()
 
-        opcao = input("Escolha uma opção: ").strip()
+            if op == "1":
+                livros = livroController.getLivros()
+                print("\n--- LIVROS DISPONÍVEIS ---")
+                for l in livros:
+                    print(f"{l.getId()} - {l.getTitulo()} - Exemplares: {l.getNExemplares()}")
 
-        if opcao == "1":
-            nome = input("Nome do novo usuário: ").strip()
-            login = input("Login do novo usuário: ").strip()
+            elif op == "2":
+                emprestimos = usuario.getEmprestimos()
+                if not emprestimos:
+                    print("\nVocê não tem empréstimos.\n")
+                else:
+                    print("\n--- MEUS EMPRÉSTIMOS ---")
+                    for e in emprestimos:
+                        status_name = e.getStatus().name if e.getStatus() else "N/A"
+                        devolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else "N/A"
+                        print(f"ID {e.getId()} - Status: {status_name} - Devolução prevista: {devolucao}")
 
-            if controller.existe_login(login):
-                print("⚠️ Esse login já está em uso. Escolha outro.")
-                continue
+            elif op == "3":
+                print("Função simplificada. Multas são tratadas no menu admin.")
 
-            senha = input("Senha: ").strip()
-            tipo = escolher_tipo_usuario(usuario_logado)
-            if not tipo:
-                continue
+            elif op == "0":
+                break
 
-            try:
-                novo = controller.cadastrar_usuario(
-                    nomeUsuario=nome,
-                    login=login,
-                    senha=senha,
-                    tipo=tipo,
-                    pessoaLogada=usuario_logado
-                )
-                print(f"\n✅ Usuário '{novo.getNomeUsuario()}' cadastrado com sucesso!")
-            except ValueError as e:
-                print(f"❌ Erro ao cadastrar: {e}")
-
-        elif opcao == "2":
-            usuarios = controller.listar_usuarios()
-            if not usuarios:
-                print("📭 Nenhum usuário cadastrado.")
             else:
-                print("\n=== Usuários Cadastrados ===")
-                for u in usuarios:
-                    print(f"{u.getId():<3} | {u.getNomeUsuario():<20} | {u.getTipo().name}")
-
-        elif opcao == "3":
-            print("👋 Saindo do sistema...")
-            break
-
-        else:
-            print("❌ Opção inválida! Escolha entre 1 e 3.")
+                print("Opção inválida, tente novamente.")
+        except Exception as e:
+            print(f"Erro: {e}")
 
 
-def menu_cliente(usuario_logado):
+# -------------------- MENU FUNCIONÁRIO --------------------
+def menu_funcionario(usuarioController, emprestimoController, livroController, pessoaLogada):
     while True:
-        print("\n=== MENU DO CLIENTE ===")
-        print(f"👤 Bem-vindo, {usuario_logado.getNomeUsuario()}!")
-        print("1 - Consultar algo (em breve)")
-        print("2 - Fazer algo (em breve)")
-        print("3 - Sair")
+        try:
+            print("\n=== MENU FUNCIONÁRIO ===")
+            print("1 - Cadastrar Cliente")
+            print("2 - Registrar Empréstimo")
+            print("3 - Registrar Devolução")
+            print("4 - Listar Livros")
+            print("5 - Listar Empréstimos")
+            print("0 - Voltar / Sair")
+            op = input("Escolha: ").strip()
 
-        opcao = input("Escolha uma opção: ").strip()
+            if op == "1":
+                try:
+                    nome = input("Nome do cliente: ").strip()
+                    login = input("Login: ").strip()
+                    senha = input("Senha: ").strip()
+                    novo = usuarioController.cadastrar_usuario(nome, login, senha, TipoUsuario.CLIENTE, pessoaLogada)
+                    if novo:
+                        print(f"Cliente cadastrado: {novo.getId()} - {novo.getNomeUsuario()}")
+                    else:
+                        print("Não foi possível cadastrar cliente.")
+                except Exception as ex:
+                    print(f"Erro ao cadastrar cliente: {ex}")
 
-        if opcao == "3":
-            print("👋 Saindo do menu do cliente...")
-            break
-        else:
-            print("⚙️ Função ainda não disponível.")
+            # -------------------- REGISTRAR EMPRÉSTIMO (com vários livros) --------------------
+            elif op == "2":
+                try:
+                    id_login = input("ID do cliente: ").strip()
+                    cliente = usuarioController.buscar_por_login(id_login)
+                    if not cliente:
+                        print("Cliente não encontrado pelo login.")
+                        continue
+
+                    # Criar empréstimo vazio
+                    emprestimo_id = str(uuid.uuid4())
+                    data_emp = date.today()
+                    data_dev = date_emp_plus_days(data_emp, 7)
+
+                    from Model.EmprestimoLivro import EmprestimoLivro
+                    emprestimo = EmprestimoLivro(emprestimo_id, cliente, data_emp, data_dev)
+
+                    print("\nDigite os IDs dos livros que deseja emprestar.")
+                    print("Digite ENTER sem escrever nada para finalizar.\n")
+
+                    while True:
+                        id_livro = input("ID do livro: ").strip()
+
+                        if id_livro == "":
+                            break
+
+                        livro = livroController.buscarPorId(uuid_from_maybe_string(id_livro))
+                        if not livro:
+                            livro = livroController.buscarPorId(id_livro)
+
+                        if not livro:
+                            print("Livro não encontrado.")
+                            continue
+
+                        if not livroController.retirarExemplar(livro.getId()):
+                            print("Não há exemplares disponíveis para este livro.")
+                            continue
+
+                        item = ItemEmprestimo(livro)
+                        emprestimo.addItem(item)
+
+                        print(f"Livro '{livro.getTitulo()}' adicionado ao empréstimo.")
+
+                    if len(emprestimo.getItens()) == 0:
+                        print("Nenhum livro selecionado. Empréstimo cancelado.")
+                        continue
+
+                    emprestimoController.addEmprestimo(emprestimo)
+                    cliente.addEmprestimo(emprestimo)
+
+                    print(f"\nEmpréstimo criado com sucesso!")
+                    print(f"ID: {emprestimo.getId()}")
+                    print(f"Livros emprestados: {len(emprestimo.getItens())}")
+
+                except Exception as ex:
+                    print(f"Erro ao registrar empréstimo: {ex}")
+
+            elif op == "3":
+                try:
+                    id_emp = input("ID Empréstimo: ").strip()
+                    emprestimoController.registrarDevolucao(id_emp, date.today())
+                    print("Operação registrada.")
+                except Exception as ex:
+                    print(f"Erro ao registrar devolução: {ex}")
+
+            elif op == "4":
+                livros = livroController.getLivros()
+                print("\n--- LIVROS ---")
+                for l in livros:
+                    print(f"{l.getId()} - {l.getTitulo()} - Exemplares: {l.getNExemplares()}")
+
+            elif op == "5":
+                emprestimos = emprestimoController.getEmprestimos()
+                print("\n--- EMPRÉSTIMOS ---")
+                for e in emprestimos:
+                    cliente_nome = e.getCliente().getNomeUsuario()
+                    print(f"{e.getId()} - Cliente: {cliente_nome} - Status: {e.getStatus().name}")
+
+            elif op == "0":
+                break
+
+            else:
+                print("Opção inválida.")
+
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
 
 
-def main():
-    controller = UsuarioController()
+# -------------------- MENU ADMIN --------------------
+def menu_admin(usuarioController, livroController, emprestimoController, multaController):
+    while True:
+        try:
+            print("\n=== MENU ADMINISTRADOR ===")
+            print("1 - Cadastrar Usuário")
+            print("2 - Cadastrar Livro")
+            print("3 - Listar Livros")
+            print("4 - Listar Usuários")
+            print("5 - Listar Empréstimos")
+            print("6 - Listar Multas")
+            print("7 - Pagar Multa")
+            print("0 - Voltar / Sair")
+            op = input("Escolha: ").strip()
 
-    if not any(u.getTipo() == TipoUsuario.ADMINISTRADOR for u in controller.usuarios):
-        print("⚙️ Nenhum administrador encontrado. Vamos criar o primeiro.")
-        nome = input("Nome do administrador: ").strip()
-        login = input("Login: ").strip()
-        senha = input("Senha: ").strip()
-        controller.cadastrar_adm(nome, login, senha, TipoUsuario.ADMINISTRADOR)
-        print("✅ Administrador criado com sucesso!\n")
+            if op == "1":
+                nome = input("Nome: ").strip()
+                login = input("Login: ").strip()
+                senha = input("Senha: ").strip()
+                tipo_input = input("Tipo (CLIENTE, FUNCIONARIO, ADMINISTRADOR): ").strip().upper()
 
-    print("=== LOGIN ===")
-    login = input("Login: ").strip()
-    senha = input("Senha: ").strip()
-    usuario_logado = controller.autenticar_usuario(login, senha)
+                if tipo_input not in TipoUsuario.__members__:
+                    print("Tipo inválido.")
+                    continue
 
-    if not usuario_logado:
-        print("❌ Login ou senha incorretos.")
-        return
+                tipo = TipoUsuario[tipo_input]
+                novo = usuarioController.cadastrar_usuario(nome, login, senha, TipoUsuario.name, pessoaLogada)
+                print(f"Usuário criado: {novo.getId()} - {novo.getNomeUsuario()}")
 
-    print(f"\n✅ Login realizado com sucesso! Bem-vindo, {usuario_logado.getNomeUsuario()}!")
+            elif op == "2":
+                titulo = input("Título: ").strip()
+                genero = input("Gênero: ").strip()
+                editora = input("Editora: ").strip()
+                autor = input("Autor: ").strip()
+                n_exemplares = int(input("Número de exemplares: ").strip())
 
-    # Redireciona para o menu correto
-    if usuario_logado.getTipo() == TipoUsuario.CLIENTE:
-        menu_cliente(usuario_logado)
-    else:
-        menu_principal(usuario_logado, controller)
+                livro = livroController.criarLivro(titulo, genero, editora, autor, n_exemplares)
+                print(f"Livro criado: {livro.getId()} - {livro.getTitulo()}")
+
+            elif op == "3":
+                livros = livroController.getLivros()
+                print("\n--- LIVROS ---")
+                for l in livros:
+                    print(f"{l.getId()} - {l.getTitulo()} - Exemplares: {l.getNExemplares()}")
+
+            elif op == "4":
+                usuarios = usuarioController.listar_usuarios()
+                print("\n--- USUÁRIOS ---")
+                for u in usuarios:
+                    print(f"{u.getId()} - {u.getNomeUsuario()} - {u.getTipo().name}")
+
+            elif op == "5":
+                emprestimos = emprestimoController.getEmprestimos()
+                print("\n--- EMPRÉSTIMOS ---")
+                for e in emprestimos:
+                    print(f"{e.getId()} - Cliente: {e.getCliente().getNomeUsuario()} - Status: {e.getStatus().name}")
+
+            elif op == "6":
+                multas = multaController.getMultas()
+                print("\n--- MULTAS ---")
+                for m in multas:
+                    print(f"{m.getId()} - R${m.getValor():.2f} - Status: {m.getStatus().name}")
+
+            elif op == "7":
+                id_multa = input("ID da multa: ").strip()
+                multaController.pagarMulta(id_multa)
+
+            elif op == "0":
+                break
+
+            else:
+                print("Opção inválida.")
+
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
 
 
+# -------------------- Helpers --------------------
+def uuid_from_maybe_string(s):
+    import uuid
+    try:
+        return uuid.UUID(s)
+    except:
+        return s
+
+
+def date_emp_plus_days(dt, days):
+    return dt + timedelta(days=days)
+
+
+# -------------------- Inicialização --------------------
 if __name__ == "__main__":
-    main()
+    usuarioController = UsuarioController()
+    livroController = LivroController()
+    multaController = MultaController(clienteController=usuarioController, emprestimoController=None)
+    emprestimoController = EmprestimoLivroController(itensController=None, clienteController=usuarioController, multaController=multaController)
+
+    multaController._MultaController__emprestimoController = emprestimoController  
+
+    pessoaLogada = None
+    while not pessoaLogada:
+        pessoaLogada = tela_login(usuarioController)
+
+    if pessoaLogada.getTipo() == TipoUsuario.CLIENTE:
+        menu_cliente(pessoaLogada, emprestimoController, livroController)
+    elif pessoaLogada.getTipo() == TipoUsuario.FUNCIONARIO:
+        menu_funcionario(usuarioController, emprestimoController, livroController, pessoaLogada)
+    elif pessoaLogada.getTipo() == TipoUsuario.ADMINISTRADOR:
+        menu_admin(usuarioController, livroController, emprestimoController, multaController)
+
+    print("Encerrando sistema. Até logo!")

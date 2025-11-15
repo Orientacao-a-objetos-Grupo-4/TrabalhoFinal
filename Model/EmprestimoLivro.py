@@ -52,9 +52,9 @@ class EmprestimoLivro:
     def addItem(self, item_emprestimo):
         self.__livros.append(item_emprestimo)
 
-    def calcularAtraso(self, data_devolucao: date) -> int:
+    def calcularAtraso(self, data_devolucao) :
         """Calcula o número de dias de atraso."""
-        dias = (data_devolucao - self.getDataPrevistaDevolucao()).days
+        dias = (data_devolucao - self.getDataDevolucao()).days
         return dias if dias > 0 else 0
 
     def gerarMulta(self, dias_atraso):

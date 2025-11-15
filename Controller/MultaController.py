@@ -2,14 +2,12 @@ import os
 from Model.Multa import Multa
 from Untils.Enums import StatusMulta
 
-
 class MultaController:
     def __init__(self, arquivo="Data/multas.txt", clienteController=None, emprestimoController=None):
         self.__arquivo = arquivo
         self.__multas = []
         self.__clienteController = clienteController
         self.__emprestimoController = emprestimoController
-        self.carregarMultas()
 
         if not os.path.exists(os.path.dirname(self.__arquivo)):
             os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
@@ -18,19 +16,17 @@ class MultaController:
 
         self.carregarMultas()
 
-    # ========== Operações básicas ==========
     def getMultas(self):
         return self.__multas
-    
+
     def criarMulta(self, valor, emprestimo, cliente):
-        multa = Multa.criarMulta(valor, emprestimo, cliente)
-        if(multa):
+        multa = Multa.criarMulta(emprestimo, cliente, valor)
+        if multa:
             print("Multa criada com sucesso!")
             self.addMulta(multa)
             return multa
-        else:
-            print("Erro ao criar a multa.")
-            return None
+        print("Erro ao criar a multa.")
+        return None
 
     def buscarPorId(self, id):
         for multa in self.__multas:
@@ -53,7 +49,6 @@ class MultaController:
             self.__multas.remove(multa)
             self.salvarMultas()
 
-    # ========== Funções com lógica no Model ==========
     def calcularMulta(self, id):
         multa = self.buscarPorId(id)
         if multa:
@@ -72,12 +67,10 @@ class MultaController:
         else:
             print("Multa não encontrada.")
 
-    # ========== Persistência ==========
     def carregarMultas(self):
         if not os.path.exists(self.__arquivo):
             return
-        
-        from Model.EmprestimoLivro import EmprestimoLivro
+
         from Model.EmprestimoLivro import EmprestimoLivro
         from Model.Usuario import Usuario
 
@@ -86,7 +79,7 @@ class MultaController:
                 dados = linha.strip().split(";")
                 if len(dados) != 5:
                     continue
-                
+
                 id, valor, idEmprestimo, idCliente, status = dados
 
                 try:
@@ -94,25 +87,4 @@ class MultaController:
                     status_enum = StatusMulta[status]
                 except (ValueError, KeyError):
                     continue
-
-                emprestimo = None
-                cliente = None
-
-                if self.__emprestimoController:
-                    emprestimo = self.__emprestimoController.buscarPorId(idEmprestimo)
-                if self.__clienteController:
-                    cliente = self.__clienteController.buscarPorId(idCliente)
-
-                if not emprestimo:
-                    emprestimo = EmprestimoLivro(idEmprestimo, None, None, None)
-                if not cliente:
-                    cliente = Usuario(idCliente, "", "", "")
-
-                multa = Multa(id, valor, emprestimo, cliente, status_enum)
-                self.__multas.append(multa)
-
-    def salvarMultas(self):
-        with open(self.__arquivo, "w", encoding="utf-8") as f:
-            for multa in self.__multas:
-                f.write(multa.to_txt())
                 

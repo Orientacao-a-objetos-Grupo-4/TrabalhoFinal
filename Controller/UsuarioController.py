@@ -28,22 +28,24 @@ class UsuarioController:
     def hash_senha(self, senha):
         return hashlib.sha256(senha.encode()).hexdigest()
     
+    
+    
     def cadastrar_adm(self, nome, login, senha, tipo: TipoUsuario):
         self.existe_login(login)
         senha_hash = self.hash_senha(senha)
-        novo_usuario = Usuario.criar_usuario(nomeUsuario=nome, login=login, senha=senha_hash, tipo=tipo)
-        self.usuarios.append(novo_usuario)
         self.salvar_dados()
-        return novo_usuario
 
     def existe_login(self, login):
            if any(user.getLogin() == login for user in self.usuarios):
+            raise ValueError(
+                    f"O login '{login}' já existe. Por favor, escolha outro login."
+                )
             print(f"Login '{login}' já está em uso!")
 
 
-    def cadastrar_usuario(self, nomeUsuario, login, senha, tipo: TipoUsuario,pessoaLogada):
-     
+    def cadastrar_usuario(self,nomeUsuario, login, senha, tipo: TipoUsuario,pessoaLogada):
         senha_hash = self.hash_senha(senha)
+        self.existe_login(login)
         novo_usuario = Usuario.cadastrarUsuario(nome=nomeUsuario, pessoaLogada=pessoaLogada,login=login, senha=senha_hash, tipo=tipo)
         self.usuarios.append(novo_usuario)
         self.salvar_dados()

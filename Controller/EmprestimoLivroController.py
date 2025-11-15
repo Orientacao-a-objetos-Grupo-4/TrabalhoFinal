@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from Model import Usuario
 from Model.EmprestimoLivro import EmprestimoLivro
 
 class EmprestimoLivroController:
@@ -73,7 +74,7 @@ class EmprestimoLivroController:
                 if len(dados) < 5:
                     continue
                 id, idCliente, dataEmprestimo, dataDevolucao, status = dados[:5]
-                cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else Cliente(idCliente, "", "", "")
+                cliente = self.__clienteController.buscarPorId(idCliente) if self.__clienteController else Usuario(idCliente, "", "", "")
                 emprestimo = EmprestimoLivro(
                     id,
                     cliente,
@@ -84,7 +85,7 @@ class EmprestimoLivroController:
                 self.__emprestimos.append(emprestimo)
 
     # -------- Métodos adicionais integrados --------
-    def registrarDevolucao(self, idEmprestimo, dataDevolucao: date):
+    def registrarDevolucao(self, idEmprestimo, dataDevolucao):
         emprestimo = self.buscarPorId(idEmprestimo)
         if not emprestimo:
             print("Empréstimo não encontrado!")

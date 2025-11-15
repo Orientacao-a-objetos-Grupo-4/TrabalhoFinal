@@ -46,12 +46,13 @@ class Livro:
 
     # Métodos auxiliares
     def verificarDisponibilidade(self):
-            """
-            Retorna True se houver exemplares disponíveis.
-            """
-            return self.getNExemplares() > 0
+        """
+        Retorna True se houver exemplares disponíveis.
+        """
+        return self.getNExemplares() > 0
     
-    def criarLivro(self, id, titulo, genero, editora, autor, nExemplares):
+    @staticmethod
+    def criarLivro(id, titulo, genero, editora, autor, nExemplares):
         return Livro(id, titulo, genero, editora, autor, nExemplares)
 
     def retirarExemplar(self):

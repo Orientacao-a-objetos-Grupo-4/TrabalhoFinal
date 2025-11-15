@@ -64,6 +64,7 @@ class LivroController:
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
                 id, titulo, genero, editora, autor, nExemplares = linha.strip().split(";")
+                id = uuid.UUID(id)
                 livro = Livro(id, titulo, genero, editora, autor, int(nExemplares))
                 self.__livros.append(livro)
 

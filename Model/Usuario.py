@@ -93,7 +93,6 @@ class Usuario:
 
     
 
-    @staticmethod
     def cadastrarUsuario(pessoaLogada, nome, login, senha, tipo: TipoUsuario):
         if pessoaLogada.getTipo() == TipoUsuario.FUNCIONARIO and tipo == TipoUsuario.CLIENTE:
             return Usuario.criar_usuario(nome, login, senha, tipo)
