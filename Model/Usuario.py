@@ -100,11 +100,3 @@ class Usuario:
             return Usuario.criar_usuario(nome, login, senha, tipo)
         else:
             return None
-
-
-
-
-
-
-
-

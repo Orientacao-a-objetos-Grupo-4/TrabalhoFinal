@@ -16,10 +16,6 @@ class MultaController:
 
         self.carregarMultas()
 
-        if not os.path.exists(self.__arquivo):
-            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
-            open(self.__arquivo, "w", encoding="utf-8").close()
-
     def getMultas(self):
         return self.__multas
 
@@ -75,7 +71,6 @@ class MultaController:
         if not os.path.exists(self.__arquivo):
             return
 
-
         from Model.EmprestimoLivro import EmprestimoLivro
         from Model.Usuario import Usuario
 
@@ -88,10 +83,8 @@ class MultaController:
                 id, valor, idEmprestimo, idCliente, status = dados
 
                 try:
-                    valor = float(valor_str)
-                    status_enum = StatusMulta[status_str]
-                    idEmprestimo = idEmprestimo_str
-                    idCliente = idCliente_str
+                    valor = float(valor)
+                    status_enum = StatusMulta[status]
                 except (ValueError, KeyError):
                     continue
                 

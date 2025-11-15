@@ -28,6 +28,11 @@ class EmprestimoLivroController:
         self.__emprestimos.append(emprestimo)
         self.salvarEmprestimos()
 
+    def removerEmprestimo(self, emprestimo):
+        if emprestimo in self.__emprestimos:
+            self.__emprestimos.remove(emprestimo)
+            self.salvarEmprestimos()
+
     def buscarPorId(self, id):
         for e in self.__emprestimos:
             if e.getId() == id:
@@ -63,8 +68,6 @@ class EmprestimoLivroController:
     def carregarEmprestimos(self):
         if not os.path.exists(self.__arquivo):
             return
-        from Model.Cliente import Cliente
-
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
                 dados = linha.strip().split(";")

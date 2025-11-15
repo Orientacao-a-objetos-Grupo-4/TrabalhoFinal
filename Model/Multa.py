@@ -45,7 +45,6 @@ class Multa:
 
     # Lógica
     def calcularValor(self):
-<<<<<<< HEAD
         data_prevista = self.__emprestimo.getDataPrevistaDevolucao()
         data_devolucao = self.__emprestimo.getDataDevolucao()
 
@@ -59,9 +58,6 @@ class Multa:
             self.setValor(dias_atraso * valor_por_dia)
         else:
             self.setValor(0.0)
-=======
-        pass
->>>>>>> main
 
     def registrarPagamento(self):
         if self.__status == StatusMulta.PENDENTE:
@@ -95,4 +91,3 @@ class Multa:
             'cliente_id': self.getCliente().getId(),
             'data_criacao': self.getDataCriacao().strftime("%d/%m/%Y %H:%M")
         }
-
