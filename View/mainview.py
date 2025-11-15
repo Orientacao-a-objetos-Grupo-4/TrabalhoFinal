@@ -9,8 +9,8 @@ class Aplication():
     def __init__(self):
         super().__init__()
         self.root = root
-        #self.tela_login()
-        self.janela_nova()
+        self.tela_login()
+        #self.janela_nova()
         root.mainloop()
 
     def tela_login(self):
