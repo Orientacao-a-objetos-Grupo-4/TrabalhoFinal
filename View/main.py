@@ -239,7 +239,7 @@ def menu_admin(usuarioController, livroController, emprestimoController, multaCo
                     continue
 
                 tipo = TipoUsuario[tipo_input]
-                novo = usuarioController.cadastrar_usuario(nome, login, senha, TipoUsuario.name, pessoaLogada)
+                novo = usuarioController.cadastrar_usuario(nome, login, senha, tipo, pessoaLogada)
                 print(f"Usuário criado: {novo.getId()} - {novo.getNomeUsuario()}")
 
             elif op == "2":
