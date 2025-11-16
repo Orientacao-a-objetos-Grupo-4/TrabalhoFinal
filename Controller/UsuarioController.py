@@ -29,7 +29,6 @@ class UsuarioController:
         return hashlib.sha256(senha.encode()).hexdigest()
     
     
-    
     def cadastrar_adm(self, nome, login, senha, tipo: TipoUsuario):
         self.existe_login(login)
         senha_hash = self.hash_senha(senha)
@@ -56,6 +55,9 @@ class UsuarioController:
 
     def buscar_por_login(self, login):
         return next((u for u in self.usuarios if u.getLogin() == login), None)
+    
+    def buscar_por_id(self, id):
+        return next((u for u in self.usuarios if u.getId() == id), None)
 
     def autenticar_usuario(self, login, senha):
         senha_hash = self.hash_senha(senha)

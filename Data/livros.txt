@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 63082e77-a50b-49d1-9274-b1cbdf270606;oeroeri;djhfkj;sbdah;askhdj;95
 a8bbbda3-f71c-40c1-bb70-a81dd5f73981;zikavirus;sadakj;sadlak;jsakdhk;23
 bab78e71-ed7b-4632-9e01-26ea48805036;Google;viasd;asd;asdn;231
@@ -18,3 +19,5 @@ dced1bae-6437-4f9a-af65-5dd6e6582874;fernanda;teste;teste;teste;5
 5986a514-6598-41d8-be2a-da5033031674;mariano;teste;teste;teste;1
 1bf7dad6-454d-4ea0-9671-61db28a04a19;critovao;teste;teste;teste;5
 0a596951-9b0b-4255-bc44-6d5d5805414d;rebull;radical;fanta;nemesis;231
+=======
+>>>>>>> 56a961171b69dc3a69fdade93af4c5b4e947a733
