@@ -59,6 +59,7 @@ class Aplication():
 
         button_login = customtkinter.CTkButton(self.root, text="LOGIN", fg_color="#0844f4" ,width=100, height=40, corner_radius=10, command=self.verificar_login)
         button_login.grid(row=0, column=1, padx=0, pady=390, stick='n')
+        self.root.bind('<Return>', lambda e: self.verificar_login())
 
         self.label_status = customtkinter.CTkLabel(self.root, text="")
         self.label_status.grid(row=0, column=1, pady=430, sticky="n")
@@ -81,7 +82,7 @@ class Aplication():
                 text="✅ Login bem-sucedido!",
                 text_color="green")
                 
-            self.root.after(1000, self.janela_nova(usuario))
+            self.root.after(500, lambda: self.janela_nova(usuario))
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
