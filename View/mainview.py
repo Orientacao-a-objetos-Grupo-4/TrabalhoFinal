@@ -116,8 +116,8 @@ class Aplication():
 
             indicator_lb.configure(fg_color='white')
 
-            #if menu_bar_frame.winfo_width() > 45:
-                #fold_menu_bar()
+            if menu_bar_frame.winfo_width() >= 50:
+                fold_menu_bar()
 
             for frame in page_frame.winfo_children():
                 frame.destroy()
@@ -127,10 +127,10 @@ class Aplication():
         # Animação de extensão do menu
         def extending_animation():
             current_width = menu_bar_frame.winfo_width()
-            if not current_width < 200:
+            if not current_width > 200:
                 current_width += 10
                 menu_bar_frame.configure(width=current_width)
-                nova_janela.after(ms=8, func=extending_animation)
+                nova_janela.after(ms=1, func=extending_animation)
 
         def extend_menu_bar():
             extending_animation()
@@ -139,7 +139,7 @@ class Aplication():
         # Animação de recolhimento do menu
         def folding_animation():
             current_width = menu_bar_frame.winfo_width()
-            if current_width != 45:
+            if current_width != 50:
                 current_width -= 10
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=8, func=folding_animation)
@@ -190,7 +190,7 @@ class Aplication():
                 entry_editora.pack(pady=5)
                 entry_autor = CTkEntry(modal, placeholder_text="Autor")
                 entry_autor.pack(pady=5)
-                entry_n_exemplares = CTkEntry(modal, placeholder_text="Número de Exemplares")
+                entry_n_exemplares = CTkEntry(modal, placeholder_text="Nº de Exemplares")
                 entry_n_exemplares.pack(pady=5)
 
                 def confirmar():
@@ -219,11 +219,11 @@ class Aplication():
             
             livros_page_fm = CTkFrame(page_frame)
             lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=10)
+            lb.place(x=80, y=40)
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
-            nome_livro.place(x=85, y=50)
+            nome_livro.place(x=85, y=80)
 
             def delete_livro():
                 titiloDelete = nome_livro.get()
@@ -258,16 +258,16 @@ class Aplication():
 
         # Botões e tabela
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
-            btn_adcionar.place(x=375, y=50)
+            btn_adcionar.place(x=375, y=80)
 
             btn_remover = CTkButton(livros_page_fm, text="Remover Livros", width=120)
-            btn_remover.place(x=500, y=50) 
+            btn_remover.place(x=500, y=80) 
 
             btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
-            btn_buscar.place(x=645, y=50)
+            btn_buscar.place(x=645, y=80)
 
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=80, y=130, width=900, height=400)
+            tv.place(x=40, y=145, width=750, height=400)
             tv.column("#0", width=0, stretch="no")
             tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv.column("ID", anchor="center", width=50)
@@ -285,7 +285,7 @@ class Aplication():
             tv.heading("Exemplares", text="Exemplares", anchor="center")
 
             tv.scrollbar = tk.Scrollbar(livros_page_fm, orient="vertical", command=tv.yview)
-            tv.scrollbar.place(x=975, y=130, height=400)
+            tv.scrollbar.place(x=790, y=145, height=400)
             tv.configure(yscrollcommand=tv.scrollbar.set)
             
             load_livros()
@@ -301,28 +301,28 @@ class Aplication():
             multas_page_fm.pack(fill="both", expand=True)
 
         def about_page():
-        # Frame principal da página
-            about_page_fm = CTkFrame(page_frame)
+
+            # Frame principal da página
+            about_page_fm = CTkFrame(page_frame, fg_color="white")
             about_page_fm.pack(fill="both", expand=True)
 
-            # Frame central
-            frame_sobre = customtkinter.CTkFrame(about_page_fm)
-            frame_sobre.grid(row=0, column=0, sticky='nsew', pady=80)
-
-            # Expandir corretamente
-            about_page_fm.grid_rowconfigure(0, weight=1)
             about_page_fm.grid_columnconfigure(0, weight=1)
+            about_page_fm.grid_columnconfigure(1, weight=0)
+            about_page_fm.grid_columnconfigure(2, weight=1)
 
-            frame_sobre.grid_columnconfigure(0, weight=1)
-            frame_sobre.grid_columnconfigure(1, weight=0)
-            frame_sobre.grid_columnconfigure(2, weight=1)
-
-            # Imagens
-            logo_img = customtkinter.CTkImage(
+            # Logos
+            logo_nexo_img = customtkinter.CTkImage(
                 light_image=Image.open("View/images/logo_about.png"),
                 dark_image=Image.open("View/images/logo_about.png"),
-                size=(170, 170)
+                size=(120, 120)
             )
+            logo_acervo_img = customtkinter.CTkImage(
+                light_image=Image.open("View/images/logo_acervo.png"),
+                dark_image=Image.open("View/images/logo_acervo.png"),
+                size=(120, 120)
+            )
+
+            # Ícones dos pilares
             icon_sarch = customtkinter.CTkImage(
                 light_image=Image.open("View/images/icon_sarch.png"),
                 dark_image=Image.open("View/images/icon_sarch.png"),
@@ -339,95 +339,174 @@ class Aplication():
                 size=(20, 20)
             )
 
-            # Logo
-            label_logo = customtkinter.CTkLabel(frame_sobre, image=logo_img, text="")
-            label_logo.grid(row=0, column=1, pady=(20, 0))
+            def about_nexo_content():
 
-            # Título "Sobre Nós"
-            label_title = customtkinter.CTkLabel(
-                frame_sobre,
-                text="Sobre Nós",
-                font=customtkinter.CTkFont(size=30, weight="bold"),
-                text_color="#012E58",
-                bg_color="transparent"
-            )
-            label_title.grid(row=1, column=1)
+                # Frame central about Nexo
+                frame_sobre_nexo = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+                frame_sobre_nexo.grid(row=1, column=1, sticky='nsew')
 
-            # Texto principal
-            label_sobre_1 = customtkinter.CTkLabel(
-                frame_sobre,
-                text=(
-                    "O NexoCode é uma solução tecnológica avançada desenvolvida "
-                    "para enfrentar o desafio da gestão de acervos informacionais complexos. "
-                    "Sua arquitetura foi concebida com o propósito fundamental de transformar "
-                    "o caos de dados em conhecimento acessível e rastreável."
-                ),
-                width=650,
-                wraplength=600,
-                justify="left",
-                bg_color="transparent"
-            )
-            label_sobre_1.grid(row=2, column=1, sticky='nw', pady=(10, 20))
+                # Título "Sobre Nós"
+                label_title = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text="Sobre Nós",
+                    font=customtkinter.CTkFont(size=30, weight="bold"),
+                    text_color="#012E58",
+                    bg_color="transparent"
+                )
+                label_title.grid(row=1, column=1, sticky='w', pady=(50,0))
 
-            # Título secundário
-            label_sobre_2 = customtkinter.CTkLabel(
-                frame_sobre,
-                text="Nossos Pilares",
-                font=customtkinter.CTkFont(size=16, weight="bold"),
-                bg_color="transparent"
-            )
-            label_sobre_2.grid(row=3, column=1, sticky='w', pady=(0, 10))
+                # Texto principal
+                label_sobre_1 = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text=(
+                        "O NexoCode é uma solução tecnológica avançada desenvolvida "
+                        "para enfrentar o desafio da gestão de acervos informacionais complexos. "
+                        "Sua arquitetura foi concebida com o propósito fundamental de transformar "
+                        "o caos de dados em conhecimento acessível e rastreável."
+                    ),
+                    width=650,
+                    wraplength=600,
+                    justify="left",
+                    bg_color="transparent"
+                )
+                label_sobre_1.grid(row=2, column=1, sticky='nw', pady=10)
 
-            # Frame dos pilares
-            frame_sarch = customtkinter.CTkFrame(
-                frame_sobre,
-                bg_color="transparent",
-                width=650
-            )
-            frame_sarch.grid(row=4, column=1, sticky="nw")
+                # Título Equipe
+                label_sobre_2 = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text="Equipe",
+                    font=customtkinter.CTkFont(size=16, weight="bold"),
+                    bg_color="transparent"
+                )
+                label_sobre_2.grid(row=5, column=1, sticky='w', pady=(0, 10))
 
-            # Config grid interno
-            frame_sarch.grid_columnconfigure(0, weight=0)
-            frame_sarch.grid_columnconfigure(1, weight=1)
+                # Label Equipe
+                label_equipe = customtkinter.CTkLabel(frame_sobre_nexo,
+                                                    width=200,
+                                                    wraplength=600,
+                                                    justify="left",
+                                                    bg_color="transparent",
+                                                    text="• Ilca Almeida Trigueiros (CEO)\n" \
+                                                        "• Gustavo Ribeiro Carpanez (Arquiteto de Dados)\n" \
+                                                        "• Nathan Silva de Souza (Desenvolvedor Backend)\n" \
+                                                        "• Patrick da Silva Almeida (Engenheiro de DevOps / Cloud)\n" \
+                                                        "• Pedro Henrique Vicente (Desenvolvedor Frontend)\n" \
+                                                        "• Pedro Paulo Reis Rodrigues (Analista de Segurança da Informação)\n" \
+                                                        "• Pedro Ricardo Brandão Costa (Analista de Negócios)")
+                label_equipe.grid(row=6, column=1, sticky='nw', pady=10, padx=(35,0))
+            
+            def about_acervo_content():
 
-            # Bloco "Busca"
-            label_img_sarch = customtkinter.CTkLabel(frame_sarch, image=icon_sarch, text="")
-            label_img_sarch.grid(row=0, column=0, sticky='nw')
+                # Frame central about Acervo
+                frame_sobre_acervo = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+                frame_sobre_acervo.grid(row=1, column=1, sticky='nsew')
 
-            label_sobre_3 = customtkinter.CTkLabel(
-                frame_sarch,
-                bg_color="transparent",
-                text="Otimização de Busca: Algoritmos otimizados garantem a recuperação de documentos em alta velocidade.",
-                wraplength=550,
-                justify="left"
-            )
-            label_sobre_3.grid(row=0, column=1, sticky='nw', padx=10, pady=5)
+                frame_sobre_acervo.grid_columnconfigure(0, weight=1)
 
-            # Bloco "Segurança"
-            label_img_shield = customtkinter.CTkLabel(frame_sarch, image=icon_shield, text="")
-            label_img_shield.grid(row=1, column=0, sticky='nw')
+                # Título "Sobre o Acervo"
+                label_title = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text="Sobre Nós",
+                    font=customtkinter.CTkFont(size=30, weight="bold"),
+                    text_color="#90D6BC",
+                    bg_color="transparent"
+                )
+                label_title.grid(row=0, column=0, sticky='w', pady=(50,0))
 
-            label_sobre_4 = customtkinter.CTkLabel(
-                frame_sarch,
-                bg_color="transparent",
-                text="Integridade e Segurança: Proteção e auditoria completa dos dados sensíveis.",
-                wraplength=550,
-                justify="left"
-            )
-            label_sobre_4.grid(row=1, column=1, sticky='nw', padx=10, pady=5)
+                # Texto principal
+                label_sobre_acervo = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text=(
+                        "O AcervoMax é o nosso sistema de gestão de empréstimos e acervos, "
+                        "projetado para bibliotecas de grande escala. Permite aos usuários o "
+                        "controle total sobre a sua situação de empréstimos e multas, "
+                        "sem a necessidade de intervenção de um bibliotecário."),
+                    width=650,
+                    wraplength=600,
+                    justify="left")
+                label_sobre_acervo.grid(row=1, column=0, sticky='w', pady=10, padx=(8,0))
 
-            # Bloco "Usuário"
-            label_img_user = customtkinter.CTkLabel(frame_sarch, image=icon_user, text="")
-            label_img_user.grid(row=2, column=0, sticky='nw')
+                                # Título secundário
+                label_sobre_2 = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text="Nossos Pilares",
+                    font=customtkinter.CTkFont(size=16, weight="bold"),
+                    bg_color="transparent"
+                )
+                label_sobre_2.grid(row=2, column=0, sticky='w', pady=0)
 
-            label_sobre_5 = customtkinter.CTkLabel(
-                frame_sarch,
-                bg_color="transparent",
-                text="Experiência do Usuário: Interface limpa, eficiente e fácil de usar.",
-                wraplength=550,
-                justify="left"
-            )
-            label_sobre_5.grid(row=2, column=1, sticky='nw', padx=10)
+                # Frame dos pilares
+                frame_sarch = customtkinter.CTkFrame(
+                    frame_sobre_acervo,
+                    fg_color="transparent",
+                    width=650
+                )
+                frame_sarch.grid(row=3, column=0, sticky='nw', pady=(0,10), padx=(35,0))
+
+                # Config grid interno
+                frame_sarch.grid_columnconfigure(0, weight=0)
+                frame_sarch.grid_columnconfigure(1, weight=1)
+
+                # Bloco "Busca"
+                label_img_sarch = customtkinter.CTkLabel(frame_sarch, image=icon_sarch, text="")
+                label_img_sarch.grid(row=0, column=0, sticky='nw')
+
+                label_sobre_3 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Otimização de Busca: Algoritmos otimizados garantem a recuperação de documentos em alta velocidade.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_3.grid(row=0, column=1, sticky='nw', padx=10, pady=5)
+
+                # Bloco "Segurança"
+                label_img_shield = customtkinter.CTkLabel(frame_sarch, image=icon_shield, text="")
+                label_img_shield.grid(row=1, column=0, sticky='nw')
+
+                label_sobre_4 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Integridade e Segurança: Proteção e auditoria completa dos dados sensíveis.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_4.grid(row=1, column=1, sticky='nw', padx=10, pady=5)
+
+                # Bloco "Usuário"
+                label_img_user = customtkinter.CTkLabel(frame_sarch, image=icon_user, text="")
+                label_img_user.grid(row=2, column=0, sticky='nw')
+
+                label_sobre_5 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Experiência do Usuário: Interface limpa, eficiente e fácil de usar.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_5.grid(row=2, column=1, sticky='nw', padx=10)
+
+            #Frame Logos
+            frame_logos = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+            frame_logos.grid(row=0, column=1, pady=(50,0), padx=(0,60))
+
+            #Logo Acervo
+            btn_logo_acervo = customtkinter.CTkButton(frame_logos,
+                                                      image=logo_acervo_img,
+                                                      text="",
+                                                      fg_color="transparent",
+                                                      command=about_acervo_content)
+            btn_logo_acervo.grid(row=0, column=1)
+
+            # Logo NEXO
+            btn_logo_nexo = customtkinter.CTkButton(frame_logos,
+                                                    image=logo_nexo_img,
+                                                    text="",
+                                                    fg_color="transparent",
+                                                    command=about_nexo_content)
+            btn_logo_nexo.grid(row=0, column=0, padx=30)
+        
+            about_nexo_content()
 
 
         # Área principal das páginas
@@ -439,7 +518,7 @@ class Aplication():
         menu_bar_frame = CTkFrame(nova_janela, fg_color=menu_bar_color)
         menu_bar_frame.pack(side="left", fill="y", pady=5, padx=2)
         menu_bar_frame.pack_propagate(False)
-        menu_bar_frame.configure(width=45)
+        menu_bar_frame.configure(width=50)
 
         # Botão do menu
         toggle_menu_btn = CTkButton(menu_bar_frame, image=toggle_icon, text="",
@@ -458,8 +537,8 @@ class Aplication():
         home_btn_indicator.place(x=3, y=130)
 
         home_page_lb = CTkLabel(menu_bar_frame, text="Home", fg_color=menu_bar_color,
-                                text_color="white", font=("Bold", 15), anchor="w")
-        home_page_lb.place(x=45, y=130)
+                                text_color="white", font=("Bold", 15))
+        home_page_lb.place(x=50, y=130)
         home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, home_page))
 
         # Botão Livros
@@ -474,7 +553,7 @@ class Aplication():
 
         livro_lb = CTkLabel(menu_bar_frame, text="Serviços", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        livro_lb.place(x=45, y=190)
+        livro_lb.place(x=50, y=190)
         livro_lb.bind("<Button-1>", lambda e: switch_indication(livro_btn_indicator, livros_page))
         
         # Botão Multas
@@ -489,7 +568,7 @@ class Aplication():
 
         multas_lb = CTkLabel(menu_bar_frame, text="Multas", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        multas_lb.place(x=45, y=250)
+        multas_lb.place(x=50, y=250)
         multas_lb.bind("<Button-1>", lambda e: switch_indication(multas_btn_indicator, multas_page))
 
         # Botão Sobre
@@ -504,13 +583,13 @@ class Aplication():
 
         about_lb = CTkLabel(menu_bar_frame, text="Sobre", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        about_lb.place(x=45, y=310)
+        about_lb.place(x=50, y=310)
         about_lb.bind("<Button-1>", lambda e: switch_indication(about_btn_indicator, about_page))
 
         # posicionando o menu bar frame
         menu_bar_frame.pack(side="left", fill="y", pady=4, padx=3)
         menu_bar_frame.pack_propagate(False)
-        menu_bar_frame.configure(width=45, fg_color=menu_bar_color)
+        menu_bar_frame.configure(width=50, fg_color=menu_bar_color)
 
         nova_janela.mainloop()
 
