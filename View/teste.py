@@ -17,7 +17,7 @@ class NumericTreeview(tk.Tk):
         self.tree.pack(pady=10)
 
         # Inserir alguns dados de exemplo
-        self.tree.insert('', tk.END, values=('zcx'))
+        self.tree.insert('', tk.END, values=('1z'))
         self.tree.insert('', tk.END, values=('456'))
         self.tree.insert('', tk.END, values=('789'))
 

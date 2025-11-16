@@ -263,50 +263,99 @@ class Aplication():
                     messagebox.showinfo("Sucesso", f"Livro '{livro_desejado}' encontrado e selecionado na tabela.")
                     nome_livro.delete(0, 'end')
                     nome_livro.focus()
-
-            def modal_aumentar_exemplares():
+                
+                
+            def modal_add_exemplares():
                 modal = CTkToplevel(nova_janela)
-                modal.geometry("400x400")
-                modal.title("Adicionar Livro")
+                modal.geometry("400x300")
+                modal.title("Adicionar Exemplares")
                 modal.grab_set()
 
-                def validar_numerro(valor):
-                     if valor =="":
-                        return True
-                     return valor.isdigit()
-                
-                vcmd = (modal.register(validar_numerro), '%P')
+                # Validação numérica
+                def validar_numero(valor):
+                    return valor.isdigit() or valor == ""
 
-                lbl_title = CTkLabel(modal, text="Adicionar Exemplares", font=("Bold", 16))
-                lbl_title.pack(pady=10)
-                modal_titulo =CTkEntry(modal, placeholder_text="Titulo do livro")
-                modal_titulo.pack(pady=5)
-                modal_exemplares =CTkEntry(modal, placeholder_text="Add nº exemplares")
-                modal_exemplares.pack(pady=5)
+                vcmd = (modal.register(validar_numero), '%P')
 
-                modal._exemplares.configure(validate="key", validatecommand=vcmd)
+                CTkLabel(modal, text="Aumentar Quantidade", font=("Bold", 16)).pack(pady=10)
 
+                entry_titulo = CTkEntry(modal, placeholder_text="Título do Livro")
+                entry_titulo.pack(pady=5)
 
+                entry_qtd = CTkEntry(modal, 
+                                    placeholder_text="Quantidade a adicionar",
+                                    validate="key", 
+                                    validatecommand=vcmd)
+                entry_qtd.pack(pady=5)
 
+                lbl_info = CTkLabel(modal, text="", font=("Bold", 12))
+                lbl_info.pack(pady=5)
 
-            def aumentar_exemplares():
-                modal_aumentar_exemplares()
+                # Atualiza o título conforme o usuário digita
+                def atualizar_info(*args):
+                    titulo = entry_titulo.get()
+                    if titulo.strip() != "":
+                        livro = self.livroCtrl.buscarPorTitulo(titulo)
+                        if livro:
+                            lbl_info.configure(text=f"Livro encontrado: {livro.getTitulo()}")
+                        else:
+                            lbl_info.configure(text="Livro não encontrado.")
+                    else:
+                        lbl_info.configure(text="")
+
+                entry_titulo.bind("<KeyRelease>", atualizar_info)
+
+                def confirmar_add():
+                    titulo = entry_titulo.get()
+                    quantidade = entry_qtd.get()
+
+                    if titulo == "" or quantidade == "":
+                        messagebox.showerror("Erro", "Preencha todos os campos.")
+                        return
+
+                    livro = self.livroCtrl.buscarPorTitulo(titulo)
+
+                    if not livro:
+                        messagebox.showerror("Erro", f"Livro com título '{titulo}' não encontrado.")
+                        return
+
+                    # Atualiza quantidade
+                    novo_total = livro.getNExemplares() + int(quantidade)
+                    livro.setNExemplares(novo_total)
+
+                    self.livroCtrl.setNExemplares(titulo, novo_total)
+
+                    load_livros()
+
+                    messagebox.showinfo(
+                        "Sucesso",
+                        f"Foram adicionados {quantidade} exemplares ao livro '{livro.getTitulo()}'."
+                    )
+
+                    modal.destroy()
+
+                CTkButton(modal, text="Confirmar", command=confirmar_add).pack(pady=20)
+
         # Botões e tabela
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
             btn_adcionar.place(x=375, y=80)
+            btn_adcionar.configure(command=add_livro)
 
             btn_remover = CTkButton(livros_page_fm, text="Remover Livros", width=120)
-            btn_remover.place(x=500, y=80) 
+            btn_remover.place(x=500, y=80)
+            btn_remover.configure(command=delete_livro)
+
+            btn_add_ex = CTkButton(livros_page_fm, text="Add Exemplares", width=140)
+            btn_add_ex.place(x=375, y=120)
+            btn_add_ex.configure(command=modal_add_exemplares)
 
             btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
             btn_buscar.place(x=645, y=80)
-
-            btn_aumentar_exemplares = CTkButton(livros_page_fm, text="Aumentar Exemplares", width=150)
-            btn_aumentar_exemplares.place(relx=0.41, rely=0.2)
-
+            btn_buscar.configure(command=buscar_livro)
+            
         # Tabela de livros
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=40, y=345, width=750, height=400)
+            tv.place(x=40, y=195, width=750, height=400)
             tv.column("#0", width=0, stretch="no")
             tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv.column("ID", anchor="center", width=50)
@@ -324,17 +373,10 @@ class Aplication():
             tv.heading("Exemplares", text="Exemplares", anchor="center")
 
             tv.scrollbar = tk.Scrollbar(livros_page_fm, orient="vertical", command=tv.yview)
-            tv.scrollbar.place(x=790, y=145, height=400)
+            tv.scrollbar.place(x=790, y=195, height=400)
             tv.configure(yscrollcommand=tv.scrollbar.set)
-
-
             
             load_livros()
-
-            btn_adcionar.configure(command=add_livro)
-            btn_aumentar_exemplares.configure(command=aumentar_exemplares)
-            btn_remover.configure(command=delete_livro)
-            btn_buscar.configure(command=buscar_livro)
 
         def multas_page():
             multas_page_fm = CTkFrame(page_frame)
@@ -343,7 +385,6 @@ class Aplication():
             multas_page_fm.pack(fill="both", expand=True)
 
         def about_page():
-
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")
             about_page_fm.pack(fill="both", expand=True)

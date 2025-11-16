@@ -11,6 +11,10 @@ class LivroController:
     def getLivros(self):
         return self.__livros
 
+    def setNExemplares(self,titulo,qtd):
+        livro = self.buscarPorTitulo(titulo)
+        livro.setNExemplares(qtd)
+        self.salvarLivros()
 
     def criarLivro(self, titulo, genero, editora, autor, n_exemplares):
         
