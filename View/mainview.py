@@ -214,8 +214,7 @@ class Aplication():
             def add_livro():
                 modal_add_livro()
     
-            def delete_livro():
-                pass
+            
             def buscar_livro():
                 pass   
 
@@ -224,8 +223,23 @@ class Aplication():
             lb.place(x=10, y=10)
             livros_page_fm.pack(fill="both", expand=True)
 
-            vid = CTkEntry(livros_page_fm, placeholder_text="Digite algo...", width=200)
-            vid.place(x=85, y=50)
+            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite algo...", width=200)
+            nome_livro.place(x=85, y=50)
+
+            def delete_livro():
+                titiloDelete = nome_livro.get()
+                if titiloDelete == "":
+                    messagebox.showerror("Erro", "Por favor, insira o título do livro a ser removido.")
+                    return
+                livro = self.livroCtrl.buscarPorTitulo(titiloDelete)
+                if not livro:
+                    messagebox.showerror("Erro", f"Livro com título '{titiloDelete}' não encontrado.")
+                    return
+                self.livroCtrl.removerLivroPorId(livro.getId())
+                load_livros()
+                messagebox.showinfo("Sucesso", f"Livro '{titiloDelete}' removido com sucesso.")
+                nome_livro.delete(0, 'end')
+                nome_livro.focus()
             
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
             btn_adcionar.place(x=375, y=50)
