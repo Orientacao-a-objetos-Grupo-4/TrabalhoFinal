@@ -94,9 +94,8 @@ class Usuario:
     
 
     def cadastrarUsuario(pessoaLogada, nome, login, senha, tipo: TipoUsuario):
-        if pessoaLogada.getTipo() == TipoUsuario.FUNCIONARIO and tipo == TipoUsuario.CLIENTE:
+        try:
             return Usuario.criar_usuario(nome, login, senha, tipo)
-        elif pessoaLogada.getTipo() == TipoUsuario.ADMINISTRADOR:
-            return Usuario.criar_usuario(nome, login, senha, tipo)
-        else:
+        except Exception as e:
+            print(f"Erro: {e}")
             return None
