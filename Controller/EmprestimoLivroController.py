@@ -2,6 +2,8 @@ import os
 from datetime import date
 from Model import Usuario
 from Model.EmprestimoLivro import EmprestimoLivro
+from Untils.Enums import StatusEmprestimo
+
 
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt", clienteController=None, multaController=None, livroController=None):
@@ -11,17 +13,21 @@ class EmprestimoLivroController:
         self.__livroController = livroController
         self.__multaController = multaController
 
-        # Corrigido: garantir existência do arquivo antes de carregar
         os.makedirs(os.path.dirname(arquivo), exist_ok=True)
         if not os.path.exists(arquivo):
             open(arquivo, "w", encoding="utf-8").close()
 
         self.carregarEmprestimos()
 
-    # -------- Setters de dependências --------
-    def setClienteController(self, clienteController): self.__clienteController = clienteController
-    def setMultaController(self, multaController): self.__multaController = multaController
-    def setLivroController(self, livroController): self.__livroController = livroController
+    # -------- Setters --------
+    def setClienteController(self, c):
+        self.__clienteController = c
+
+    def setMultaController(self, m):
+        self.__multaController = m
+
+    def setLivroController(self, l):
+        self.__livroController = l
 
     # -------- Métodos principais --------
     def getEmprestimos(self):
@@ -31,42 +37,36 @@ class EmprestimoLivroController:
         self.__emprestimos.append(emprestimo)
         self.salvarEmprestimos()
 
-    # RETIRADO: método getItens() pois empréstimo armazena itens, não o controller
-
-    # -------- Busca itens dentro de um empréstimo --------
-    def retornarItemPorId(self, idEmprestimo, idLivro):
-        emprestimo = self.buscarPorId(idEmprestimo)
-        if not emprestimo:
-            return None
-
-        for livro in emprestimo.getItens():
-            if livro.getId() == idLivro:
-                return livro
-
-        return None
-
-    def buscarporIdLivro(self, idEmprestimo):
-        return self.buscarPorId(idEmprestimo)
-
-    def verificarLivro(self, idLivro, idEmprestimo):
-        emprestimo = self.buscarPorId(idEmprestimo)
-        if not emprestimo:
-            return False
-
-        return any(livro.getId() == idLivro for livro in emprestimo.getItens())
-
-    def removerEmprestimo(self, emprestimo):
-        if emprestimo in self.__emprestimos:
-            self.__emprestimos.remove(emprestimo)
-            self.salvarEmprestimos()
-
     def buscarPorId(self, id):
         for e in self.__emprestimos:
             if e.getId() == id:
                 return e
         return None
 
-    # -------- Registrar devolução + multa --------
+    def retornarItemPorId(self, idEmprestimo, idLivro):
+        emprestimo = self.buscarPorId(idEmprestimo)
+        if not emprestimo:
+            return None
+
+        for item in emprestimo.getItens():
+            if item.getLivro().getId() == idLivro:
+                return item
+
+        return None
+
+    def verificarLivro(self, idLivro, idEmprestimo):
+        emprestimo = self.buscarPorId(idEmprestimo)
+        if not emprestimo:
+            return False
+
+        return any(item.getLivro().getId() == idLivro for item in emprestimo.getItens())
+
+    def removerEmprestimo(self, emprestimo):
+        if emprestimo in self.__emprestimos:
+            self.__emprestimos.remove(emprestimo)
+            self.salvarEmprestimos()
+
+    # -------- Registrar devolução --------
     def registrarDevolucao(self, idEmprestimo, dataDevolucao):
         emprestimo = self.buscarPorId(idEmprestimo)
         if not emprestimo:
@@ -75,13 +75,14 @@ class EmprestimoLivroController:
 
         multa = emprestimo.registrarDevolucao(dataDevolucao)
 
-        # Evita multa duplicada
+        # Evita duplicar multa
         if multa and self.__multaController:
-            multasExistentes = [
+            multas_existentes = [
                 m for m in self.__multaController.getMultas()
                 if m.getEmprestimo().getId() == emprestimo.getId()
             ]
-            if not multasExistentes:
+
+            if not multas_existentes:
                 self.__multaController.addMulta(multa)
 
         self.salvarEmprestimos()
@@ -91,15 +92,15 @@ class EmprestimoLivroController:
         with open(self.__arquivo, "w", encoding="utf-8") as f:
             for e in self.__emprestimos:
                 dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
-                dataDevolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else ""
+                dataPrevista = e.getDataPrevista().isoformat() if e.getDataPrevista() else ""
                 multa_id = e.getMulta().getId() if e.getMulta() else ""
-                itens_str = ",".join(str(i.getId()) for i in e.getItens()) if e.getItens() else ""
+                itens_str = ",".join(str(i.getLivro().getId()) for i in e.getItens())
 
                 f.write(
                     f"{e.getId()};"
                     f"{e.getCliente().getId()};"
                     f"{dataEmprestimo};"
-                    f"{dataDevolucao};"
+                    f"{dataPrevista};"
                     f"{e.getStatus().name};"
                     f"{multa_id};"
                     f"{itens_str}\n"
@@ -115,7 +116,7 @@ class EmprestimoLivroController:
                 if len(dados) < 5:
                     continue
 
-                id, idCliente, dataEmprestimo, dataDevolucao, status = dados[:5]
+                id, idCliente, dataEmprestimo, dataPrevista, status = dados[:5]
 
                 cliente = (
                     self.__clienteController.buscarPorId(idCliente)
@@ -127,16 +128,15 @@ class EmprestimoLivroController:
                     id=id,
                     cliente=cliente,
                     dataEmprestimo=date.fromisoformat(dataEmprestimo) if dataEmprestimo else None,
-                    dataDevolucao=date.fromisoformat(dataDevolucao) if dataDevolucao else None,
+                    dataPrevista=date.fromisoformat(dataPrevista) if dataPrevista else None,
+                    status=StatusEmprestimo[status]
                 )
 
-                emprestimo.setStatus(status)
-
-                # Carregar itens do empréstimo
+                # Carregar itens
                 if len(dados) >= 7 and dados[6]:
-                    itens_ids = dados[6].split(",")
+                    livros_ids = dados[6].split(",")
 
-                    for idLivro in itens_ids:
+                    for idLivro in livros_ids:
                         livro = self.__livroController.buscar_livro_por_id(idLivro)
                         if livro:
                             emprestimo.addItem(livro)

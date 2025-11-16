@@ -155,9 +155,12 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
 
                         livro = livroController.buscarPorId(uuid_from_maybe_string(id_livro))
                         if not livro:
-                            livro = livroController.buscarPorId(id_livro)                       
+                            livro = livroController.buscarPorId(id_livro)
+                        
+                        if not livro:
                             print("Livro não encontrado.")
                             continue
+
 
                         # Verificar se já está no empréstimo
                         if emprestimoController.verificarLivro(livro.getId(), emprestimo.getId()):
@@ -168,14 +171,11 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                             print("Não há exemplares disponíveis para este livro.")
                             continue
 
-                        # Adicionar ao empréstimo
-                        emprestimo.addItem(livro)  # <---- DIRETO, sem ItemEmprestimo
+                        
+                        emprestimo.addItem(livro)  
                         print(f"Livro '{livro.getTitulo()}' adicionado ao empréstimo.")
 
-                        if len(emprestimo.getItens()) == 0:
-                            print("Nenhum livro selecionado. Empréstimo cancelado.")
-                            continue
-
+               
                         # Registrar nos controllers
                         emprestimoController.addEmprestimo(emprestimo)
                         cliente.addEmprestimo(emprestimo)
@@ -187,6 +187,10 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 except Exception as ex:
                     print(f"Erro ao registrar empréstimo: {ex}")
 
+                finally:
+                        if len(emprestimo.getItens()) == 0:
+                            print("Nenhum livro selecionado. Empréstimo cancelado.")
+                            continue
 
 
             elif op == "4":

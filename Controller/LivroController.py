@@ -29,6 +29,12 @@ class LivroController:
             livro.setNExemplares(livro.getNExemplares() + 1)
             self.salvarLivros()
 
+    def addExemplar(self,titulo,qtd):
+        livro = self.getLivroByTitulo(titulo)
+        livro.setNExemplares(livro.getNExemplares() + qtd)
+        self.salvarLivros()
+
+
     def getLivroByTitulo(self, titulo):
         for livro in self.__livros:
             if livro.getTitulo().lower() == titulo.lower():

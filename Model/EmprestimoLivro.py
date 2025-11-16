@@ -51,22 +51,24 @@ class EmprestimoLivro:
     def setMulta(self, multa):
         self.__multa = multa
 
-    # ---------------- Métodos auxiliares ----------------
-    def adicionar_item(self, emprestimo_id, livro_id):
-        livro = self.__livroController.buscar_livro_por_id(livro_id)
+    def setLivrros(self,livro):
+        self.__livros = livro
 
-        if livro is None:
-            return None
+
+    # ---------------- Métodos auxiliares ----------------
+    def addItem(self, livro):
+        """Adiciona um item ao empréstimo."""
+        from Model import ItensEmprestimo
 
         novo_item = ItensEmprestimo(
             id=str(len(self.__itens) + 1),
-            emprestimoId=emprestimo_id,
+            emprestimoId=self.__id,
             livro=livro
         )
-
         self.__itens.append(novo_item)
-        self.__salvar()
         return novo_item
+
+
 
 
     def calcularAtraso(self, data_devolucao) :
