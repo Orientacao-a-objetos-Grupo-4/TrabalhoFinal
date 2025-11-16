@@ -17,6 +17,17 @@ class Aplication():
         self.janela_nova()
         root.mainloop()
 
+    class ItemEmprestimo:
+        def __init__(self, livro):
+            self._livro = livro
+
+        def getId(self):
+            return self._livro.getId()
+
+        def getLivro(self):
+            return self._livro
+    
+    #Controllers
     userCtrl = UsuarioController()
     livroCtrl = LivroController()
 
@@ -25,12 +36,12 @@ class Aplication():
         self.root.resizable(False, False)
         self.root.title("Login")
         
-        #Definindo o modo de aparência e o tamanho da imagem
+    #Definindo o modo de aparência e o tamanho da imagem
         image_login = customtkinter.CTkImage(light_image = Image.open("View/images/img-login.png"),
                                              dark_image= Image.open("View/images/img-login.png"),
                                              size=(400, 400))
         
-        #Adicionando os elementos na tela
+    #Adicionando os elementos na tela
         label_img = customtkinter.CTkLabel(self.root, image=image_login, text="")
         label_img.grid(row=0, column=0, padx=50, pady=100, sticky='n')
                                                   
@@ -146,14 +157,62 @@ class Aplication():
             home_page_fm.pack(fill="both", expand=True)
 
         def livros_page():  
-
             def load_livros():
-                 for livro in self.livroCtrl.getLivros(): 
-                        tv.insert(parent='', index='end', iid=livro.getId(), text='',
-                                values=(livro.getId(), livro.getTitulo(), livro.getGenero(), livro.getEditora(), livro.getAutor(), livro.getNExemplares()))
+                 for item in tv.get_children():
+                        tv.delete(item)
+            # insere os livros
+                 for livro in self.livroCtrl.getLivros():
+                        tv.insert("", "end", iid=livro.getId(), values=(
+                            livro.getId(),
+                            livro.getTitulo(),
+                            livro.getGenero(),
+                            livro.getEditora(),
+                            livro.getAutor(),
+                            livro.getNExemplares()
+                            ))
+                        
+            # função do modal de adicionar livro
+            def modal_add_livro():
+                modal = CTkToplevel(nova_janela)
+                modal.geometry("400x400")
+                modal.title("Adicionar Livro")
+                modal.grab_set()
+                
+                lbl_title = CTkLabel(modal, text="Adicionar Novo Livro", font=("Bold", 16))
+                lbl_title.pack(pady=10)
+                entry_titulo = CTkEntry(modal, placeholder_text="Título")
+                entry_titulo.pack(pady=5)
+                entry_genero = CTkEntry(modal, placeholder_text="Gênero")
+                entry_genero.pack(pady=5)
+                entry_editora = CTkEntry(modal, placeholder_text="Editora")
+                entry_editora.pack(pady=5)
+                entry_autor = CTkEntry(modal, placeholder_text="Autor")
+                entry_autor.pack(pady=5)
+                entry_n_exemplares = CTkEntry(modal, placeholder_text="Número de Exemplares")
+                entry_n_exemplares.pack(pady=5)
+
+                def confirmar():
+                    titulo = entry_titulo.get()
+                    genero = entry_genero.get()
+                    editora = entry_editora.get()
+                    autor = entry_autor.get()
+                    nex = entry_n_exemplares.get()
+
+                    if titulo == "" or genero == "" or editora == "" or autor == "" or nex == "":
+                        messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
+                        return
+
+                    self.livroCtrl.criarLivro(titulo, genero, editora, autor, nex)
+
+                    load_livros()
+
+                    modal.destroy()
+
+                btn_adicionar = CTkButton(modal, text="Adicionar", command=confirmar)    
+                btn_adicionar.pack(pady=20)
+
             def add_livro():
-                   pass
-                   
+                modal_add_livro()
     
             def delete_livro():
                 pass
@@ -166,27 +225,28 @@ class Aplication():
             livros_page_fm.pack(fill="both", expand=True)
 
             vid = CTkEntry(livros_page_fm, placeholder_text="Digite algo...", width=200)
-            vid.place(x=10, y=50)
+            vid.place(x=85, y=50)
             
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
-            btn_adcionar.place(x=250, y=50)
+            btn_adcionar.place(x=375, y=50)
 
             btn_remover = CTkButton(livros_page_fm, text="Remover Livros", width=120)
-            btn_remover.place(x=380, y=50) 
+            btn_remover.place(x=500, y=50) 
 
             btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
-            btn_buscar.place(x=600, y=50)
+            btn_buscar.place(x=645, y=50)
 
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=100, y=130, width=860, height=400)
+            tv.place(x=100, y=130, width=900, height=400)
             tv.column("#0", width=0, stretch="no")
-            tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares" )
+            tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares", "Add Exemplares")
             tv.column("ID", anchor="center", width=50)
             tv.column("Título", anchor="w", width=200)
             tv.column("Gênero", anchor="center", width=100)
             tv.column("Editora", anchor="w", width=150)
             tv.column("Autor", anchor="w", width=150)
             tv.column("Exemplares", anchor="center", width=100)
+            tv.column("Add Exemplares", anchor="center", width=100)
 
             tv.heading("ID", text="ID", anchor="center")
             tv.heading("Título", text="Título", anchor="center")
@@ -194,6 +254,7 @@ class Aplication():
             tv.heading("Editora", text="Editora", anchor="center")
             tv.heading("Autor", text="Autor", anchor="center")
             tv.heading("Exemplares", text="Exemplares", anchor="center")
+            tv.heading("Add Exemplares", text="Add Exemplares", anchor="center")
 
             load_livros()
             btn_adcionar.configure(command=add_livro)
