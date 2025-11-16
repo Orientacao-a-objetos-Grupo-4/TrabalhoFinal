@@ -13,8 +13,7 @@ class Aplication():
     def __init__(self):
         super().__init__()
         self.root = root
-        #self.tela_login()
-        self.janela_nova()
+        self.tela_login()
         root.mainloop()
 
     class ItemEmprestimo:
@@ -30,6 +29,7 @@ class Aplication():
     #Controllers
     userCtrl = UsuarioController()
     livroCtrl = LivroController()
+    usuarioLogado = None
 
     def tela_login(self):
         self.root.geometry("900x600")
@@ -74,19 +74,21 @@ class Aplication():
         # Limpa mensagem anterior
         self.label_status.configure(text="")
 
+        usuario = self.userCtrl.autenticar_usuario(usuario, senha)
         # Verifica se os dados estão corretos
-        if  self.userCtrl.autenticar_usuario(usuario, senha):
+        if  usuario:
             self.label_status.configure(
                 text="✅ Login bem-sucedido!",
                 text_color="green")
-            self.root.after(1000, self.janela_nova)
+                
+            self.root.after(1000, self.janela_nova(usuario))
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
             )   
 
-    def janela_nova(self): 
+    def janela_nova(self, usuario): 
     # Fecha completamente a janela de login
         self.root.destroy()
 
@@ -96,7 +98,7 @@ class Aplication():
         nova_janela.title("Sistema de Biblioteca")
 
         menu_bar_color = '#2b2b2b'
-
+        
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
         home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
@@ -149,7 +151,7 @@ class Aplication():
         # Páginas
         def home_page():
             home_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(home_page_fm,text=f"Bem-vindo ao Home Page!", font=("Bold", 20))
+            lb = CTkLabel(home_page_fm,text=f"Bem-vindo Home ao Home Page!", font=("Bold", 20))
             lb.place(x=10, y=10)
 
             
@@ -213,17 +215,14 @@ class Aplication():
 
             def add_livro():
                 modal_add_livro()
-    
-            
-            def buscar_livro():
-                pass   
 
+            
             livros_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(livros_page_fm, text="Bem-vindo 'Nome do Usuário' - 'Cargo' ", font=("Bold", 20))
-            lb.place(x=10, y=10)
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=10)
             livros_page_fm.pack(fill="both", expand=True)
 
-            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite algo...", width=200)
+            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
             nome_livro.place(x=85, y=50)
 
             def delete_livro():
@@ -240,7 +239,24 @@ class Aplication():
                 messagebox.showinfo("Sucesso", f"Livro '{titiloDelete}' removido com sucesso.")
                 nome_livro.delete(0, 'end')
                 nome_livro.focus()
-            
+                
+            def buscar_livro():
+                livro_desejado = nome_livro.get()
+                if livro_desejado == "":
+                    messagebox.showerror("Erro", "Por favor, insira o título do livro a ser buscado.")
+                    return
+                livro =self.livroCtrl.buscarPorTitulo(livro_desejado)
+                if not livro:
+                    messagebox.showerror("Erro", f"Livro com título '{livro_desejado}' não encontrado.")
+                    return
+                else:
+                    tv.selection_set(livro.getId())
+                    tv.see(livro.getId())
+                    messagebox.showinfo("Sucesso", f"Livro '{livro_desejado}' encontrado e selecionado na tabela.")
+                    nome_livro.delete(0, 'end')
+                    nome_livro.focus()
+
+        # Botões e tabela
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
             btn_adcionar.place(x=375, y=50)
 
@@ -251,16 +267,15 @@ class Aplication():
             btn_buscar.place(x=645, y=50)
 
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=100, y=130, width=900, height=400)
+            tv.place(x=80, y=130, width=900, height=400)
             tv.column("#0", width=0, stretch="no")
-            tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares", "Add Exemplares")
+            tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv.column("ID", anchor="center", width=50)
             tv.column("Título", anchor="w", width=200)
             tv.column("Gênero", anchor="center", width=100)
             tv.column("Editora", anchor="w", width=150)
             tv.column("Autor", anchor="w", width=150)
             tv.column("Exemplares", anchor="center", width=100)
-            tv.column("Add Exemplares", anchor="center", width=100)
 
             tv.heading("ID", text="ID", anchor="center")
             tv.heading("Título", text="Título", anchor="center")
@@ -268,9 +283,13 @@ class Aplication():
             tv.heading("Editora", text="Editora", anchor="center")
             tv.heading("Autor", text="Autor", anchor="center")
             tv.heading("Exemplares", text="Exemplares", anchor="center")
-            tv.heading("Add Exemplares", text="Add Exemplares", anchor="center")
 
+            tv.scrollbar = tk.Scrollbar(livros_page_fm, orient="vertical", command=tv.yview)
+            tv.scrollbar.place(x=975, y=130, height=400)
+            tv.configure(yscrollcommand=tv.scrollbar.set)
+            
             load_livros()
+
             btn_adcionar.configure(command=add_livro)
             btn_remover.configure(command=delete_livro)
             btn_buscar.configure(command=buscar_livro)
