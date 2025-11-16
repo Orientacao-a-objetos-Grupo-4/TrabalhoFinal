@@ -5,6 +5,8 @@ import tkinter as tk
 from PIL import Image
 from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
+from Controller.MultaController import MultaController
+import locale
 
 
 root = CTk()
@@ -29,6 +31,7 @@ class Aplication():
     #Controllers
     userCtrl = UsuarioController()
     livroCtrl = LivroController()
+    multasCtrl = MultaController()
     usuarioLogado = None
 
     def tela_login(self):
@@ -128,8 +131,8 @@ class Aplication():
         # Animação de extensão do menu
         def extending_animation():
             current_width = menu_bar_frame.winfo_width()
-            if not current_width > 200:
-                current_width += 10
+            if not current_width >= 150:
+                current_width += 100
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=1, func=extending_animation)
 
@@ -141,7 +144,7 @@ class Aplication():
         def folding_animation():
             current_width = menu_bar_frame.winfo_width()
             if current_width != 50:
-                current_width -= 10
+                current_width -= 100
                 menu_bar_frame.configure(width=current_width)
                 nova_janela.after(ms=8, func=folding_animation)
 
@@ -337,25 +340,45 @@ class Aplication():
                 CTkButton(modal, text="Confirmar", command=confirmar_add).pack(pady=20)
 
         # Botões e tabela
-            btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
-            btn_adcionar.place(x=375, y=80)
+            btn_adcionar = CTkButton(livros_page_fm,
+                                     text="Add Livros",
+                                     width=130,
+                                     fg_color = "#63C5A1",
+                                     font=("Helvetica", 14, "bold"),
+                                     text_color= "white")
+            btn_adcionar.place(x=520, y=80)
             btn_adcionar.configure(command=add_livro)
 
-            btn_remover = CTkButton(livros_page_fm, text="Remover Livros", width=120)
-            btn_remover.place(x=500, y=80)
+            btn_remover = CTkButton(livros_page_fm,
+                                    text="Remover Livros",
+                                    width=130,
+                                    fg_color = "#63C5A1",
+                                    font=("Helvetica", 14, "bold"),
+                                    text_color= "white")
+            btn_remover.place(x=520, y=120)
             btn_remover.configure(command=delete_livro)
 
-            btn_add_ex = CTkButton(livros_page_fm, text="Add Exemplares", width=140)
+            btn_add_ex = CTkButton(livros_page_fm,
+                                   text="Add Exemplares",
+                                   width=130,
+                                   fg_color = "#63C5A1",
+                                   font=("Helvetica", 14, "bold"),
+                                   text_color= "white")
             btn_add_ex.place(x=375, y=120)
             btn_add_ex.configure(command=modal_add_exemplares)
 
-            btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
-            btn_buscar.place(x=645, y=80)
+            btn_buscar = CTkButton(livros_page_fm,
+                                   text="Buscar Livros",
+                                   width=130,
+                                   fg_color = "#63C5A1",
+                                   font=("Helvetica", 14, "bold"),
+                                   text_color= "white")
+            btn_buscar.place(x=375, y=80)
             btn_buscar.configure(command=buscar_livro)
             
         # Tabela de livros
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=40, y=195, width=750, height=400)
+            tv.place(x=40, y=160, width=750, height=400)
             tv.column("#0", width=0, stretch="no")
             tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv.column("ID", anchor="center", width=50)
@@ -373,16 +396,71 @@ class Aplication():
             tv.heading("Exemplares", text="Exemplares", anchor="center")
 
             tv.scrollbar = tk.Scrollbar(livros_page_fm, orient="vertical", command=tv.yview)
-            tv.scrollbar.place(x=790, y=195, height=400)
+            tv.scrollbar.place(x=790, y=160, height=400)
             tv.configure(yscrollcommand=tv.scrollbar.set)
             
             load_livros()
 
         def multas_page():
+
+            def load_multas():
+                 for item in tv_multas.get_children():
+                        tv_multas.delete(item)
+            # Insere as multas na TreeView
+                 for multa in self.multasCtrl.getMultas():
+                        tv_multas.insert("", "end", id=multa.getId(), values=(
+                            multa.getId(),
+                            multa.getValor(),
+                            multa.getStatus(),
+                            multa.getEmprestimo(),
+                            multa.getCliente(),
+                            multa.getDataCriacao()
+                            ))
+                        
             multas_page_fm = CTkFrame(page_frame)
             lb = CTkLabel(multas_page_fm, text="Multas", font=("Bold", 20))
             lb.place(x=100, y=200)
             multas_page_fm.pack(fill="both", expand=True)
+
+            try:
+                # Tenta um formato comum para Linux/macOS
+                locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+            except locale.Error:
+                # Tenta um formato comum no Windows
+                try:
+                    locale.setlocale(locale.LC_ALL, 'Portuguese_Brazil')
+                except locale.Error:
+                    print("Aviso: Configuração de locale falhou.")
+
+            def formatar_moeda(valor):
+                # Formata um valor numérico para o formato de moeda (R$).
+                return locale.currency(valor, grouping=True, symbol=True)
+
+            # Tabela de multas
+            tv_multas = tk.ttk.Treeview(multas_page_fm)
+            tv_multas.place(x=40, y=160, width=750, height=400)
+            tv_multas.column("#0", width=0, stretch="no")
+            tv_multas['columns'] = ("ID", "Valor", "Status", "Empréstimo", "Cliente", "Data")
+            tv_multas.column("ID", anchor="center", width=50)
+            tv_multas.column("Valor", anchor="w", width=200)
+            tv_multas.column("Status", anchor="center", width=100)
+            tv_multas.column("Empréstimo", anchor="w", width=150)
+            tv_multas.column("Cliente", anchor="w", width=150)
+            tv_multas.column("Data", anchor="center", width=100)
+
+            tv_multas.heading("ID", text="ID", anchor="center")
+            tv_multas.heading("Valor", text="Valor", anchor="center")
+            tv_multas.heading("Status", text="Status", anchor="center")
+            tv_multas.heading("Empréstimo", text="Empréstimo", anchor="center")
+            tv_multas.heading("Cliente", text="Cliente", anchor="center")
+            tv_multas.heading("Data", text="Data", anchor="center")
+
+            # tv_multas.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_multas.yview)
+            # tv_multas.scrollbar.place(x=790, y=160, height=400)
+            # tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
+            
+            load_multas()
+
 
         def about_page():
             # Frame principal da página
