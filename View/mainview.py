@@ -264,6 +264,33 @@ class Aplication():
                     nome_livro.delete(0, 'end')
                     nome_livro.focus()
 
+            def modal_aumentar_exemplares():
+                modal = CTkToplevel(nova_janela)
+                modal.geometry("400x400")
+                modal.title("Adicionar Livro")
+                modal.grab_set()
+
+                def validar_numerro(valor):
+                     if valor =="":
+                        return True
+                     return valor.isdigit()
+                
+                vcmd = (modal.register(validar_numerro), '%P')
+
+                lbl_title = CTkLabel(modal, text="Adicionar Exemplares", font=("Bold", 16))
+                lbl_title.pack(pady=10)
+                modal_titulo =CTkEntry(modal, placeholder_text="Titulo do livro")
+                modal_titulo.pack(pady=5)
+                modal_exemplares =CTkEntry(modal, placeholder_text="Add nº exemplares")
+                modal_exemplares.pack(pady=5)
+
+                modal._exemplares.configure(validate="key", validatecommand=vcmd)
+
+
+
+
+            def aumentar_exemplares():
+                modal_aumentar_exemplares()
         # Botões e tabela
             btn_adcionar = CTkButton(livros_page_fm, text="Add Livros", width=100)
             btn_adcionar.place(x=375, y=80)
@@ -273,9 +300,13 @@ class Aplication():
 
             btn_buscar = CTkButton(livros_page_fm, text="Buscar Livros", width=120)
             btn_buscar.place(x=645, y=80)
+
+            btn_aumentar_exemplares = CTkButton(livros_page_fm, text="Aumentar Exemplares", width=150)
+            btn_aumentar_exemplares.place(relx=0.41, rely=0.2)
+
         # Tabela de livros
             tv = tk.ttk.Treeview(livros_page_fm)
-            tv.place(x=40, y=145, width=750, height=400)
+            tv.place(x=40, y=345, width=750, height=400)
             tv.column("#0", width=0, stretch="no")
             tv['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv.column("ID", anchor="center", width=50)
@@ -301,7 +332,7 @@ class Aplication():
             load_livros()
 
             btn_adcionar.configure(command=add_livro)
-            
+            btn_aumentar_exemplares.configure(command=aumentar_exemplares)
             btn_remover.configure(command=delete_livro)
             btn_buscar.configure(command=buscar_livro)
 
