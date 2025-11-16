@@ -1,8 +1,8 @@
 63082e77-a50b-49d1-9274-b1cbdf270606;oeroeri;djhfkj;sbdah;askhdj;95
 a8bbbda3-f71c-40c1-bb70-a81dd5f73981;zikavirus;sadakj;sadlak;jsakdhk;23
-bab78e71-ed7b-4632-9e01-26ea48805036;Google;viasd;asd;asdn;229
+bab78e71-ed7b-4632-9e01-26ea48805036;Google;viasd;asd;asdn;231
 e0b2b836-731e-42f4-9735-db3b89bf3112;BomdeGuerra;Ação;Cleitom;JuremaPneus;232
-1ab3b385-a634-43e7-b89f-33be5f7bd4b3;Giromba;Romance;PT;jingrey;2342
+1ab3b385-a634-43e7-b89f-33be5f7bd4b3;Giromba;Romance;PT;jingrey;2346
 711b379e-60d1-4e43-b781-4a9ea3cd4ed8;bom de guerra 2;Lutinha;Farmando Aura;Judas;309
 108ce7f2-0ad0-45de-b2b1-43cb34b2b7fd;Poco X6 Pro;Celular;Xiaomi;Xing Ling;860
 36156e78-8e81-4029-ba14-943ee603ca97;teste;genero;editora;autor;2
@@ -17,3 +17,4 @@ dced1bae-6437-4f9a-af65-5dd6e6582874;fernanda;teste;teste;teste;5
 561edac4-953b-4f4d-8cee-861f287fb328;jorge;teste;teste;teste;5
 5986a514-6598-41d8-be2a-da5033031674;mariano;teste;teste;teste;1
 1bf7dad6-454d-4ea0-9671-61db28a04a19;critovao;teste;teste;teste;5
+0a596951-9b0b-4255-bc44-6d5d5805414d;rebull;radical;fanta;nemesis;231
