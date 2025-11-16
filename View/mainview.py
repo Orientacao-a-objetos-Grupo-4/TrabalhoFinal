@@ -71,26 +71,35 @@ class Aplication():
 
     #Função de verificação de login
     def verificar_login(self):
-        """Verifica as credenciais ao clicar no botão"""
-        usuario = self.label_username.get()
+        usuario_login = self.label_username.get()
         senha = self.label_password.get()
 
         # Limpa mensagem anterior
         self.label_status.configure(text="")
 
-        usuario = self.userCtrl.autenticar_usuario(usuario, senha)
-        # Verifica se os dados estão corretos
-        if  usuario:
+        # Autentica usuário
+        usuario = self.userCtrl.autenticar_usuario(usuario_login, senha)
+
+        if usuario:
+            tipo = usuario.getTipo().name  
+
+            # Mostra mensagem de sucesso
             self.label_status.configure(
                 text="✅ Login bem-sucedido!",
-                text_color="green")
-                
-            self.root.after(500, lambda: self.janela_nova(usuario))
+                text_color="green"
+            )
+
+            # Abertura de tela de acordo com o tipo
+            if tipo == "FUNCIONARIO":
+                self.root.after(500, lambda: self.janela_nova(usuario))
+
+            elif tipo == "CLIENTE":
+                self.root.after(500, lambda: self.tela_funcionario())
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
-            )   
+            )
 
     def janela_nova(self, usuario): 
     # Fecha completamente a janela de login
@@ -120,8 +129,8 @@ class Aplication():
 
             indicator_lb.configure(fg_color='white')
 
-            #if menu_bar_frame.winfo_width() >= 50:
-                #fold_menu_bar()
+            if menu_bar_frame.winfo_width() >= 50:
+                fold_menu_bar()
 
             for frame in page_frame.winfo_children():
                 frame.destroy()
@@ -175,6 +184,15 @@ class Aplication():
                             ))
                         
             # função do modal de adicionar livro
+            # Página de livros
+            livros_page_fm = CTkFrame(page_frame)   
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=40)
+            livros_page_fm.pack(fill="both", expand=True)
+
+            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
+            nome_livro.place(x=85, y=80)
+
             def modal_add_livro():
                 modal = CTkToplevel(nova_janela)
                 modal.geometry("400x400")
@@ -226,15 +244,6 @@ class Aplication():
 
             def add_livro():
                 modal_add_livro()
-
-        # Página de livros
-            livros_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
-            livros_page_fm.pack(fill="both", expand=True)
-
-            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
-            nome_livro.place(x=85, y=80)
 
             def delete_livro():
                 titiloDelete = nome_livro.get()
@@ -460,7 +469,6 @@ class Aplication():
             # tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
             
             load_multas()
-
 
         def about_page():
             # Frame principal da página
