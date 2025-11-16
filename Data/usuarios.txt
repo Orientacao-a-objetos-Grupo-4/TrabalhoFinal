@@ -1,21 +1,2 @@
-ID,NOME,TIPO_USUARIO,LOGIN,SENHA,CPF
-1,João Silva,Cliente,joao.silva,senha1,11122233344
-2,Maria Souza,Cliente,maria.souza,senha2,22233344455
-3,Pedro Alves,Cliente,pedro.alves,senha3,33344455566
-4,Ana Paula Costa,Cliente,ana.costa,senha4,44455566677
-5,Rafaela Gomes,Cliente,rafa.gomes,senha5,55566677788
-6,Lucas Ferreira,Cliente,lucas.fer,senha6,66677788899
-7,Mariana Lima,Cliente,mari.lima,senha7,77788899900
-8,Gabriel Rocha,Cliente,gabi.rocha,senha8,88899900011
-9,Isabela Mendes,Cliente,isa.mendes,senha9,99900011122
-10,Matheus Ribeiro,Cliente,matheus.r,senha10,00011122233
-11,Laura Oliveira,Cliente,laura.oli,senha11,10120230340
-12,Daniel Pereira,Cliente,dani.per,senha12,20230340450
-13,Camila Santos,Cliente,camilas.s,senha13,30340450560
-14,Felipe Castro,Cliente,felipe.c,senha14,40450560670
-15,Julia Vaz,Cliente,julia.vaz,senha15,50560670780
-16,Adriana Meireles,Bibliotecario,adriana.b,biblio1,60670780890
-17,Roberto Silveira,Bibliotecario,roberto.b,biblio2,70780890900
-18,Patricia Campos,Bibliotecario,patricia.c,biblio3,80890900010
-19,Sergio Dantas,Bibliotecario,sergio.d,biblio4,90900010120
-20,Viviane Melo,Bibliotecario,viviane.m,biblio5,01012023034
+e0169cdb-2e80-4bb5-890d-1cd5dbb7adb9;admin;admin;8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918;ADMINISTRADOR;;
+dc6b0d98-d37b-4ada-b5f0-5b49d9e3c9f5;Pedro;pedro;ee5cd7d5d96c8874117891b2c92a036f96918e66c102bc698ae77542c186f981;FUNCIONARIO;;
