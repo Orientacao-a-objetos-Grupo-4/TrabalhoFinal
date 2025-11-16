@@ -4,6 +4,7 @@ from tkinter import messagebox
 import tkinter as tk
 from PIL import Image
 from Controller.UsuarioController import UsuarioController
+from Controller.LivroController import LivroController
 
 
 root = CTk()
@@ -17,6 +18,7 @@ class Aplication():
         root.mainloop()
 
     userCtrl = UsuarioController()
+    livroCtrl = LivroController()
 
     def tela_login(self):
         self.root.geometry("900x600")
@@ -144,15 +146,15 @@ class Aplication():
             home_page_fm.pack(fill="both", expand=True)
 
         def livros_page():  
+
+            def load_livros():
+                 for livro in self.livroCtrl.getLivros(): 
+                        tv.insert(parent='', index='end', iid=livro.getId(), text='',
+                                values=(livro.getId(), livro.getTitulo(), livro.getGenero(), livro.getEditora(), livro.getAutor(), livro.getNExemplares()))
             def add_livro():
-                    if vid.get() == "":
-                        messagebox.showwarning("Entrada Inválida", "Por favor, insira um valor válido.")
-                        return
-                    tv.insert(parent='', index='end', iid=vid.get(), text='',
-                              values=(vid.get(), "Game of Thrones", "Fantasia", "Suma de Letras", "George R. R.", "10"))
-                    vid.delete(0, 'end')
-                    vid.focus()   
-                        
+                   pass
+                   
+    
             def delete_livro():
                 pass
             def buscar_livro():
@@ -193,6 +195,7 @@ class Aplication():
             tv.heading("Autor", text="Autor", anchor="center")
             tv.heading("Exemplares", text="Exemplares", anchor="center")
 
+            load_livros()
             btn_adcionar.configure(command=add_livro)
             btn_remover.configure(command=delete_livro)
             btn_buscar.configure(command=buscar_livro)
