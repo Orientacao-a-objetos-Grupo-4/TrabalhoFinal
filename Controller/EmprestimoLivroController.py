@@ -75,6 +75,19 @@ class EmprestimoLivroController:
             self.__emprestimos.remove(emprestimo)
             self.salvarEmprestimos()
 
+    def validarClienteEmprestimo(self, idCliente, idLivro):
+        idCliente_str = str(idCliente).strip()
+        idLivro_str = str(idLivro).strip()
+        for emprestimo in self.__emprestimos:
+            if str(emprestimo.getCliente().getId()) == idCliente_str and \
+                emprestimo.getStatus() == StatusEmprestimo.ATIVO:
+                for item in emprestimo.getItens():
+                    id_livro_no_emprestimo = str(item.getLivro().getId()).strip()
+                    print(id_livro_no_emprestimo, idLivro_str)
+                    if id_livro_no_emprestimo == idLivro_str:
+                        return True
+        return False
+
     # -------- Registrar devolução --------
     def registrarDevolucao(self, idEmprestimo, dataDevolucao):
         emprestimo = self.buscarPorId(idEmprestimo)
@@ -150,7 +163,6 @@ class EmprestimoLivroController:
 
                 # Carregar livros (índice 6)
                 if len(dados) >= 6 and dados[6]:
-                    print(dados[6])
                     livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
                         livro = self.__livroController.buscarPorId(uuid_from_maybe_string(idLivro))

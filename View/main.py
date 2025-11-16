@@ -133,7 +133,7 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                     print(cliente.getId())
 
                     if not cliente:
-                        print("Cliente não encontrado pelo login.")
+                        print("Cliente não encontrado pelo ID.")
                         continue
 
                     # Criar empréstimo
@@ -152,6 +152,11 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
 
                         if id_livro == "":
                             break
+
+                        if emprestimoController.validarClienteEmprestimo(cliente.getId(), id_livro):
+                            print("Este cliente já possui este livro emprestado e não o devolveu.")
+                            continue
+
 
                         livro = livroController.buscarPorId(uuid_from_maybe_string(id_livro))
                         if not livro:
