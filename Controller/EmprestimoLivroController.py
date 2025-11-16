@@ -30,6 +30,8 @@ class EmprestimoLivroController:
         self.__livroController = l
 
     # -------- Métodos principais --------
+  
+
     def getEmprestimos(self):
         return self.__emprestimos.copy()
 
@@ -119,7 +121,7 @@ class EmprestimoLivroController:
                 id, idCliente, dataEmprestimo, dataPrevista, status = dados[:5]
 
                 cliente = (
-                    self.__clienteController.buscarPorId(idCliente)
+                    self.__clienteController.buscar_por_id(idCliente)
                     if self.__clienteController
                     else Usuario(idCliente, "", "", "")
                 )
@@ -132,13 +134,24 @@ class EmprestimoLivroController:
                     status=StatusEmprestimo[status]
                 )
 
-                # Carregar itens
-                if len(dados) >= 7 and dados[6]:
-                    livros_ids = dados[6].split(",")
+                print(dados[5])
 
+
+                # Carregar multa (índice 5)
+                if len(dados) > 5 and dados[5]:
+                    multa_id = dados[5]
+                    multa = self.__multaController.buscarPorId(multa_id)
+                    if multa:
+                        emprestimo.setMulta(multa)
+
+                # Carregar livros (índice 6)
+                if len(dados) > 6 and dados[6]:
+                    livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
-                        livro = self.__livroController.buscar_livro_por_id(idLivro)
+                        livro = self.__livroController.buscarPorId(idLivro)
                         if livro:
                             emprestimo.addItem(livro)
+
+                
 
                 self.__emprestimos.append(emprestimo)

@@ -30,10 +30,14 @@ class LivroController:
             self.salvarLivros()
 
     def addExemplar(self,titulo,qtd):
-        livro = self.getLivroByTitulo(titulo)
+        livro = self.buscarPorTitulo(titulo)
         livro.setNExemplares(livro.getNExemplares() + qtd)
         self.salvarLivros()
 
+    def setNExemplares(self,titulo,qtd):
+        livro = self.getLivroByTitulo(titulo)
+        livro.setNExemplares(qtd)
+        self.salvarLivros()
 
     def getLivroByTitulo(self, titulo):
         for livro in self.__livros:
@@ -43,7 +47,6 @@ class LivroController:
 
     def buscarPorId(self, id):
         for livro in self.__livros:
-            print(f" id {id} , idlivor {livro.getId()}")
             if livro.getId() == id:
                 return livro
             

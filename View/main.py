@@ -175,23 +175,19 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                         emprestimo.addItem(livro)  
                         print(f"Livro '{livro.getTitulo()}' adicionado ao empréstimo.")
 
+                    if len(emprestimo.getItens()) == 0:
+                        print("Nenhum livro selecionado. Empréstimo cancelado.")
+                        continue
                
-                        # Registrar nos controllers
-                        emprestimoController.addEmprestimo(emprestimo)
-                        cliente.addEmprestimo(emprestimo)
+                    # Registrar nos controllers
+                    emprestimoController.addEmprestimo(emprestimo)
+                    cliente.addEmprestimo(emprestimo)
 
-                        print(f"\nEmpréstimo criado com sucesso!")
-                        print(f"ID: {emprestimo.getId()}")
-                        print(f"Livros emprestados: {len(emprestimo.getItens())}")
-
+                    print(f"\nEmpréstimo criado com sucesso!")
+                    print(f"ID: {emprestimo.getId()}")
+                    print(f"Livros emprestados: {len(emprestimo.getItens())}")
                 except Exception as ex:
                     print(f"Erro ao registrar empréstimo: {ex}")
-
-                finally:
-                        if len(emprestimo.getItens()) == 0:
-                            print("Nenhum livro selecionado. Empréstimo cancelado.")
-                            continue
-
 
             elif op == "4":
                 try:
@@ -213,6 +209,18 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 for e in emprestimos:
                     cliente_nome = e.getCliente().getNomeUsuario()
                     print(f"{e.getId()} - Cliente: {cliente_nome} - Status: {e.getStatus().name}")
+                    print("Livros:")
+                    if not e.getItens().__len__() == 0:
+                        print("Nenhum livro empréstimo.")
+                    else:
+                        for i in e.getItens():
+                            print(f"ID Livro: {i.getLivro().getId()} - Livro: {i.getLivro().getTitulo()}")
+                        print("Multas:")
+                    if not e.getMulta():
+                        print("Nenhuma multa registrada.")
+                    else:
+                        for m in e.getMulta():
+                            print(f"ID Multa: {m.getId()} - Valor: {m.getValor()}")
 
             elif op == "0":
                 break
