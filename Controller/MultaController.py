@@ -18,6 +18,25 @@ class MultaController:
 
     def getMultas(self):
         return self.__multas
+    
+    def getMultasByUserId(self, idUsuario):
+        """
+        Retorna uma lista de objetos Multa associados ao ID de usuário fornecido.
+        """
+        # Garante que o ID do usuário seja tratado como string para comparação
+        idUsuario_str = str(idUsuario).strip()
+        
+        multas_do_usuario = []
+        
+        for multa in self.__multas:
+            # Garante que o objeto cliente existe antes de tentar acessar o ID
+            cliente = multa.getCliente()
+            
+            if cliente and str(cliente.getId()) == idUsuario_str:
+                multas_do_usuario.append(multa)
+                
+        return multas_do_usuario
+
 
     def criarMulta(self, valor, emprestimo, cliente):
         multa = Multa.criarMulta(emprestimo, cliente, valor)
