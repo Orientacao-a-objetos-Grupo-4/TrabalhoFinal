@@ -210,12 +210,13 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                     cliente_nome = e.getCliente().getNomeUsuario()
                     print(f"{e.getId()} - Cliente: {cliente_nome} - Status: {e.getStatus().name}")
                     print("Livros:")
-                    if not e.getItens().__len__() == 0:
+                    if  e.getItens().__len__() == 0:
                         print("Nenhum livro empréstimo.")
                     else:
+                        print()
                         for i in e.getItens():
                             print(f"ID Livro: {i.getLivro().getId()} - Livro: {i.getLivro().getTitulo()}")
-                        print("Multas:")
+                    print("Multas:")
                     if not e.getMulta():
                         print("Nenhuma multa registrada.")
                     else:

@@ -134,9 +134,6 @@ class EmprestimoLivroController:
                     status=StatusEmprestimo[status]
                 )
 
-                print(dados[5])
-
-
                 # Carregar multa (índice 5)
                 if len(dados) > 5 and dados[5]:
                     multa_id = dados[5]
@@ -149,8 +146,10 @@ class EmprestimoLivroController:
                     livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
                         livro = self.__livroController.buscarPorId(idLivro)
-                        if livro:
-                            emprestimo.addItem(livro)
+                        print(livro)
+                        if not livro:
+                            continue
+                        emprestimo.addItem(livro)
 
                 
 
