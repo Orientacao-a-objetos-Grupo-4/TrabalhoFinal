@@ -455,9 +455,9 @@ class Aplication():
             tv_multas.heading("Cliente", text="Cliente", anchor="center")
             tv_multas.heading("Data", text="Data", anchor="center")
 
-            # tv_multas.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_multas.yview)
-            # tv_multas.scrollbar.place(x=790, y=160, height=400)
-            # tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
+            tv_multas.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_multas.yview)
+            tv_multas.scrollbar.place(x=790, y=160, height=400)
+            tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
             
             load_multas()
 
