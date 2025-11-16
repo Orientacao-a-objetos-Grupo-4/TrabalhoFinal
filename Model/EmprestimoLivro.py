@@ -1,4 +1,5 @@
 import uuid
+from Model import ItensEmprestimo
 from Untils.Enums import StatusEmprestimo, StatusMulta
 from datetime import date, timedelta
 from Model.Multa import Multa
@@ -16,6 +17,8 @@ class EmprestimoLivro:
     # ---------------- Getters ----------------
     def getId(self):
         return self.__id
+    
+    
 
     def getCliente(self):
         return self.__cliente
@@ -49,8 +52,22 @@ class EmprestimoLivro:
         self.__multa = multa
 
     # ---------------- Métodos auxiliares ----------------
-    def addItem(self, item_emprestimo):
-        self.__livros.append(item_emprestimo)
+    def adicionar_item(self, emprestimo_id, livro_id):
+        livro = self.__livroController.buscar_livro_por_id(livro_id)
+
+        if livro is None:
+            return None
+
+        novo_item = ItensEmprestimo(
+            id=str(len(self.__itens) + 1),
+            emprestimoId=emprestimo_id,
+            livro=livro
+        )
+
+        self.__itens.append(novo_item)
+        self.__salvar()
+        return novo_item
+
 
     def calcularAtraso(self, data_devolucao) :
         """Calcula o número de dias de atraso."""
@@ -73,6 +90,8 @@ class EmprestimoLivro:
         self.__multa = multa
         self.__cliente.addMulta(multa)
         return multa
+    
+    
 
     def registrarDevolucao(self, data_devolucao: date):
         """Registra devolução e aplica multa se necessário."""

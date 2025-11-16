@@ -2,6 +2,7 @@
 import uuid
 from datetime import date, timedelta
 
+from Model.ItensEmprestimo import ItemEmprestimo
 from Untils.Enums import TipoUsuario
 from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
@@ -9,16 +10,7 @@ from Controller.EmprestimoLivroController import EmprestimoLivroController
 from Controller.MultaController import MultaController
 
 
-class ItemEmprestimo:
-    def __init__(self, livro):
-        self._livro = livro
 
-    def getId(self):
-        return self._livro.getId()
-
-    def getLivro(self):
-        return self._livro
-    
 
 usuarioLogado = None
 
@@ -119,10 +111,18 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 print("\n=== CADASTRAR LIVRO ===")
                 try:
                     titulo = input("Título: ").strip()
-                    autor = input("Autor: ").strip()
-                    editora = input("Editora: ").strip()
-                    livroController.cadastrar_livro(titulo, autor, editora)
-                    print("Livro cadastrado com sucesso!")
+                    if livroController.getLivroByTitulo(titulo) is not None:
+                        livroController.addLivro(livroController.getLivroByTitulo(titulo))
+                        print("Exemplar Adicionado com sucesso!")
+                        print("Livro já cadastrado.")
+                        
+                    else:
+                        genero = input("Gênero: ").strip()
+                        editora = input("Editora: ").strip()
+                        autor = input("Autor: ").strip()
+                        n_exemplares = int(input("Quantidade de exemplares: ").strip())
+                        novo = livroController.criarLivro(titulo, genero, editora, autor, n_exemplares)
+                        print(f"Livro cadastrado: {novo.getId()} - {novo.getTitulo()}")
                 except Exception as ex:
                     print(f"Erro ao cadastrar livro: {ex}")
 
@@ -130,12 +130,13 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
             elif op == "3":
                 try:
                     id_login = input("ID do cliente: ").strip()
-                    cliente = usuarioController.buscar_por_login(id_login)
+                    cliente = usuarioController.buscar_por_id(id_login)
+
                     if not cliente:
                         print("Cliente não encontrado pelo login.")
                         continue
 
-                    # Criar empréstimo vazio
+                    # Criar empréstimo
                     emprestimo_id = str(uuid.uuid4())
                     data_emp = date.today()
                     data_dev = date_emp_plus_days(data_emp, 7)
@@ -154,34 +155,39 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
 
                         livro = livroController.buscarPorId(uuid_from_maybe_string(id_livro))
                         if not livro:
-                            livro = livroController.buscarPorId(id_livro)
-
-                        if not livro:
+                            livro = livroController.buscarPorId(id_livro)                       
                             print("Livro não encontrado.")
+                            continue
+
+                        # Verificar se já está no empréstimo
+                        if emprestimoController.verificarLivro(livro.getId(), emprestimo.getId()):
+                            print("Este livro já foi adicionado ao empréstimo.")
                             continue
 
                         if not livroController.retirarExemplar(livro.getId()):
                             print("Não há exemplares disponíveis para este livro.")
                             continue
 
-                        item = ItemEmprestimo(livro)
-                        emprestimo.addItem(item)
-
+                        # Adicionar ao empréstimo
+                        emprestimo.addItem(livro)  # <---- DIRETO, sem ItemEmprestimo
                         print(f"Livro '{livro.getTitulo()}' adicionado ao empréstimo.")
 
-                    if len(emprestimo.getItens()) == 0:
-                        print("Nenhum livro selecionado. Empréstimo cancelado.")
-                        continue
+                        if len(emprestimo.getItens()) == 0:
+                            print("Nenhum livro selecionado. Empréstimo cancelado.")
+                            continue
 
-                    emprestimoController.addEmprestimo(emprestimo)
-                    cliente.addEmprestimo(emprestimo)
+                        # Registrar nos controllers
+                        emprestimoController.addEmprestimo(emprestimo)
+                        cliente.addEmprestimo(emprestimo)
 
-                    print(f"\nEmpréstimo criado com sucesso!")
-                    print(f"ID: {emprestimo.getId()}")
-                    print(f"Livros emprestados: {len(emprestimo.getItens())}")
+                        print(f"\nEmpréstimo criado com sucesso!")
+                        print(f"ID: {emprestimo.getId()}")
+                        print(f"Livros emprestados: {len(emprestimo.getItens())}")
 
                 except Exception as ex:
                     print(f"Erro ao registrar empréstimo: {ex}")
+
+
 
             elif op == "4":
                 try:
@@ -243,15 +249,23 @@ def menu_admin(usuarioController, livroController, emprestimoController, multaCo
                 print(f"Usuário criado: {novo.getId()} - {novo.getNomeUsuario()}")
 
             elif op == "2":
-                titulo = input("Título: ").strip()
-                genero = input("Gênero: ").strip()
-                editora = input("Editora: ").strip()
-                autor = input("Autor: ").strip()
-                n_exemplares = int(input("Número de exemplares: ").strip())
-
-                livro = livroController.criarLivro(titulo, genero, editora, autor, n_exemplares)
-                print(f"Livro criado: {livro.getId()} - {livro.getTitulo()}")
-
+                print("\n=== CADASTRAR LIVRO ===")
+                try:
+                    titulo = input("Título: ").strip()
+                    if livroController.getLivroByTitulo(titulo) is not None:
+                        livroController.addLivro(livroController.getLivroByTitulo(titulo))
+                        print("Exemplar Adicionado com sucesso!")
+                        print("Livro já cadastrado.")
+                        
+                    else:
+                        genero = input("Gênero: ").strip()
+                        editora = input("Editora: ").strip()
+                        autor = input("Autor: ").strip()
+                        n_exemplares = int(input("Quantidade de exemplares: ").strip())
+                        novo = livroController.criarLivro(titulo, genero, editora, autor, n_exemplares)
+                        print(f"Livro cadastrado: {novo.getId()} - {novo.getTitulo()}")
+                except Exception as ex:
+                    print(f"Erro ao cadastrar livro: {ex}")
             elif op == "3":
                 livros = livroController.getLivros()
                 print("\n--- LIVROS ---")
@@ -306,7 +320,7 @@ if __name__ == "__main__":
     usuarioController = UsuarioController()
     livroController = LivroController()
     multaController = MultaController(clienteController=usuarioController, emprestimoController=None)
-    emprestimoController = EmprestimoLivroController(itensController=None, clienteController=usuarioController, multaController=multaController)
+    emprestimoController = EmprestimoLivroController(clienteController=usuarioController, multaController=multaController, livroController=livroController)
 
     multaController._MultaController__emprestimoController = emprestimoController  
 

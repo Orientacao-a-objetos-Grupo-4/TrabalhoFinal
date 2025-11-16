@@ -8,26 +8,36 @@ class LivroController:
         self.__livros = []
         self.carregarLivros()
 
+        if not os.path.exists(self.__arquivo):
+            os.makedirs(os.path.dirname(self.__arquivo), exist_ok=True)
+            open(self.__arquivo, "w", encoding="utf-8").close()
+
     def getLivros(self):
         return self.__livros
 
 
     def criarLivro(self, titulo, genero, editora, autor, n_exemplares):
-        
         livro = Livro.criarLivro(uuid.uuid4(), titulo, genero, editora, autor, n_exemplares)
         self.addLivro(livro)
         return livro
 
     def addLivro(self, livro):
-        if self.buscarPorId(livro.getId()) is None:
+        if self.buscarPorTitulo(livro.getTitulo()) is None:
             self.__livros.append(livro)
             self.salvarLivros()
         else:
             livro.setNExemplares(livro.getNExemplares() + 1)
             self.salvarLivros()
 
+    def getLivroByTitulo(self, titulo):
+        for livro in self.__livros:
+            if livro.getTitulo().lower() == titulo.lower():
+                return livro
+        return None
+
     def buscarPorId(self, id):
         for livro in self.__livros:
+            print(f" id {id} , idlivor {livro.getId()}")
             if livro.getId() == id:
                 return livro
             
