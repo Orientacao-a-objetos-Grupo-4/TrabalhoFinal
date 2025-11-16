@@ -2,7 +2,7 @@
 import uuid
 from datetime import date, timedelta
 
-from Model.ItensEmprestimo import ItemEmprestimo
+from Untils.Assistants import date_emp_plus_days, uuid_from_maybe_string
 from Untils.Enums import TipoUsuario
 from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
@@ -313,20 +313,6 @@ def menu_admin(usuarioController, livroController, emprestimoController, multaCo
 
         except Exception as e:
             print(f"Erro inesperado: {e}")
-
-
-# -------------------- Helpers --------------------
-def uuid_from_maybe_string(s):
-    import uuid
-    try:
-        return uuid.UUID(s)
-    except:
-        return s
-
-
-def date_emp_plus_days(dt, days):
-    return dt + timedelta(days=days)
-
 
 # -------------------- Inicialização --------------------
 if __name__ == "__main__":

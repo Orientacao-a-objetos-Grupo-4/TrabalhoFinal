@@ -3,7 +3,7 @@ from datetime import date
 from Model import Usuario
 from Model.EmprestimoLivro import EmprestimoLivro
 from Untils.Enums import StatusEmprestimo
-
+from Untils.Assistants import uuid_from_maybe_string
 
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt", clienteController=None, multaController=None, livroController=None):
@@ -135,17 +135,18 @@ class EmprestimoLivroController:
                 )
 
                 # Carregar multa (índice 5)
-                if len(dados) > 5 and dados[5]:
+                if len(dados) >= 5 and dados[5]:
                     multa_id = dados[5]
                     multa = self.__multaController.buscarPorId(multa_id)
                     if multa:
                         emprestimo.setMulta(multa)
 
                 # Carregar livros (índice 6)
-                if len(dados) > 6 and dados[6]:
+                if len(dados) >= 6 and dados[6]:
+                    print(dados[6])
                     livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
-                        livro = self.__livroController.buscarPorId(idLivro)
+                        livro = self.__livroController.buscarPorId(uuid_from_maybe_string(idLivro))
                         print(livro)
                         if not livro:
                             continue
