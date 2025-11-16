@@ -11,7 +11,6 @@ from Controller.MultaController import MultaController
 
 
 
-
 usuarioLogado = None
 
 # -------------------- Telas / Menus --------------------
@@ -51,14 +50,14 @@ def menu_cliente(usuario, emprestimoController, livroController):
                     print(f"{l.getId()} - {l.getTitulo()} - Exemplares: {l.getNExemplares()}")
 
             elif op == "2":
-                emprestimos = usuario.getEmprestimos()
+                emprestimos = emprestimoController.pegarEmprestimosPorUsuario(usuario.getId())
                 if not emprestimos:
                     print("\nVocê não tem empréstimos.\n")
                 else:
                     print("\n--- MEUS EMPRÉSTIMOS ---")
                     for e in emprestimos:
                         status_name = e.getStatus().name if e.getStatus() else "N/A"
-                        devolucao = e.getDataDevolucao().isoformat() if e.getDataDevolucao() else "N/A"
+                        devolucao = e.getDataPrevista().isoformat() if e.getDataPrevista() else "N/A"
                         print(f"ID {e.getId()} - Status: {status_name} - Devolução prevista: {devolucao}")
 
             elif op == "3":
@@ -131,6 +130,7 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                 try:
                     id_login = input("ID do cliente: ").strip()
                     cliente = usuarioController.buscar_por_id(id_login)
+                    print(cliente.getId())
 
                     if not cliente:
                         print("Cliente não encontrado pelo login.")

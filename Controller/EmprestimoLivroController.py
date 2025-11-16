@@ -57,11 +57,18 @@ class EmprestimoLivroController:
         return None
 
     def verificarLivro(self, idLivro, idEmprestimo):
-        emprestimo = self.buscarPorId(idEmprestimo)
+        emprestimo = self.buscarPorId(uuid_from_maybe_string(idEmprestimo))
         if not emprestimo:
             return False
 
         return any(item.getLivro().getId() == idLivro for item in emprestimo.getItens())
+    
+    def pegarEmprestimosPorUsuario(self, idUsuario):
+        emprestimos_usuario = []
+        for e in self.__emprestimos:
+            if e.getCliente().getId() == idUsuario:
+                emprestimos_usuario.append(e)
+        return emprestimos_usuario
 
     def removerEmprestimo(self, emprestimo):
         if emprestimo in self.__emprestimos:
