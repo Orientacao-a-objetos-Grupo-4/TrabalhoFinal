@@ -6,6 +6,7 @@ from PIL import Image
 from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
+from Controller.EmprestimoLivroController import EmprestimoLivroController
 import locale
 
 
@@ -31,7 +32,9 @@ class Aplication():
     #Controllers
     userCtrl = UsuarioController()
     livroCtrl = LivroController()
-    multasCtrl = MultaController()
+    multasCtrl = MultaController(clienteController=userCtrl, emprestimoController=None)
+    emprestimosCtrl = EmprestimoLivroController(clienteController=userCtrl, multaController=multasCtrl, livroController=livroCtrl)
+    multasCtrl._MultaController__emprestimoController = emprestimosCtrl
     usuarioLogado = None
 
     def tela_login(self):
@@ -94,7 +97,7 @@ class Aplication():
                 self.root.after(500, lambda: self.janela_nova(usuario))
 
             elif tipo == "CLIENTE":
-                self.root.after(500, lambda: self.tela_funcionario())
+                self.root.after(500, lambda: self.tela_usuario())
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
@@ -115,7 +118,6 @@ class Aplication():
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
         home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
-        livro_icon = customtkinter.CTkImage(Image.open("View/images/livro_btn3.png"), size=(25, 25))
         multas_icon = customtkinter.CTkImage(Image.open("View/images/multas.png"), size=(25, 25))
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
@@ -123,14 +125,13 @@ class Aplication():
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
             home_btn_indicator.configure(fg_color=menu_bar_color)
-            #livro_btn_indicator.configure(fg_color=menu_bar_color)
             multas_btn_indicator.configure(fg_color=menu_bar_color)
             about_btn_indicator.configure(fg_color=menu_bar_color)
 
             indicator_lb.configure(fg_color='white')
 
-            if menu_bar_frame.winfo_width() >= 50:
-                fold_menu_bar()
+            #=if menu_bar_frame.winfo_width() >= 50:
+                #fold_menu_bar()
 
             for frame in page_frame.winfo_children():
                 frame.destroy()
@@ -162,11 +163,6 @@ class Aplication():
             toggle_menu_btn.configure(image=toggle_icon, command=extend_menu_bar)
 
         # Páginas
-        def home_page():
-            home_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(home_page_fm,text=f"Bem-vindo Home ao Home Page!", font=("Bold", 20))
-            lb.place(x=10, y=10)
-            home_page_fm.pack(fill="both", expand=True)
 
         def livros_page():  
             def load_livros():
@@ -186,8 +182,6 @@ class Aplication():
             # função do modal de adicionar livro
             # Página de livros
             livros_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
@@ -461,64 +455,146 @@ class Aplication():
 
         def multas_page():
 
-            # def load_multas():
-            #      for item in tv_multas.get_children():
-            #             tv_multas.delete(item)
-            # # Insere as multas na TreeView
-            #      for multa in self.multasCtrl.getMultas():
-            #             tv_multas.insert("", "end", id=multa.getId(), values=(
-            #                 multa.getId(),
-            #                 multa.getValor(),
-            #                 multa.getStatus(),
-            #                 multa.getEmprestimo(),
-            #                 multa.getCliente(),
-            #                 multa.getDataCriacao()
-            #                 ))
-                        
             multas_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(multas_page_fm, text="Multas", font=("Bold", 20))
-            lb.place(x=100, y=200)
+            lb = CTkLabel(multas_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
-            # try:
-            #     # Tenta um formato comum para Linux/macOS
-            #     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-            # except locale.Error:
-            #     # Tenta um formato comum no Windows
-            #     try:
-            #         locale.setlocale(locale.LC_ALL, 'Portuguese_Brazil')
-            #     except locale.Error:
-            #         print("Aviso: Configuração de locale falhou.")
 
-            # def formatar_moeda(valor):
-            #     # Formata um valor numérico para o formato de moeda (R$).
-            #     return locale.currency(valor, grouping=True, symbol=True)
+            def load_multas():
+                for item in tv.get_children():
+                    tv.delete(item)
 
-            # # Tabela de multas
-            # tv_multas = tk.ttk.Treeview(multas_page_fm)
-            # tv_multas.place(x=40, y=160, width=750, height=400)
-            # tv_multas.column("#0", width=0, stretch="no")
-            # tv_multas['columns'] = ("ID", "Valor", "Status", "Empréstimo", "Cliente", "Data")
-            # tv_multas.column("ID", anchor="center", width=50)
-            # tv_multas.column("Valor", anchor="w", width=200)
-            # tv_multas.column("Status", anchor="center", width=100)
-            # tv_multas.column("Empréstimo", anchor="w", width=150)
-            # tv_multas.column("Cliente", anchor="w", width=150)
-            # tv_multas.column("Data", anchor="center", width=100)
+                for multa in self.multasCtrl.getMultas():
+                    tv.insert("", "end", iid=multa.getId(), values=(
+                        multa.getId(),
+                        multa.getValor(),
+                        multa.getCliente().getId() if multa.getCliente() else "",
+                        multa.getEmprestimo().getId() if multa.getEmprestimo() else "",
+                        multa.getStatus().name
+                    ))
 
-            # tv_multas.heading("ID", text="ID", anchor="center")
-            # tv_multas.heading("Valor", text="Valor", anchor="center")
-            # tv_multas.heading("Status", text="Status", anchor="center")
-            # tv_multas.heading("Empréstimo", text="Empréstimo", anchor="center")
-            # tv_multas.heading("Cliente", text="Cliente", anchor="center")
-            # tv_multas.heading("Data", text="Data", anchor="center")
+            id_multas = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Multa", width=200)
+            id_multas.place(x=85, y=80)
 
-            # tv_multas.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_multas.yview)
-            # tv_multas.scrollbar.place(x=790, y=160, height=400)
-            # tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
+            def modal_registrar_devolucao():
+                modal = CTkToplevel(nova_janela)
+                modal.geometry("400x350")
+                modal.title("Registrar Devolução")
+                modal.grab_set()
+
+                CTkLabel(modal, text="Registrar Devolução", font=("Bold", 18)).pack(pady=10)
+
+                entry_id_emprestimo = CTkEntry(modal, placeholder_text="ID do Empréstimo")
+                entry_id_emprestimo.pack(pady=10)
+
+                entry_data_dev = CTkEntry(modal, placeholder_text="Data da Devolução (DD/MM/AAAA)")
+                entry_data_dev.pack(pady=10)
+
+                def confirmar():
+                        id_emp = entry_id_emprestimo.get().strip()
+                        data_dev_str = entry_data_dev.get().strip()
+
+                        if id_emp == "" or data_dev_str == "":
+                            messagebox.showerror("Erro", "Preencha todos os campos.")
+                            return
+
+                        # Buscar empréstimo corretamente
+                        emprestimo = self.emprestimosCtrl.buscarPorId(id_emp)
+                        if emprestimo is None:
+                            messagebox.showerror("Erro", "Empréstimo não encontrado.")
+                            return
+
+                        # Validar a data
+                        try:
+                            from datetime import datetime
+                            data_devolucao = datetime.strptime(data_dev_str, "%d/%m/%Y").date()
+                        except:
+                            messagebox.showerror("Erro", "Data inválida! Use o formato DD/MM/AAAA.")
+                            return
+
+                        # Atualiza dados do empréstimo
+                        emprestimo.setDataDevolucao(data_devolucao)
+                        emprestimo.setStatus("DEVOLVIDO")
+
+                        # Salva lista completa de empréstimos
+                        self.emprestimosCtrl.salvarEmprestimos()
+
+                        # Verificar atraso
+                        if data_devolucao > emprestimo.getDataPrevista():
+                            dias_atraso = (data_devolucao - emprestimo.getDataPrevista()).days
+                            valor_multa = dias_atraso * 2.0  # R$2 por dia
+
+                            cliente = emprestimo.getCliente()
+
+                            # Criar multa de forma correta
+                            multa = self.multasCtrl.criarMulta(valor_multa, emprestimo, cliente)
+
+                            messagebox.showinfo(
+                                "Multa gerada",
+                                f"Devolução atrasada!\nA multa foi registrada no valor de R${valor_multa:.2f}"
+                            )
+
+                        else:
+                            messagebox.showinfo("Sucesso", "Devolução registrada sem multa.")
+
+                        load_multas()
+                        modal.destroy()
+
+                CTkButton(
+                        modal,
+                        text="Registrar",
+                        command=confirmar,
+                        width=130,
+                        fg_color="#63C5A1",
+                        text_color="white",
+                        font=("Helvetica", 14, "bold")
+                    ).pack(pady=15)
+
+
+                        
+            btn_reg_emprestimos = CTkButton(multas_page_fm,
+                                     text="Registrar Emprestimos",
+                                     width=130,
+                                     fg_color = "#63C5A1",
+                                     font=("Helvetica", 14, "bold"),
+                                     text_color= "white")
+            btn_reg_emprestimos.place(x=575, y=80)
             
-            # load_multas()
 
+            btn_reg_devolucao = CTkButton(multas_page_fm,
+                                     text="Registrar Devolução",
+                                     width=130,
+                                     fg_color = "#63C5A1",
+                                     font=("Helvetica", 14, "bold"),
+                                     text_color= "white")
+            btn_reg_devolucao.place(x=375, y=80)
+
+            tv = tk.ttk.Treeview(multas_page_fm)
+            tv.place(x=40, y=160, width=750, height=400)
+            tv.column("#0", width=0, stretch="no")
+            btn_reg_devolucao.configure(command=modal_registrar_devolucao)
+
+            tv['columns'] = ("ID", "Valor", "Cliente", "Emprestimo", "Status")
+
+            tv.column("ID", anchor="center", width=80)
+            tv.column("Valor", anchor="center", width=120)
+            tv.column("Cliente", anchor="center", width=120)
+            tv.column("Emprestimo", anchor="center", width=120)
+            tv.column("Status", anchor="center", width=120)
+
+            tv.heading("ID", text="ID")
+            tv.heading("Valor", text="Valor")
+            tv.heading("Cliente", text="Cliente")
+            tv.heading("Emprestimo", text="Empréstimo")
+            tv.heading("Status", text="Status da Multa")
+
+            tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
+            tv.scrollbar.place(x=790, y=160, height=400)
+            tv.configure(yscrollcommand=tv.scrollbar.set)
+
+            load_multas()
+            
         def about_page():
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")
@@ -756,23 +832,8 @@ class Aplication():
         home_page_lb = CTkLabel(menu_bar_frame, text="Home", fg_color=menu_bar_color,
                                 text_color="white", font=("Bold", 15))
         home_page_lb.place(x=50, y=130)
-        home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, home_page))
+        home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, livros_page))
 
-        # # Botão Livros
-        # livro_btn = CTkButton(menu_bar_frame, image=livro_icon, text="",
-        #                         fg_color=menu_bar_color, hover_color=menu_bar_color,
-        #                         command=lambda: switch_indication(livro_btn_indicator, livros_page),
-        #                         width=30)
-        # livro_btn.place(x=9, y=185)
-
-        # livro_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
-        # livro_btn_indicator.place(x=3, y=185)
-
-        # livro_lb = CTkLabel(menu_bar_frame, text="Serviços", fg_color=menu_bar_color,
-        #                     text_color="white", font=("Bold", 15), anchor="w")
-        # livro_lb.place(x=50, y=190)
-        # livro_lb.bind("<Button-1>", lambda e: switch_indication(livro_btn_indicator, livros_page))
-        
         # Botão Multas
         multas_btn = CTkButton(menu_bar_frame, image=multas_icon, text="",
                                 fg_color=menu_bar_color, hover_color=menu_bar_color,
