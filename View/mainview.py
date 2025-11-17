@@ -461,17 +461,18 @@ class Aplication():
             multas_page_fm.pack(fill="both", expand=True)
 
 
-            def load_multas():
+            def load_emprestimos():
                 for item in tv.get_children():
                     tv.delete(item)
 
-                for multa in self.multasCtrl.getMultas():
-                    tv.insert("", "end", iid=multa.getId(), values=(
-                        multa.getId(),
-                        multa.getValor(),
-                        multa.getCliente().getId() if multa.getCliente() else "",
-                        multa.getEmprestimo().getId() if multa.getEmprestimo() else "",
-                        multa.getStatus().name
+                for empres in self.emprestimosCtrl.getEmprestimos():
+                    tv.insert("", "end", iid=empres.getId(), values=(
+                        empres.getId(),
+                        empres.getCliente().getId(),
+                        empres.getCliente().getNomeUsuario(),
+                        empres.getDataEmprestimo().isoformat(),
+                        empres.getDataPrevista().isoformat(),   
+                        empres.getStatus().name
                     ))
 
             id_multas = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Multa", width=200)
@@ -481,7 +482,7 @@ class Aplication():
                 modal = CTkToplevel(nova_janela)
                 modal.geometry("400x350")
                 modal.title("Registrar Devolução")
-                modal.grab_set()
+
 
                 CTkLabel(modal, text="Registrar Devolução", font=("Bold", 18)).pack(pady=10)
 
@@ -538,7 +539,7 @@ class Aplication():
                         else:
                             messagebox.showinfo("Sucesso", "Devolução registrada sem multa.")
 
-                        load_multas()
+                        load_emprestimos()
                         modal.destroy()
 
                 CTkButton(
@@ -575,25 +576,27 @@ class Aplication():
             tv.column("#0", width=0, stretch="no")
             btn_reg_devolucao.configure(command=modal_registrar_devolucao)
 
-            tv['columns'] = ("ID", "Valor", "Cliente", "Emprestimo", "Status")
+            tv['columns'] = ("ID", "ID Cliente","Nome", "Data Empestimo", "Data Prevista", "Status")
 
             tv.column("ID", anchor="center", width=80)
-            tv.column("Valor", anchor="center", width=120)
-            tv.column("Cliente", anchor="center", width=120)
-            tv.column("Emprestimo", anchor="center", width=120)
+            tv.column("ID Cliente", anchor="center", width=120)
+            tv.column("Nome", anchor="center", width=120)
+            tv.column("Data Empestimo", anchor="center", width=120)
+            tv.column("Data Prevista", anchor="center", width=120)
             tv.column("Status", anchor="center", width=120)
 
             tv.heading("ID", text="ID")
-            tv.heading("Valor", text="Valor")
-            tv.heading("Cliente", text="Cliente")
-            tv.heading("Emprestimo", text="Empréstimo")
-            tv.heading("Status", text="Status da Multa")
+            tv.heading("ID Cliente", text="ID Cliente")
+            tv.heading("Nome", text="Nome")
+            tv.heading("Data Empestimo", text="Data Empestimo")
+            tv.heading("Data Prevista", text="Data Prevista")
+            tv.heading("Status", text="Status")
 
             tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
             tv.scrollbar.place(x=790, y=160, height=400)
             tv.configure(yscrollcommand=tv.scrollbar.set)
 
-            load_multas()
+            load_emprestimos()
             
         def about_page():
             # Frame principal da página
