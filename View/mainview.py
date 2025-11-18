@@ -7,7 +7,7 @@ from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
-import locale
+from datetime import date
 
 
 root = CTk()
@@ -460,144 +460,147 @@ class Aplication():
             lb.place(x=80, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
+            id_emprestimo = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Emprestimos", width=200)
+            id_emprestimo.place(x=85, y=80)
 
-            def load_emprestimos():
+            def capturar_id_emprestimo(event):
+                selected_item = tv_emp.selection()
+                id_empestimo = selected_item[0]
+                linha_emprestimo = tv_emp.item(id_empestimo, "values")
+                id_emprestimo.delete(0, 'end')
+                id_emprestimo.insert(0, linha_emprestimo[0]) 
+
+
+            def load_multas():
+                # limpa a tabela
                 for item in tv.get_children():
                     tv.delete(item)
 
-                for empres in self.emprestimosCtrl.getEmprestimos():
-                    tv.insert("", "end", iid=empres.getId(), values=(
-                        empres.getId(),
-                        empres.getCliente().getId(),
-                        empres.getCliente().getNomeUsuario(),
-                        empres.getDataEmprestimo().isoformat(),
-                        empres.getDataPrevista().isoformat(),   
-                        empres.getStatus().name
+                # lista as multas
+                for multa in self.multasCtrl.getMultas():
+
+                    cliente = multa.getCliente()
+                    emprestimo = multa.getEmprestimo()
+
+                    cliente_id = cliente.getId() if cliente else "N/A"
+                    cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
+
+                    if emprestimo:
+                        data_emp = emprestimo.getDataEmprestimo().strftime("%d/%m/%Y")
+                        data_prev = emprestimo.getDataPrevista().strftime("%d/%m/%Y")
+                    else:
+                        data_emp = "N/A"
+                        data_prev = "N/A"
+
+                    status = multa.getStatus().name if multa.getStatus() else "N/A"
+
+                    # insere na treeview
+                    tv.insert("", "end", iid=multa.getId(), values=(
+                        multa.getId(),
+                        cliente_id,
+                        cliente_nome,
+                        data_emp,
+                        data_prev,
+                        status
                     ))
 
-            id_multas = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Multa", width=200)
-            id_multas.place(x=85, y=80)
+                    
 
-            def modal_registrar_devolucao():
-                modal = CTkToplevel(nova_janela)
-                modal.geometry("400x350")
-                modal.title("Registrar Devolução")
-
-
-                CTkLabel(modal, text="Registrar Devolução", font=("Bold", 18)).pack(pady=10)
-
-                entry_id_emprestimo = CTkEntry(modal, placeholder_text="ID do Empréstimo")
-                entry_id_emprestimo.pack(pady=10)
-
-                entry_data_dev = CTkEntry(modal, placeholder_text="Data da Devolução (DD/MM/AAAA)")
-                entry_data_dev.pack(pady=10)
-
-                def confirmar():
-                        id_emp = entry_id_emprestimo.get().strip()
-                        data_dev_str = entry_data_dev.get().strip()
-
-                        if id_emp == "" or data_dev_str == "":
-                            messagebox.showerror("Erro", "Preencha todos os campos.")
-                            return
-
-                        # Buscar empréstimo corretamente
-                        emprestimo = self.emprestimosCtrl.buscarPorId(id_emp)
-                        if emprestimo is None:
-                            messagebox.showerror("Erro", "Empréstimo não encontrado.")
-                            return
-
-                        # Validar a data
-                        try:
-                            from datetime import datetime
-                            data_devolucao = datetime.strptime(data_dev_str, "%d/%m/%Y").date()
-                        except:
-                            messagebox.showerror("Erro", "Data inválida! Use o formato DD/MM/AAAA.")
-                            return
-
-                        # Atualiza dados do empréstimo
-                        emprestimo.setDataDevolucao(data_devolucao)
-                        emprestimo.setStatus("DEVOLVIDO")
-
-                        # Salva lista completa de empréstimos
-                        self.emprestimosCtrl.salvarEmprestimos()
-
-                        # Verificar atraso
-                        if data_devolucao > emprestimo.getDataPrevista():
-                            dias_atraso = (data_devolucao - emprestimo.getDataPrevista()).days
-                            valor_multa = dias_atraso * 2.0  # R$2 por dia
-
-                            cliente = emprestimo.getCliente()
-
-                            # Criar multa de forma correta
-                            multa = self.multasCtrl.criarMulta(valor_multa, emprestimo, cliente)
-
-                            messagebox.showinfo(
-                                "Multa gerada",
-                                f"Devolução atrasada!\nA multa foi registrada no valor de R${valor_multa:.2f}"
-                            )
-
-                        else:
-                            messagebox.showinfo("Sucesso", "Devolução registrada sem multa.")
-
-                        load_emprestimos()
-                        modal.destroy()
-
-                CTkButton(
-                        modal,
-                        text="Registrar",
-                        command=confirmar,
-                        width=130,
-                        fg_color="#63C5A1",
-                        text_color="white",
-                        font=("Helvetica", 14, "bold")
-                    ).pack(pady=15)
-
-
-                        
-            btn_reg_emprestimos = CTkButton(multas_page_fm,
-                                     text="Registrar Emprestimos",
-                                     width=130,
-                                     fg_color = "#63C5A1",
-                                     font=("Helvetica", 14, "bold"),
-                                     text_color= "white")
-            btn_reg_emprestimos.place(x=575, y=80)
-            
+            def registrar_devolucao():
+                self.emprestimosCtrl.registrarDevolucao(id_emprestimo.get(), date.today())
+                load_multas()
+                
 
             btn_reg_devolucao = CTkButton(multas_page_fm,
                                      text="Registrar Devolução",
                                      width=130,
                                      fg_color = "#63C5A1",
                                      font=("Helvetica", 14, "bold"),
-                                     text_color= "white")
+                                     text_color= "white",
+                                     command=registrar_devolucao)
             btn_reg_devolucao.place(x=375, y=80)
 
-            tv = tk.ttk.Treeview(multas_page_fm)
-            tv.place(x=40, y=160, width=750, height=400)
-            tv.column("#0", width=0, stretch="no")
-            btn_reg_devolucao.configure(command=modal_registrar_devolucao)
+            titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas", font=("Bold", 16))
+            titulo_multa.place(x=40, y=345)
 
-            tv['columns'] = ("ID", "ID Cliente","Nome", "Data Empestimo", "Data Prevista", "Status")
+            colunas = ("id", "cliente_id", "cliente", "data_emp", "data_prev", "status")
 
-            tv.column("ID", anchor="center", width=80)
-            tv.column("ID Cliente", anchor="center", width=120)
-            tv.column("Nome", anchor="center", width=120)
-            tv.column("Data Empestimo", anchor="center", width=120)
-            tv.column("Data Prevista", anchor="center", width=120)
-            tv.column("Status", anchor="center", width=120)
+            tv = tk.ttk.Treeview(multas_page_fm, columns=colunas, show="headings", height=12)
 
-            tv.heading("ID", text="ID")
-            tv.heading("ID Cliente", text="ID Cliente")
-            tv.heading("Nome", text="Nome")
-            tv.heading("Data Empestimo", text="Data Empestimo")
-            tv.heading("Data Prevista", text="Data Prevista")
-            tv.heading("Status", text="Status")
+            # Cabeçalhos
+            tv.heading("id", text="ID Multa")
+            tv.heading("cliente_id", text="ID Cliente")
+            tv.heading("cliente", text="Nome Cliente")
+            tv.heading("data_emp", text="Data Empréstimo")
+            tv.heading("data_prev", text="Data Prevista")
+            tv.heading("status", text="Status")
+
+            # Larguras
+            tv.column("id", width=80)
+            tv.column("cliente_id", width=0, stretch="no")
+            tv.column("cliente", width=140)
+            tv.column("data_emp", width=120)
+            tv.column("data_prev", width=120)
+            tv.column("status", width=100)
 
             tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
-            tv.scrollbar.place(x=790, y=160, height=400)
+            tv.scrollbar.place(x=790, y=380, height=200)
             tv.configure(yscrollcommand=tv.scrollbar.set)
+            tv.place(x=40, y=380, width=750, height=200)
+            load_multas()
+            
+            def load_emprestimos():
+                # limpa a tabela
+                for item in tv_emp.get_children():
+                    tv_emp.delete(item)
+
+                # lista os emprestimos
+                for emprestimo in self.emprestimosCtrl.getEmprestimos():
+
+                    cliente = emprestimo.getCliente()
+                    titulos = ", ".join([item.getLivro().getTitulo() for item in emprestimo.getItens()]) if emprestimo.getItens() else "N/A"
+
+                    cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
+
+                    # insere na treeview
+                    tv_emp.insert("", "end", iid=emprestimo.getId(), values=(
+                        emprestimo.getId(),
+                        cliente_nome,
+                        titulos,
+                        emprestimo.getDataEmprestimo().strftime("%d/%m/%Y"),
+                        emprestimo.getDataPrevista().strftime("%d/%m/%Y"),
+                        emprestimo.getStatus().name
+                    ))
+
+            titulo_emprestimos = CTkLabel(multas_page_fm, text="Empréstimos Registrados", font=("Bold", 16))
+            titulo_emprestimos.place(x=40, y=125)
+
+
+            colunas_emp = ("id", "cliente", "livro", "data_emp", "data_prev", "status")
+            tv_emp = tk.ttk.Treeview(multas_page_fm, columns=colunas_emp, show="headings", height=8)
+            # Cabeçalhos
+            tv_emp.heading("id", text="ID Empréstimo")
+            tv_emp.heading("cliente", text="Nome Cliente")
+            tv_emp.heading("livro", text="Título do(s) Livro(s)")
+            tv_emp.heading("data_emp", text="Data Empréstimo")
+            tv_emp.heading("data_prev", text="Data Prevista")
+            tv_emp.heading("status", text="Status")
+            # Larguras
+            tv_emp.column("id", width=100)
+            tv_emp.column("cliente", width=140)
+            tv_emp.column("livro", width=140)
+            tv_emp.column("data_emp", width=120)
+            tv_emp.column("data_prev", width=120)
+            tv_emp.column("status", width=100)
+            tv_emp.place(x=40, y=160, width=750, height=180)
+            tv_emp.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_emp.yview)
+            tv_emp.scrollbar.place(x=790, y=160, height=180)
+            tv_emp.configure(yscrollcommand=tv_emp.scrollbar.set)
 
             load_emprestimos()
             
+            tv_emp.bind("<ButtonRelease-1>", capturar_id_emprestimo)
+
         def about_page():
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")
