@@ -9,7 +9,7 @@ from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
 
-from Untils.Enums import StatusEmprestimo
+from Untils.Enums import StatusEmprestimo, StatusMulta
 
 
 root = CTk()
@@ -100,7 +100,7 @@ class Aplication():
                 self.root.after(500, lambda: self.janela_nova(usuario))
 
             elif tipo == "CLIENTE":
-                self.root.after(500, lambda: self.tela_usuario())
+                self.root.after(500, lambda: self.tela_usuario(usuario))
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
@@ -292,8 +292,16 @@ class Aplication():
                 id_multa.insert(0, id_selecionado)
 
             def pagar_multa():
-                self.multasCtrl.pagarMulta(id_multa.get())
-                messagebox.showinfo("Pago", "Multa paga com sucesso.")
+                if not id_multa.get():
+                    messagebox.showerror("Erro", "Digite o ID da multa.")
+                    return
+                multa = self.multasCtrl.buscarMulta(id_multa.get())
+
+                if  multa.getStatus() == StatusMulta.PAGO:
+                    messagebox.showerror("Erro", "Multa ja paga.")
+                else:
+                    self.multasCtrl.pagarMulta(id_multa.get())
+                    messagebox.showinfo("Pago", "Multa paga com sucesso.")
 
             tv_emprestimo_cliente = tk.ttk.Treeview(emprestimos_page_fm)
             tv_emprestimo_cliente.place(x=40, y=160, width=750, height=400)
