@@ -45,10 +45,7 @@ class Aplication():
         self.root.geometry("900x600")
         self.root.resizable(False, False)
         self.root.title("Login")
-        
-    #Definindo o modo de aparência e o tamanho da imagem
-        image_login = customtkinter.CTkImage(light_image = Image.open("View/images/img-login.png"),
-                                             dark_image= Image.open("View/images/img-login.png"),
+
     #Definindo o modo de aparência e o tamanho da imagem
         image_login = customtkinter.CTkImage(light_image = Image.open("View/images/img-login.png"),
                                              dark_image= Image.open("View/images/img-login.png"),
@@ -123,8 +120,7 @@ class Aplication():
                 text_color="red"
             )
 
-    def janela_nova(self, usuario): 
-            )
+
 
     def janela_nova(self, usuario): 
     # Fecha completamente a janela de login
@@ -851,8 +847,8 @@ class Aplication():
             about_nexo_content()
 
 
-        # Área principal das páginas
-        page_frame = CTkFrame(nova_janela)
+            # Área principal das páginas
+            page_frame = CTkFrame(nova_janela)
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")
             about_page_fm.pack(fill="both", expand=True)
