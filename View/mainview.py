@@ -30,7 +30,7 @@ class Aplication():
 
         def getLivro(self):
             return self._livro
-    
+
     #Controllers
     userCtrl = UsuarioController()
     livroCtrl = LivroController()
@@ -85,6 +85,7 @@ class Aplication():
         # Autentica usuário
         usuario = self.userCtrl.autenticar_usuario(usuario_login, senha)
 
+
         if usuario:
             tipo = usuario.getTipo().name  
 
@@ -105,6 +106,583 @@ class Aplication():
                 text="❌ Nome de usuário ou senha incorretos.",
                 text_color="red"
             )
+    
+    def realizar_logout(self, janela_atual):
+
+        janela_atual.destroy()
+
+        self.root = CTk()
+        self.tela_login()
+        self.root.mainloop()
+
+    def tela_usuario(self, usuario):
+    # Fecha completamente a janela de login
+        self.root.destroy()
+
+        nova_janela = CTk()
+        nova_janela.geometry("900x600")
+        nova_janela.resizable(False, False)
+        nova_janela.title("Sistema de Biblioteca")
+
+        menu_bar_color = '#2b2b2b'
+
+        logout_command = lambda: self.realizar_logout(nova_janela)
+        
+        # Ícones
+        toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
+        home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
+        about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
+        close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
+        logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
+        livro_icon = customtkinter.CTkImage(Image.open("View/images/book.png"), size=(22, 22))
+        
+        # Indicadores de botões
+        def switch_indication(indicator_lb, page):
+            home_btn_indicator.configure(fg_color=menu_bar_color)
+            about_btn_indicator.configure(fg_color=menu_bar_color)
+
+            indicator_lb.configure(fg_color='white')
+
+            if menu_bar_frame.winfo_width() >= 50:
+                fold_menu_bar()
+
+            for frame in page_frame.winfo_children():
+                frame.destroy()
+
+            page()
+
+        # Animação de extensão do menu
+        def extending_animation():
+            current_width = menu_bar_frame.winfo_width()
+            if not current_width >= 150:
+                current_width += 100
+                menu_bar_frame.configure(width=current_width)
+                nova_janela.after(ms=1, func=extending_animation)
+
+        def extend_menu_bar():
+            extending_animation()
+            toggle_menu_btn.configure(image=close_btn_icon, command=fold_menu_bar)
+
+        # Animação de recolhimento do menu
+        def folding_animation():
+            current_width = menu_bar_frame.winfo_width()
+            if current_width != 50:
+                current_width -= 100
+                menu_bar_frame.configure(width=current_width)
+                nova_janela.after(ms=8, func=folding_animation)
+
+        def fold_menu_bar():
+            folding_animation()
+            toggle_menu_btn.configure(image=toggle_icon, command=extend_menu_bar)
+
+
+        def livros_page_cliente():
+
+            def load_livros_cliente():
+                 for item in tv_livro_cliente.get_children():
+                        tv_livro_cliente.delete(item)
+            # insere os livros
+                 for livro in self.livroCtrl.getLivros():
+                        tv_livro_cliente.insert("", "end", iid=livro.getId(), values=(
+                            livro.getId(),
+                            livro.getTitulo(),
+                            livro.getGenero(),
+                            livro.getEditora(),
+                            livro.getAutor(),
+                            livro.getNExemplares()
+                            ))
+                        
+            livros_page_fm = CTkFrame(page_frame)   
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=40)
+            livros_page_fm.pack(fill="both", expand=True)
+
+            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro", width=200)
+            nome_livro.place(x=85, y=100)
+
+            def buscar_livro_cliente():
+                livro_desejado = nome_livro.get()
+                if livro_desejado == "":
+                    messagebox.showerror("Erro", "Por favor, insira o título do livro a ser buscado.")
+                    return
+                livro =self.livroCtrl.buscarPorTitulo(livro_desejado)
+                if not livro:
+                    messagebox.showerror("Erro", f"Livro com título '{livro_desejado}' não encontrado.")
+                    return
+                else:
+                    tv_livro_cliente.selection_set(livro.getId())
+                    tv_livro_cliente.see(livro.getId())
+                    messagebox.showinfo("Sucesso", f"Livro '{livro_desejado}' encontrado e selecionado na tabela.")
+                    nome_livro.delete(0, 'end')
+                    nome_livro.focus()
+            
+            btn_buscar = CTkButton(livros_page_fm,
+                                   text="Buscar Livros",
+                                   width=130,
+                                   fg_color = "#63C5A1",
+                                   font=("Helvetica", 14, "bold"),
+                                   text_color= "white")
+            btn_buscar.place(x=375, y=100)
+            btn_buscar.configure(command=buscar_livro_cliente)
+            
+            tv_livro_cliente = tk.ttk.Treeview(livros_page_fm)
+            tv_livro_cliente.place(x=40, y=160, width=750, height=400)
+            tv_livro_cliente.column("#0", width=0, stretch="no")
+            tv_livro_cliente['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
+            tv_livro_cliente.column("ID", anchor="center", width=50)
+            tv_livro_cliente.column("Título", anchor="w", width=200)
+            tv_livro_cliente.column("Gênero", anchor="center", width=100)
+            tv_livro_cliente.column("Editora", anchor="w", width=150)
+            tv_livro_cliente.column("Autor", anchor="w", width=150)
+            tv_livro_cliente.column("Exemplares", anchor="center", width=100)
+
+            tv_livro_cliente.heading("ID", text="ID", anchor="center")
+            tv_livro_cliente.heading("Título", text="Título", anchor="center")
+            tv_livro_cliente.heading("Gênero", text="Gênero", anchor="center")
+            tv_livro_cliente.heading("Editora", text="Editora", anchor="center")
+            tv_livro_cliente.heading("Autor", text="Autor", anchor="center")
+            tv_livro_cliente.heading("Exemplares", text="Exemplares", anchor="center")
+
+            tv_livro_cliente.scrollbar = tk.Scrollbar(livros_page_fm, orient="vertical", command=tv_livro_cliente.yview)
+            tv_livro_cliente.scrollbar.place(x=790, y=160, height=400)
+            tv_livro_cliente.configure(yscrollcommand=tv_livro_cliente.scrollbar.set)
+            
+            load_livros_cliente()
+
+        def emprestimos_page():
+
+            emprestimos_page_fm = CTkFrame(page_frame)   
+            lb = CTkLabel(emprestimos_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=40)
+            emprestimos_page_fm.pack(fill="both", expand=True)
+
+            def load_emprestimos_cliente():
+                 for item in tv_emprestimo_cliente.get_children():
+                        tv_emprestimo_cliente.delete(item)
+            # insere os livros
+
+                 for emprestimo in self.emprestimosCtrl.pegarEmprestimosPorUsuario(usuario.getId()):
+                        if emprestimo.getMulta() == None:
+                            status = ""
+                            valor = ""
+                        else:
+                            status = emprestimo.getMulta().getStatus().name
+                            valor = f"R$ {emprestimo.getMulta().getValor():.2f}"
+
+                        tv_emprestimo_cliente.insert("", "end", iid=emprestimo.getId(), values=(
+                            emprestimo.getId(),
+                            emprestimo.getDataEmprestimo().strftime("%d/%m/%Y"),
+                            emprestimo.getDataPrevista().strftime("%d/%m/%Y"),
+                            emprestimo.getStatus().name,
+                            emprestimo.getMulta().getId(),
+                            status,
+                            valor
+                            ))
+                        
+            id_multa = CTkEntry(emprestimos_page_fm, placeholder_text="Digite o nome do livro", width=200)
+            id_multa.place(x=85, y=100)
+                        
+            def capturar_id_emprestimo(event):
+
+                item_selecionado = tv_emprestimo_cliente.selection()
+                id_emprestimo = item_selecionado[0]
+                linha_emprestimo = tv_emprestimo_cliente.item(id_emprestimo, 'values')
+                id_selecionado = linha_emprestimo[4]
+                id_multa.delete(0, END)
+                id_multa.insert(0, id_selecionado)
+
+            def pagar_multa():
+                self.multasCtrl.pagarMulta(id_multa.get())
+                messagebox.showinfo("Pago", "Multa paga com sucesso.")
+
+            tv_emprestimo_cliente = tk.ttk.Treeview(emprestimos_page_fm)
+            tv_emprestimo_cliente.place(x=40, y=160, width=750, height=400)
+            tv_emprestimo_cliente.column("#0", width=0, stretch="no")
+            tv_emprestimo_cliente['columns'] = ("ID", "DataEmprestimo", "DataPrevista", "Status", "IDMulta", "StatusMulta", "ValorMulta")
+            tv_emprestimo_cliente.column("ID", anchor="center", width=50)
+            tv_emprestimo_cliente.column("DataEmprestimo", anchor="center", width=80)
+            tv_emprestimo_cliente.column("DataPrevista", anchor="center", width=80)
+            tv_emprestimo_cliente.column("Status", anchor="w", width=80)
+            tv_emprestimo_cliente.column("IDMulta", width=0, stretch="no")
+            tv_emprestimo_cliente.column("StatusMulta", anchor="w", width=100)
+            tv_emprestimo_cliente.column("ValorMulta", anchor="center", width=80)
+
+            tv_emprestimo_cliente.heading("ID", text="ID", anchor="center")
+            tv_emprestimo_cliente.heading("DataEmprestimo", text="Data Empréstimo", anchor="center")
+            tv_emprestimo_cliente.heading("DataPrevista", text="Data Prevista", anchor="center")
+            tv_emprestimo_cliente.heading("Status", text="Status", anchor="center")
+            # tv_emprestimo_cliente.heading("IDMulta", text="")
+            tv_emprestimo_cliente.heading("StatusMulta", text="Multa", anchor="center")
+            tv_emprestimo_cliente.heading("ValorMulta", text="Valor Multa", anchor="center")
+
+            tv_emprestimo_cliente.scrollbar = tk.Scrollbar(emprestimos_page_fm, orient="vertical", command=tv_emprestimo_cliente.yview)
+            tv_emprestimo_cliente.scrollbar.place(x=790, y=160, height=400)
+            tv_emprestimo_cliente.configure(yscrollcommand=tv_emprestimo_cliente.scrollbar.set)
+
+            load_emprestimos_cliente()
+
+            tv_emprestimo_cliente.bind("<ButtonRelease-1>", capturar_id_emprestimo)
+
+            btn_buscar = CTkButton(emprestimos_page_fm,
+                                   text="Pagar Multa",
+                                   width=130,
+                                   fg_color = "#63C5A1",
+                                   font=("Helvetica", 14, "bold"),
+                                   text_color= "white",
+                                   command=pagar_multa)
+            btn_buscar.place(x=375, y=100)
+            
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        def about_page():
+            # Frame principal da página
+            about_page_fm = CTkFrame(page_frame, fg_color="white")
+            about_page_fm.pack(fill="both", expand=True)
+
+            about_page_fm.grid_columnconfigure(0, weight=1)
+            about_page_fm.grid_columnconfigure(1, weight=0)
+            about_page_fm.grid_columnconfigure(2, weight=1)
+
+            # Logos
+            logo_nexo_img = customtkinter.CTkImage(
+                light_image=Image.open("View/images/logo_about.png"),
+                dark_image=Image.open("View/images/logo_about.png"),
+                size=(120, 120)
+            )
+            logo_acervo_img = customtkinter.CTkImage(
+                light_image=Image.open("View/images/logo_acervo.png"),
+                dark_image=Image.open("View/images/logo_acervo.png"),
+                size=(120, 120)
+            )
+
+            # Ícones dos pilares
+            icon_sarch = customtkinter.CTkImage(
+                light_image=Image.open("View/images/icon_sarch.png"),
+                dark_image=Image.open("View/images/icon_sarch.png"),
+                size=(20, 20)
+            )
+            icon_shield = customtkinter.CTkImage(
+                light_image=Image.open("View/images/icon_shield.png"),
+                dark_image=Image.open("View/images/icon_shield.png"),
+                size=(20, 20)
+            )
+            icon_user = customtkinter.CTkImage(
+                light_image=Image.open("View/images/icon_user.png"),
+                dark_image=Image.open("View/images/icon_user.png"),
+                size=(20, 20)
+            )
+
+            def about_nexo_content():
+            # Frame central about Nexo
+                frame_sobre_nexo = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+                frame_sobre_nexo.grid(row=1, column=1, sticky='nsew')
+
+            # Título "Sobre Nós"
+                label_title = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text="Sobre Nós",
+                    font=customtkinter.CTkFont(size=30, weight="bold"),
+                    text_color="#012E58",
+                    bg_color="transparent"
+                )
+                label_title.grid(row=1, column=1, sticky='w', pady=(50,0))
+
+            # Texto principal
+                label_sobre_1 = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text=(
+                        "O NexoCode é uma solução tecnológica avançada desenvolvida "
+                        "para enfrentar o desafio da gestão de acervos informacionais complexos. "
+                        "Sua arquitetura foi concebida com o propósito fundamental de transformar "
+                        "o caos de dados em conhecimento acessível e rastreável."
+                    ),
+                    width=650,
+                    wraplength=600,
+                    justify="left",
+                    bg_color="transparent"
+                )
+                label_sobre_1.grid(row=2, column=1, sticky='nw', pady=10)
+
+            # Título Equipe
+                label_sobre_2 = customtkinter.CTkLabel(
+                    frame_sobre_nexo,
+                    text="Equipe",
+                    font=customtkinter.CTkFont(size=16, weight="bold"),
+                    bg_color="transparent"
+                )
+                label_sobre_2.grid(row=5, column=1, sticky='w', pady=(0, 10))
+
+            # Label Equipe
+                label_equipe = customtkinter.CTkLabel(frame_sobre_nexo,
+                                                    width=200,
+                                                    wraplength=600,
+                                                    justify="left",
+                                                    bg_color="transparent",
+                                                    text="• Ilca Almeida Trigueiros (CEO)\n" \
+                                                        "• Gustavo Ribeiro Carpanez (Arquiteto de Dados)\n" \
+                                                        "• Nathan Silva de Souza (Desenvolvedor Backend)\n" \
+                                                        "• Patrick da Silva Almeida (Engenheiro de DevOps / Cloud)\n" \
+                                                        "• Pedro Henrique Vicente (Desenvolvedor Frontend)\n" \
+                                                        "• Pedro Paulo Reis Rodrigues (Analista de Segurança da Informação)\n" \
+                                                        "• Pedro Ricardo Brandão Costa (Analista de Negócios)")
+                label_equipe.grid(row=6, column=1, sticky='nw', pady=10, padx=(35,0))
+            
+            def about_acervo_content():
+
+            # Frame central about Acervo
+                frame_sobre_acervo = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+                frame_sobre_acervo.grid(row=1, column=1, sticky='nsew')
+
+                frame_sobre_acervo.grid_columnconfigure(0, weight=1)
+
+            # Título "Sobre o Acervo"
+                label_title = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text="Sobre Nós",
+                    font=customtkinter.CTkFont(size=30, weight="bold"),
+                    text_color="#90D6BC",
+                    bg_color="transparent"
+                )
+                label_title.grid(row=0, column=0, sticky='w', pady=(50,0))
+
+            # Texto principal
+                label_sobre_acervo = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text=(
+                        "O AcervoMax é o nosso sistema de gestão de empréstimos e acervos, "
+                        "projetado para bibliotecas de grande escala. Permite aos usuários o "
+                        "controle total sobre a sua situação de empréstimos e multas, "
+                        "sem a necessidade de intervenção de um bibliotecário."),
+                    width=650,
+                    wraplength=600,
+                    justify="left")
+                label_sobre_acervo.grid(row=1, column=0, sticky='w', pady=10, padx=(8,0))
+
+            # Título secundário
+                label_sobre_2 = customtkinter.CTkLabel(
+                    frame_sobre_acervo,
+                    text="Nossos Pilares",
+                    font=customtkinter.CTkFont(size=16, weight="bold"),
+                    bg_color="transparent"
+                )
+                label_sobre_2.grid(row=2, column=0, sticky='w', pady=0)
+
+            # Frame dos pilares
+                frame_sarch = customtkinter.CTkFrame(
+                    frame_sobre_acervo,
+                    fg_color="transparent",
+                    width=650
+                )
+                frame_sarch.grid(row=3, column=0, sticky='nw', pady=(0,10), padx=(35,0))
+
+            # Config grid interno
+                frame_sarch.grid_columnconfigure(0, weight=0)
+                frame_sarch.grid_columnconfigure(1, weight=1)
+
+            # Bloco "Busca"
+                label_img_sarch = customtkinter.CTkLabel(frame_sarch, image=icon_sarch, text="")
+                label_img_sarch.grid(row=0, column=0, sticky='nw')
+
+                label_sobre_3 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Otimização de Busca: Algoritmos otimizados garantem a recuperação de documentos em alta velocidade.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_3.grid(row=0, column=1, sticky='nw', padx=10, pady=5)
+
+            # Bloco "Segurança"
+                label_img_shield = customtkinter.CTkLabel(frame_sarch, image=icon_shield, text="")
+                label_img_shield.grid(row=1, column=0, sticky='nw')
+
+                label_sobre_4 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Integridade e Segurança: Proteção e auditoria completa dos dados sensíveis.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_4.grid(row=1, column=1, sticky='nw', padx=10, pady=5)
+
+            # Bloco "Usuário"
+                label_img_user = customtkinter.CTkLabel(frame_sarch, image=icon_user, text="")
+                label_img_user.grid(row=2, column=0, sticky='nw')
+
+                label_sobre_5 = customtkinter.CTkLabel(
+                    frame_sarch,
+                    bg_color="transparent",
+                    text="Experiência do Usuário: Interface limpa, eficiente e fácil de usar.",
+                    wraplength=550,
+                    justify="left"
+                )
+                label_sobre_5.grid(row=2, column=1, sticky='nw', padx=10)
+
+        #Frame Logos
+            frame_logos = customtkinter.CTkFrame(about_page_fm, fg_color="transparent")
+            frame_logos.grid(row=0, column=1, pady=(50,0), padx=(0,60))
+
+        #Logo Acervo
+            btn_logo_acervo = customtkinter.CTkButton(frame_logos,
+                                                      image=logo_acervo_img,
+                                                      text="",
+                                                      fg_color="transparent",
+                                                      command=about_acervo_content)
+            btn_logo_acervo.grid(row=0, column=1)
+
+        # Logo NEXO
+            btn_logo_nexo = customtkinter.CTkButton(frame_logos,
+                                                    image=logo_nexo_img,
+                                                    text="",
+                                                    fg_color="transparent",
+                                                    command=about_nexo_content)
+            btn_logo_nexo.grid(row=0, column=0, padx=30)
+        
+            about_nexo_content()
+
+
+        # Área principal das páginas
+        page_frame = CTkFrame(nova_janela)
+        page_frame.place(relwidth=1.0, relheight=1.0, x=50)
+        livros_page_cliente()
+
+        # Menu lateral
+        menu_bar_frame = CTkFrame(nova_janela, fg_color=menu_bar_color)
+        menu_bar_frame.pack(side="left", fill="y", pady=5, padx=2)
+        menu_bar_frame.pack_propagate(False)
+        menu_bar_frame.configure(width=50)
+
+        # Botão do menu
+        toggle_menu_btn = CTkButton(menu_bar_frame, image=toggle_icon, text="",
+                                    fg_color=menu_bar_color, hover_color=menu_bar_color,
+                                    command=extend_menu_bar, width=30, height=30)
+        toggle_menu_btn.place(x=4, y=10)
+
+        # Botão Home
+        home_btn = CTkButton(menu_bar_frame, image=home_icon, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: switch_indication(home_btn_indicator, livros_page_cliente),
+                            width=30, height=40)
+        home_btn.place(x=9, y=130)
+
+        home_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color='white', width=3, height=40)
+        home_btn_indicator.place(x=3, y=130)
+
+        home_page_lb = CTkLabel(menu_bar_frame, text="Home", fg_color=menu_bar_color,
+                                text_color="white", font=("Bold", 15))
+        home_page_lb.place(x=50, y=138)
+        home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, livros_page_cliente))
+
+        # Botão Emprestimos
+        emprestimos_btn = CTkButton(menu_bar_frame, image=livro_icon, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: switch_indication(emprestimos_btn_indicator, emprestimos_page),
+                            width=30, height=40)
+        emprestimos_btn.place(x=9, y=195)
+        
+        emprestimos_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        emprestimos_btn_indicator.place(x=3, y=195)
+
+        emprestimos_lb = CTkLabel(menu_bar_frame, text="Empréstimos", fg_color=menu_bar_color,
+                            text_color="white", font=("Bold", 15), anchor="w")
+        emprestimos_lb.place(x=50, y=203)
+        emprestimos_lb.bind("<Button-1>", lambda e: switch_indication(emprestimos_btn_indicator, emprestimos_page))
+
+        # Botão Sobre
+        about_btn = CTkButton(menu_bar_frame, image=about_icon, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: switch_indication(about_btn_indicator, about_page),
+                            width=30, height=40)
+        about_btn.place(x=9, y=260)
+        
+        about_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        about_btn_indicator.place(x=3, y=260)
+
+        about_lb = CTkLabel(menu_bar_frame, text="Sobre", fg_color=menu_bar_color,
+                            text_color="white", font=("Bold", 15), anchor="w")
+        about_lb.place(x=50, y=263)
+        about_lb.bind("<Button-1>", lambda e: switch_indication(about_btn_indicator, about_page))
+
+        # Botão Logout
+        logout_btn = CTkButton(menu_bar_frame, image=logout, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: self.realizar_logout(nova_janela),
+                            width=30, height=40)
+        logout_btn.place(x=9, y=500)
+        
+        logout_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        logout_btn_indicator.place(x=3, y=500)
+
+        logout_lb = CTkLabel(menu_bar_frame, text="Logout", fg_color=menu_bar_color,
+                            text_color="white", font=("Bold", 15), anchor="w")
+        logout_lb.place(x=50, y=505)
+        logout_lb.bind("<Button-1>", lambda e: self.realizar_logout(nova_janela))
+
+        # posicionando o menu bar frame
+        menu_bar_frame.pack(side="left", fill="y", pady=4, padx=3)
+        menu_bar_frame.pack_propagate(False)
+        menu_bar_frame.configure(width=50, fg_color=menu_bar_color)
+
+        nova_janela.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
 
     def janela_nova(self, usuario): 
     # Fecha completamente a janela de login
