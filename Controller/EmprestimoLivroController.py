@@ -97,8 +97,15 @@ class EmprestimoLivroController:
 
         multa = emprestimo.registrarDevolucao(dataDevolucao)
 
-     
-        self.__multaController.addMulta(multa)
+        # Evita duplicar multa
+        if multa and self.__multaController:
+            multas_existentes = [
+                m for m in self.__multaController.getMultas()
+                if m.getEmprestimo().getId() == emprestimo.getId()
+            ]
+
+            if not multas_existentes:
+                self.__multaController.addMulta(multa)
 
         self.salvarEmprestimos()
 

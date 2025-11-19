@@ -10,8 +10,6 @@ from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
 
-from Untils.Enums import StatusEmprestimo
-
 
 root = CTk()
 
@@ -537,17 +535,8 @@ class Aplication():
                     
 
             def registrar_devolucao():
-                emprestimo = self.emprestimosCtrl.buscarPorId(id_emprestimo.get())
-                if  emprestimo == None:
-                    messagebox.showerror("Erro", "Emprestimo nao encontrado")
-                    return
-                if emprestimo.getStatus() == StatusEmprestimo.ATIVO:
-                    messagebox.showinfo("Sucesso", "Emprestimo devolvido com sucesso")
-                    self.emprestimosCtrl.registrarDevolucao(id_emprestimo.get(), date.today())
-                    load_emprestimos()
-                    load_multas()
-                else:
-                    messagebox.showerror("Erro", "Emprestimo ja devolvido")
+                self.emprestimosCtrl.registrarDevolucao(id_emprestimo.get(), date.today())
+                load_multas()
                 
 
             btn_reg_devolucao = CTkButton(multas_page_fm,
