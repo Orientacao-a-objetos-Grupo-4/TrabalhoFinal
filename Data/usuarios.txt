@@ -1,2 +1,4 @@
 e0169cdb-2e80-4bb5-890d-1cd5dbb7adb9;admin;admin;8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918;CLIENTE;;
 dc6b0d98-d37b-4ada-b5f0-5b49d9e3c9f5;Pedro;pedro;ee5cd7d5d96c8874117891b2c92a036f96918e66c102bc698ae77542c186f981;FUNCIONARIO;;
+fcb0f9f0-71fa-4503-af01-746cd9f16e51;Luiz;Luiz;0dd0029404cbe8bbad2cd84ec0f5089e4ca29d46719323b15595ffa765a88ffe;CLIENTE;;<Model.EmprestimoLivro.EmprestimoLivro object at 0x0000026FB9F31950>
+b710987a-7928-4455-9ded-d1b096c1170e;Joao;Joao;5f2e5aa5c388a6df41ff3c32531d4d81a661487bacadc010a4b6cdca0a7eb04d;CLIENTE;;

@@ -7,8 +7,9 @@ from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
-from datetime import datetime
-import locale
+from datetime import date
+
+from Untils.Enums import StatusEmprestimo
 
 
 root = CTk()
@@ -99,7 +100,7 @@ class Aplication():
                 self.root.after(500, lambda: self.janela_nova(usuario))
 
             elif tipo == "CLIENTE":
-                self.root.after(500, lambda: self.tela_usuario(usuario))
+                self.root.after(500, lambda: self.tela_usuario())
         else:
             self.label_status.configure(
                 text="❌ Nome de usuário ou senha incorretos.",
@@ -697,7 +698,6 @@ class Aplication():
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
         home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
-        livro_icon = customtkinter.CTkImage(Image.open("View/images/livro_btn3.png"), size=(25, 25))
         multas_icon = customtkinter.CTkImage(Image.open("View/images/multas.png"), size=(25, 25))
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
@@ -705,14 +705,13 @@ class Aplication():
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
             home_btn_indicator.configure(fg_color=menu_bar_color)
-            #livro_btn_indicator.configure(fg_color=menu_bar_color)
             multas_btn_indicator.configure(fg_color=menu_bar_color)
             about_btn_indicator.configure(fg_color=menu_bar_color)
 
             indicator_lb.configure(fg_color='white')
 
-            if menu_bar_frame.winfo_width() >= 50:
-                fold_menu_bar()
+            #=if menu_bar_frame.winfo_width() >= 50:
+                #fold_menu_bar()
 
             for frame in page_frame.winfo_children():
                 frame.destroy()
@@ -744,11 +743,6 @@ class Aplication():
             toggle_menu_btn.configure(image=toggle_icon, command=extend_menu_bar)
 
         # Páginas
-        def home_page():
-            home_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(home_page_fm,text=f"Bem-vindo Home ao Home Page!", font=("Bold", 20))
-            lb.place(x=10, y=10)
-            home_page_fm.pack(fill="both", expand=True)
 
         def livros_page():  
             def load_livros():
@@ -768,8 +762,6 @@ class Aplication():
             # função do modal de adicionar livro
             # Página de livros
             livros_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
@@ -1043,63 +1035,160 @@ class Aplication():
 
         def multas_page():
 
-            # def load_multas():
-            #      for item in tv_multas.get_children():
-            #             tv_multas.delete(item)
-            # # Insere as multas na TreeView
-            #      for multa in self.multasCtrl.getMultas():
-            #             tv_multas.insert("", "end", id=multa.getId(), values=(
-            #                 multa.getId(),
-            #                 multa.getValor(),
-            #                 multa.getStatus(),
-            #                 multa.getEmprestimo(),
-            #                 multa.getCliente(),
-            #                 multa.getDataCriacao()
-            #                 ))
-                        
             multas_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(multas_page_fm, text="Multas", font=("Bold", 20))
-            lb.place(x=100, y=200)
+            lb = CTkLabel(multas_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=80, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
-            # try:
-            #     # Tenta um formato comum para Linux/macOS
-            #     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-            # except locale.Error:
-            #     # Tenta um formato comum no Windows
-            #     try:
-            #         locale.setlocale(locale.LC_ALL, 'Portuguese_Brazil')
-            #     except locale.Error:
-            #         print("Aviso: Configuração de locale falhou.")
+            id_emprestimo = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Emprestimos", width=200)
+            id_emprestimo.place(x=85, y=80)
 
-            # def formatar_moeda(valor):
-            #     # Formata um valor numérico para o formato de moeda (R$).
-            #     return locale.currency(valor, grouping=True, symbol=True)
+            def capturar_id_emprestimo(event):
+                selected_item = tv_emp.selection()
+                id_empestimo = selected_item[0]
+                linha_emprestimo = tv_emp.item(id_empestimo, "values")
+                id_emprestimo.delete(0, 'end')
+                id_emprestimo.insert(0, linha_emprestimo[0]) 
 
-            # # Tabela de multas
-            # tv_multas = tk.ttk.Treeview(multas_page_fm)
-            # tv_multas.place(x=40, y=160, width=750, height=400)
-            # tv_multas.column("#0", width=0, stretch="no")
-            # tv_multas['columns'] = ("ID", "Valor", "Status", "Empréstimo", "Cliente", "Data")
-            # tv_multas.column("ID", anchor="center", width=50)
-            # tv_multas.column("Valor", anchor="w", width=200)
-            # tv_multas.column("Status", anchor="center", width=100)
-            # tv_multas.column("Empréstimo", anchor="w", width=150)
-            # tv_multas.column("Cliente", anchor="w", width=150)
-            # tv_multas.column("Data", anchor="center", width=100)
 
-            # tv_multas.heading("ID", text="ID", anchor="center")
-            # tv_multas.heading("Valor", text="Valor", anchor="center")
-            # tv_multas.heading("Status", text="Status", anchor="center")
-            # tv_multas.heading("Empréstimo", text="Empréstimo", anchor="center")
-            # tv_multas.heading("Cliente", text="Cliente", anchor="center")
-            # tv_multas.heading("Data", text="Data", anchor="center")
+            def load_multas():
+                # limpa a tabela
+                for item in tv.get_children():
+                    tv.delete(item)
 
-            # tv_multas.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_multas.yview)
-            # tv_multas.scrollbar.place(x=790, y=160, height=400)
-            # tv_multas.configure(yscrollcommand=tv_multas.scrollbar.set)
+                # lista as multas
+                for multa in self.multasCtrl.getMultas():
+
+                    cliente = multa.getCliente()
+                    emprestimo = multa.getEmprestimo()
+
+                    cliente_id = cliente.getId() if cliente else "N/A"
+                    cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
+
+                    if emprestimo:
+                        data_emp = emprestimo.getDataEmprestimo().strftime("%d/%m/%Y")
+                        data_prev = emprestimo.getDataPrevista().strftime("%d/%m/%Y")
+                    else:
+                        data_emp = "N/A"
+                        data_prev = "N/A"
+
+                    status = multa.getStatus().name if multa.getStatus() else "N/A"
+
+                    # insere na treeview
+                    tv.insert("", "end", iid=multa.getId(), values=(
+                        multa.getId(),
+                        cliente_id,
+                        cliente_nome,
+                        data_emp,
+                        data_prev,
+                        status
+                    ))
+
+                    
+
+            def registrar_devolucao():
+                emprestimo = self.emprestimosCtrl.buscarPorId(id_emprestimo.get())
+                if  emprestimo == None:
+                    messagebox.showerror("Erro", "Emprestimo nao encontrado")
+                    return
+                if emprestimo.getStatus() == StatusEmprestimo.ATIVO:
+                    messagebox.showinfo("Sucesso", "Emprestimo devolvido com sucesso")
+                    self.emprestimosCtrl.registrarDevolucao(id_emprestimo.get(), date.today())
+                    load_emprestimos()
+                    load_multas()
+                else:
+                    messagebox.showerror("Erro", "Emprestimo ja devolvido")
+                
+
+            btn_reg_devolucao = CTkButton(multas_page_fm,
+                                     text="Registrar Devolução",
+                                     width=130,
+                                     fg_color = "#63C5A1",
+                                     font=("Helvetica", 14, "bold"),
+                                     text_color= "white",
+                                     command=registrar_devolucao)
+            btn_reg_devolucao.place(x=375, y=80)
+
+            titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas", font=("Bold", 16))
+            titulo_multa.place(x=40, y=345)
+
+            colunas = ("id", "cliente_id", "cliente", "data_emp", "data_prev", "status")
+
+            tv = tk.ttk.Treeview(multas_page_fm, columns=colunas, show="headings", height=12)
+
+            # Cabeçalhos
+            tv.heading("id", text="ID Multa")
+            tv.heading("cliente_id", text="ID Cliente")
+            tv.heading("cliente", text="Nome Cliente")
+            tv.heading("data_emp", text="Data Empréstimo")
+            tv.heading("data_prev", text="Data Prevista")
+            tv.heading("status", text="Status")
+
+            # Larguras
+            tv.column("id", width=80)
+            tv.column("cliente_id", width=0, stretch="no")
+            tv.column("cliente", width=140)
+            tv.column("data_emp", width=120)
+            tv.column("data_prev", width=120)
+            tv.column("status", width=100)
+
+            tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
+            tv.scrollbar.place(x=790, y=380, height=200)
+            tv.configure(yscrollcommand=tv.scrollbar.set)
+            tv.place(x=40, y=380, width=750, height=200)
+            load_multas()
             
-            # load_multas()
+            def load_emprestimos():
+                # limpa a tabela
+                for item in tv_emp.get_children():
+                    tv_emp.delete(item)
+
+                # lista os emprestimos
+                for emprestimo in self.emprestimosCtrl.getEmprestimos():
+
+                    cliente = emprestimo.getCliente()
+                    titulos = ", ".join([item.getLivro().getTitulo() for item in emprestimo.getItens()]) if emprestimo.getItens() else "N/A"
+
+                    cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
+
+                    # insere na treeview
+                    tv_emp.insert("", "end", iid=emprestimo.getId(), values=(
+                        emprestimo.getId(),
+                        cliente_nome,
+                        titulos,
+                        emprestimo.getDataEmprestimo().strftime("%d/%m/%Y"),
+                        emprestimo.getDataPrevista().strftime("%d/%m/%Y"),
+                        emprestimo.getStatus().name
+                    ))
+
+            titulo_emprestimos = CTkLabel(multas_page_fm, text="Empréstimos Registrados", font=("Bold", 16))
+            titulo_emprestimos.place(x=40, y=125)
+
+
+            colunas_emp = ("id", "cliente", "livro", "data_emp", "data_prev", "status")
+            tv_emp = tk.ttk.Treeview(multas_page_fm, columns=colunas_emp, show="headings", height=8)
+            # Cabeçalhos
+            tv_emp.heading("id", text="ID Empréstimo")
+            tv_emp.heading("cliente", text="Nome Cliente")
+            tv_emp.heading("livro", text="Título do(s) Livro(s)")
+            tv_emp.heading("data_emp", text="Data Empréstimo")
+            tv_emp.heading("data_prev", text="Data Prevista")
+            tv_emp.heading("status", text="Status")
+            # Larguras
+            tv_emp.column("id", width=100)
+            tv_emp.column("cliente", width=140)
+            tv_emp.column("livro", width=140)
+            tv_emp.column("data_emp", width=120)
+            tv_emp.column("data_prev", width=120)
+            tv_emp.column("status", width=100)
+            tv_emp.place(x=40, y=160, width=750, height=180)
+            tv_emp.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_emp.yview)
+            tv_emp.scrollbar.place(x=790, y=160, height=180)
+            tv_emp.configure(yscrollcommand=tv_emp.scrollbar.set)
+
+            load_emprestimos()
+            
+            tv_emp.bind("<ButtonRelease-1>", capturar_id_emprestimo)
 
         def about_page():
             # Frame principal da página
@@ -1338,23 +1427,8 @@ class Aplication():
         home_page_lb = CTkLabel(menu_bar_frame, text="Home", fg_color=menu_bar_color,
                                 text_color="white", font=("Bold", 15))
         home_page_lb.place(x=50, y=130)
-        home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, home_page))
+        home_page_lb.bind("<Button-1>", lambda e: switch_indication(home_btn_indicator, livros_page))
 
-        # # Botão Livros
-        # livro_btn = CTkButton(menu_bar_frame, image=livro_icon, text="",
-        #                         fg_color=menu_bar_color, hover_color=menu_bar_color,
-        #                         command=lambda: switch_indication(livro_btn_indicator, livros_page),
-        #                         width=30)
-        # livro_btn.place(x=9, y=185)
-
-        # livro_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
-        # livro_btn_indicator.place(x=3, y=185)
-
-        # livro_lb = CTkLabel(menu_bar_frame, text="Serviços", fg_color=menu_bar_color,
-        #                     text_color="white", font=("Bold", 15), anchor="w")
-        # livro_lb.place(x=50, y=190)
-        # livro_lb.bind("<Button-1>", lambda e: switch_indication(livro_btn_indicator, livros_page))
-        
         # Botão Multas
         multas_btn = CTkButton(menu_bar_frame, image=multas_icon, text="",
                                 fg_color=menu_bar_color, hover_color=menu_bar_color,

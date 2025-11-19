@@ -166,7 +166,6 @@ class EmprestimoLivroController:
                     livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
                         livro = self.__livroController.buscarPorId(uuid_from_maybe_string(idLivro))
-                        print(livro)
                         if not livro:
                             continue
                         emprestimo.addItem(livro)
