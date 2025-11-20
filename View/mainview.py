@@ -8,6 +8,7 @@ from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
+from Untils.Assistants import uuid_from_maybe_string
 
 from Untils.Enums import StatusEmprestimo, StatusMulta
 
@@ -121,6 +122,7 @@ class Aplication():
 
         menu_bar_color = '#2b2b2b'
 
+
         logout_command = lambda: self.realizar_logout(nova_janela)
         
         # Ícones
@@ -135,6 +137,7 @@ class Aplication():
         def switch_indication(indicator_lb, page):
             home_btn_indicator.configure(fg_color=menu_bar_color)
             about_btn_indicator.configure(fg_color=menu_bar_color)
+            emprestimos_btn_indicator.configure(fg_color=menu_bar_color)
 
             indicator_lb.configure(fg_color='white')
 
@@ -189,11 +192,11 @@ class Aplication():
                         
             livros_page_fm = CTkFrame(page_frame)   
             lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
+            lb.place(x=45, y=40)
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro", width=200)
-            nome_livro.place(x=85, y=100)
+            nome_livro.place(x=45, y=100)
 
             def buscar_livro_cliente():
                 livro_desejado = nome_livro.get()
@@ -248,7 +251,7 @@ class Aplication():
 
             emprestimos_page_fm = CTkFrame(page_frame)   
             lb = CTkLabel(emprestimos_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
+            lb.place(x=45, y=40)
             emprestimos_page_fm.pack(fill="both", expand=True)
 
             def load_emprestimos_cliente():
@@ -275,7 +278,7 @@ class Aplication():
                             ))
                         
             id_multa = CTkEntry(emprestimos_page_fm, placeholder_text="Digite o nome do livro", width=200)
-            id_multa.place(x=85, y=100)
+            id_multa.place(x=45, y=100)
                         
             def capturar_id_emprestimo(event):
 
@@ -648,6 +651,7 @@ class Aplication():
             home_btn_indicator.configure(fg_color=menu_bar_color)
             multas_btn_indicator.configure(fg_color=menu_bar_color)
             about_btn_indicator.configure(fg_color=menu_bar_color)
+            
 
             indicator_lb.configure(fg_color='white')
 
@@ -699,15 +703,18 @@ class Aplication():
                             livro.getAutor(),
                             livro.getNExemplares()
                             ))
-                        
-            # função do modal de adicionar livro
+            livros_page_fm = CTkFrame(page_frame)   
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb.place(x=45, y=80)                  
+
             # Página de livros
             livros_page_fm = CTkFrame(page_frame)   
             livros_page_fm.pack(fill="both", expand=True)
 
-            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Busque ou Delete...", width=200)
-            nome_livro.place(x=85, y=80)
+            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro...", width=200)
+            nome_livro.place(x=45, y=100)
 
+            # função do modal de adicionar livro
             def modal_add_livro():
                 modal = CTkToplevel(nova_janela)
                 modal.geometry("400x400")
@@ -748,7 +755,7 @@ class Aplication():
                         messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
                         return
 
-                    self.livroCtrl.criarLivro(titulo, genero, editora, autor, nex)
+                    self.livroCtrl.criarLivro(titulo, genero, editora, autor, int(nex))
 
                     load_livros()
 
@@ -977,11 +984,11 @@ class Aplication():
 
             multas_page_fm = CTkFrame(page_frame)
             lb = CTkLabel(multas_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=80, y=40)
+            lb.place(x=40, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
             id_emprestimo = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Emprestimos", width=200)
-            id_emprestimo.place(x=85, y=80)
+            id_emprestimo.place(x=45, y=80)
 
             def capturar_id_emprestimo(event):
                 selected_item = tv_emp.selection()
@@ -1003,7 +1010,7 @@ class Aplication():
                     cliente_id = cliente.getId() if cliente else "N/A"
                     cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
                    
-                    valor = multa.getValor()
+                    valor = f"R$ {multa.getValor():.2f}"
                     
                     status = multa.getStatus().name if multa.getStatus() else "N/A"
 
@@ -1028,6 +1035,64 @@ class Aplication():
                     load_multas()
                 else:
                     messagebox.showerror("Erro", "Emprestimo ja devolvido")
+
+            def modal_emprestimo():
+                modal = CTkToplevel(nova_janela)
+                modal.geometry("400x300")
+                modal.title
+                modal.title("Registrar Empréstimo")
+
+                lbl_title = CTkLabel(modal, text="Registrar Novo Empréstimo", font=("Bold", 16))
+                lbl_title.pack(pady=10)
+
+                entry_cliente_id = CTkEntry(modal, placeholder_text="ID do Cliente")
+                entry_cliente_id.pack(pady=10)
+
+                entry_livro_ids = CTkEntry(modal, placeholder_text="IDs dos Livros (separados por vírgula)")
+                entry_livro_ids.pack(pady=10)
+
+                def confirmar_emprestimo():
+                    cliente_id = entry_cliente_id.get()
+                    livro_ids_str = entry_livro_ids.get()
+                    livro_ids = [id_.strip() for id_ in livro_ids_str.split(",") if id_.strip()]
+
+                    if not cliente_id or not livro_ids:
+                        messagebox.showerror("Erro", "Preencha todos os campos corretamente.")
+                        return
+
+                    cliente = self.userCtrl.buscar_por_id(cliente_id)
+                    if not cliente:
+                        messagebox.showerror("Erro", "Cliente não encontrado.")
+                        return
+
+                    livros = []
+                    for livro_id in livro_ids:
+                        livro = self.livroCtrl.buscarPorId(livro_id)
+                        if livro:
+                            livros.append(livro)
+                        else:
+                            messagebox.showerror("Erro", f"Livro com ID {livro_id} não encontrado.")
+                            return
+
+                    if self.emprestimosCtrl.criarEmprestimo(cliente, livros):
+                        messagebox.showinfo("Sucesso", "Empréstimo registrado com sucesso.")
+                        load_emprestimos()
+                    else:
+                        messagebox.showerror("Erro", "Falha ao registrar o empréstimo. Não pode pegar dois livros iguais emprestados ao mesmo tempo.")
+                        return
+                    modal.destroy()
+
+                btn_confirmar = CTkButton(modal,
+                                          text="Confirmar",
+                                          command=confirmar_emprestimo,
+                                          width=130,
+                                          fg_color = "#63C5A1",
+                                          font=("Helvetica", 14, "bold"),
+                                          text_color= "white")    
+                btn_confirmar.pack(pady=20)
+           
+            def registrar_emprestimo():
+                modal_emprestimo()
                 
             btn_reg_devolucao = CTkButton(multas_page_fm,
                                      text="Registrar Devolução",
@@ -1037,6 +1102,15 @@ class Aplication():
                                      text_color= "white",
                                      command=registrar_devolucao)
             btn_reg_devolucao.place(x=375, y=80)
+
+            btn_reg_emprestimo = CTkButton(multas_page_fm,
+                                     text="Registrar Emprestimo",
+                                     width=130,
+                                     fg_color = "#63C5A1",
+                                     font=("Helvetica", 14, "bold"),
+                                     text_color= "white",
+                                     command=registrar_emprestimo)
+            btn_reg_emprestimo.place(x=550, y=80)
 
             titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas", font=("Bold", 16))
             titulo_multa.place(x=40, y=345)
@@ -1067,8 +1141,8 @@ class Aplication():
             
             def load_emprestimos():
                 # limpa a tabela
-                for item in tv_emp.get_children():
-                    tv_emp.delete(item)
+                for item in self.tv_emp.get_children():
+                    self.tv_emp.delete(item)
 
                 # lista os emprestimos
                 for emprestimo in self.emprestimosCtrl.getEmprestimos():

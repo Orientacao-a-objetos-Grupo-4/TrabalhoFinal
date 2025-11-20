@@ -83,7 +83,7 @@ class Usuario:
 
     @staticmethod
     def criar_usuario(nomeUsuario, login, senha, tipo: TipoUsuario):
-        return Usuario(str(uuid.uuid4()), nomeUsuario, login, senha, tipo)
+        return Usuario(str(uuid.uuid4()).replace("-", "")[:6], nomeUsuario, login, senha, tipo)
 
     def addEmprestimo(self, emprestimo):
         self.__emprestimos.append(emprestimo)

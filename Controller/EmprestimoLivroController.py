@@ -3,7 +3,7 @@ from datetime import date
 from Model import Usuario
 from Model.EmprestimoLivro import EmprestimoLivro
 from Untils.Enums import StatusEmprestimo
-from Untils.Assistants import uuid_from_maybe_string
+from Untils.Assistants import date_emp_plus_days, uuid_from_maybe_string
 
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt", clienteController=None, multaController=None, livroController=None):
@@ -55,6 +55,27 @@ class EmprestimoLivroController:
                 return item
 
         return None
+
+    def criarEmprestimo(self, cliente, livros):
+        data_emp = date.today()
+        data_dev = date_emp_plus_days(data_emp, 7)
+
+        emprestimo = EmprestimoLivro.criarEmprestimo(
+            cliente=cliente,
+            livros=livros,
+            dataEmprestimo=data_emp,
+            dataPrevista=data_dev,
+        )
+
+        if  len(livros) != len(set(livros)):
+                print("Livro já emprestado para este cliente.")
+                return False
+
+
+        self.addEmprestimo(emprestimo)
+        cliente.addEmprestimo(emprestimo)
+        return True
+        
 
     def verificarLivro(self, idLivro, idEmprestimo):
         emprestimo = self.buscarPorId(uuid_from_maybe_string(idEmprestimo))

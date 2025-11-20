@@ -17,7 +17,7 @@ class LivroController:
 
 
     def criarLivro(self, titulo, genero, editora, autor, n_exemplares):
-        livro = Livro.criarLivro(uuid.uuid4(), titulo, genero, editora, autor, n_exemplares)
+        livro = Livro.criarLivro(str(uuid.uuid4()).replace("-", "")[:6], titulo, genero, editora, autor, n_exemplares)
         self.addLivro(livro)
         return livro
 
@@ -88,7 +88,6 @@ class LivroController:
         with open(self.__arquivo, "r", encoding="utf-8") as f:
             for linha in f:
                 id, titulo, genero, editora, autor, nExemplares = linha.strip().split(";")
-                id = uuid.UUID(id)
                 livro = Livro(id, titulo, genero, editora, autor, int(nExemplares))
                 self.__livros.append(livro)
 

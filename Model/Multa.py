@@ -73,7 +73,7 @@ class Multa:
         if not emprestimo or not cliente:
             raise ValueError("Empréstimo e cliente são obrigatórios")
 
-        id_multa = str(uuid.uuid4())
+        id_multa = str(uuid.uuid4()).replace("-", "")[:6]
         return Multa(id_multa, valor_inicial, emprestimo, cliente)
 
     def toTxt(self):

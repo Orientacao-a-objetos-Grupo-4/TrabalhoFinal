@@ -62,6 +62,21 @@ class EmprestimoLivro:
         self.__livros.append(novo_item)
         return novo_item
 
+    def criarEmprestimo(cliente, livros, dataEmprestimo, dataPrevista):
+        """Cria um novo empréstimo com os livros fornecidos."""
+        emprestimo = EmprestimoLivro(
+            id=str(uuid.uuid4()).replace("-", "")[:6],
+            cliente=cliente,
+            dataEmprestimo=dataEmprestimo,
+            dataPrevista=dataPrevista
+        )
+        
+        for livro in livros:
+            emprestimo.addItem(livro)
+            livro.retirarExemplar()
+
+        return emprestimo
+
     def calcularAtraso(self, data_devolucao):
         """Calcula o número de dias de atraso."""
         dias = (data_devolucao - self.getDataPrevista()).days
@@ -74,7 +89,7 @@ class EmprestimoLivro:
 
         valor_multa = dias_atraso * 2.0
         multa = Multa(
-            str(uuid.uuid4()),
+            str(uuid.uuid4()).replace("-", "")[:6],
             valor_multa,
             self,
             self.__cliente,
