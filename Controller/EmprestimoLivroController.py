@@ -3,7 +3,7 @@ from datetime import date
 from Model import Usuario
 from Model.EmprestimoLivro import EmprestimoLivro
 from Untils.Enums import StatusEmprestimo
-from Untils.Assistants import date_emp_plus_days, uuid_from_maybe_string
+from Untils.Assistants import date_emp_plus_days
 
 class EmprestimoLivroController:
     def __init__(self, arquivo="Data/emprestimos.txt", clienteController=None, multaController=None, livroController=None):
@@ -51,7 +51,7 @@ class EmprestimoLivroController:
             return None
 
         for item in emprestimo.getItens():
-            if item.getLivro().getId() == idLivro:
+            if item.getId() == idLivro:
                 return item
 
         return None
@@ -78,11 +78,11 @@ class EmprestimoLivroController:
         
 
     def verificarLivro(self, idLivro, idEmprestimo):
-        emprestimo = self.buscarPorId(uuid_from_maybe_string(idEmprestimo))
+        emprestimo = self.buscarPorId(idEmprestimo)
         if not emprestimo:
             return False
 
-        return any(item.getLivro().getId() == idLivro for item in emprestimo.getItens())
+        return any(item.getId() == idLivro for item in emprestimo.getItens())
     
     def pegarEmprestimosPorUsuario(self, idUsuario):
         emprestimos_usuario = []
@@ -103,7 +103,7 @@ class EmprestimoLivroController:
             if str(emprestimo.getCliente().getId()) == idCliente_str and \
                 emprestimo.getStatus() == StatusEmprestimo.ATIVO:
                 for item in emprestimo.getItens():
-                    id_livro_no_emprestimo = str(item.getLivro().getId()).strip()
+                    id_livro_no_emprestimo = str(item.getId()).strip()
                     print(id_livro_no_emprestimo, idLivro_str)
                     if id_livro_no_emprestimo == idLivro_str:
                         return True
@@ -134,7 +134,7 @@ class EmprestimoLivroController:
                 dataEmprestimo = e.getDataEmprestimo().isoformat() if e.getDataEmprestimo() else ""
                 dataPrevista = e.getDataPrevista().isoformat() if e.getDataPrevista() else ""
                 multa_id = e.getMulta().getId() if e.getMulta() else ""
-                itens_str = ",".join(str(i.getLivro().getId()) for i in e.getItens())
+                itens_str = ",".join(str(i.getId()) for i in e.getItens())
 
                 f.write(
                     f"{e.getId()};"
@@ -183,7 +183,7 @@ class EmprestimoLivroController:
                 if len(dados) >= 6 and dados[6]:
                     livros_ids = dados[6].split(",")
                     for idLivro in livros_ids:
-                        livro = self.__livroController.buscarPorId(uuid_from_maybe_string(idLivro))
+                        livro = self.__livroController.buscarPorId(idLivro)
                         if not livro:
                             continue
                         emprestimo.addItem(livro)

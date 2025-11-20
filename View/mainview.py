@@ -8,7 +8,6 @@ from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
-from Untils.Assistants import uuid_from_maybe_string
 
 from Untils.Enums import StatusEmprestimo, StatusMulta
 
@@ -293,13 +292,15 @@ class Aplication():
                 if not id_multa.get():
                     messagebox.showerror("Erro", "Digite o ID da multa.")
                     return
-                multa = self.multasCtrl.buscarMulta(id_multa.get())
+                multa = self.multasCtrl.buscarPorId(id_multa.get())
 
-                if  multa.getStatus() == StatusMulta.PAGO:
+                if  multa.getStatus() == StatusMulta.PAGA:
                     messagebox.showerror("Erro", "Multa ja paga.")
                 else:
                     self.multasCtrl.pagarMulta(id_multa.get())
                     messagebox.showinfo("Pago", "Multa paga com sucesso.")
+                    load_emprestimos_cliente()
+                    
 
             tv_emprestimo_cliente = tk.ttk.Treeview(emprestimos_page_fm)
             tv_emprestimo_cliente.place(x=40, y=160, width=750, height=400)
@@ -1141,14 +1142,14 @@ class Aplication():
             
             def load_emprestimos():
                 # limpa a tabela
-                for item in self.tv_emp.get_children():
-                    self.tv_emp.delete(item)
+                for item in tv_emp.get_children():
+                    tv_emp.delete(item)
 
                 # lista os emprestimos
                 for emprestimo in self.emprestimosCtrl.getEmprestimos():
 
                     cliente = emprestimo.getCliente()
-                    titulos = ", ".join([item.getLivro().getTitulo() for item in emprestimo.getItens()]) if emprestimo.getItens() else "N/A"
+                    titulos = ", ".join([item.getTitulo() for item in emprestimo.getItens()]) if emprestimo.getItens() else "N/A"
 
                     cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
 

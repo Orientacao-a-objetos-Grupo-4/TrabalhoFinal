@@ -55,12 +55,8 @@ class EmprestimoLivro:
     # ---------------- Métodos auxiliares ----------------
     def addItem(self, livro):
         """Adiciona um item ao empréstimo."""
-        novo_item = ItemEmprestimo(
-            emprestimoId=self.__id,
-            livro=livro
-        )
-        self.__livros.append(novo_item)
-        return novo_item
+        self.__livros.append(livro)
+        return livro
 
     def criarEmprestimo(cliente, livros, dataEmprestimo, dataPrevista):
         """Cria um novo empréstimo com os livros fornecidos."""
@@ -103,7 +99,7 @@ class EmprestimoLivro:
         self.setStatus(StatusEmprestimo.DEVOLVIDO)
 
         for item in self.__livros:
-            item.getLivro().devolverExemplar()
+            item.devolverExemplar()
 
         dias_atraso = self.calcularAtraso(data_devolucao)
         return self.gerarMulta(dias_atraso)

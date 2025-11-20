@@ -2,7 +2,7 @@
 import uuid
 from datetime import date, timedelta
 
-from Untils.Assistants import date_emp_plus_days, uuid_from_maybe_string
+from Untils.Assistants import date_emp_plus_days
 from Untils.Enums import TipoUsuario
 from Controller.UsuarioController import UsuarioController
 from Controller.LivroController import LivroController
@@ -169,7 +169,7 @@ def menu_funcionario(usuarioController, emprestimoController, livroController, p
                             print("Este cliente já possui este livro emprestado e não o devolveu.")
                             continue
 
-                        livro = livroController.buscarPorId(uuid_from_maybe_string(id_livro))
+                        livro = livroController.buscarPorId(id_livro)
                         if not livro:
                             livro = livroController.buscarPorId(id_livro)
                         
