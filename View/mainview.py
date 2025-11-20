@@ -133,7 +133,6 @@ class Aplication():
         home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
-        logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
         livro_icon = customtkinter.CTkImage(Image.open("View/images/book.png"), size=(22, 22))
         
         # Indicadores de botões
@@ -709,6 +708,7 @@ class Aplication():
         multas_icon = customtkinter.CTkImage(Image.open("View/images/multas.png"), size=(25, 25))
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
+        logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
 
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
@@ -1068,18 +1068,14 @@ class Aplication():
                 for multa in self.multasCtrl.getMultas():
 
                     cliente = multa.getCliente()
-                    emprestimo = multa.getEmprestimo()
+
 
                     cliente_id = cliente.getId() if cliente else "N/A"
                     cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
 
-                    if emprestimo:
-                        data_emp = emprestimo.getDataEmprestimo().strftime("%d/%m/%Y")
-                        data_prev = emprestimo.getDataPrevista().strftime("%d/%m/%Y")
-                    else:
-                        data_emp = "N/A"
-                        data_prev = "N/A"
-
+                   
+                    valor = multa.getValor()
+                    
                     status = multa.getStatus().name if multa.getStatus() else "N/A"
 
                     # insere na treeview
@@ -1087,8 +1083,7 @@ class Aplication():
                         multa.getId(),
                         cliente_id,
                         cliente_nome,
-                        data_emp,
-                        data_prev,
+                        valor,
                         status
                     ))
 
@@ -1120,7 +1115,7 @@ class Aplication():
             titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas", font=("Bold", 16))
             titulo_multa.place(x=40, y=345)
 
-            colunas = ("id", "cliente_id", "cliente", "data_emp", "data_prev", "status")
+            colunas = ("id", "cliente_id", "cliente", "Valor", "status")
 
             tv = tk.ttk.Treeview(multas_page_fm, columns=colunas, show="headings", height=12)
 
@@ -1128,16 +1123,14 @@ class Aplication():
             tv.heading("id", text="ID Multa")
             tv.heading("cliente_id", text="ID Cliente")
             tv.heading("cliente", text="Nome Cliente")
-            tv.heading("data_emp", text="Data Empréstimo")
-            tv.heading("data_prev", text="Data Prevista")
+            tv.heading("Valor", text="Valor")
             tv.heading("status", text="Status")
 
             # Larguras
             tv.column("id", width=80)
             tv.column("cliente_id", width=0, stretch="no")
             tv.column("cliente", width=140)
-            tv.column("data_emp", width=120)
-            tv.column("data_prev", width=120)
+            tv.column("Valor", width=120)
             tv.column("status", width=100)
 
             tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
@@ -1471,6 +1464,21 @@ class Aplication():
         menu_bar_frame.pack(side="left", fill="y", pady=4, padx=3)
         menu_bar_frame.pack_propagate(False)
         menu_bar_frame.configure(width=50, fg_color=menu_bar_color)
+
+        # Botão Logout
+        logout_btn = CTkButton(menu_bar_frame, image=logout, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: self.realizar_logout(nova_janela),
+                            width=30, height=40)
+        logout_btn.place(x=9, y=500)
+        
+        logout_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        logout_btn_indicator.place(x=3, y=500)
+
+        logout_lb = CTkLabel(menu_bar_frame, text="Logout", fg_color=menu_bar_color,
+                            text_color="white", font=("Bold", 15), anchor="w")
+        logout_lb.place(x=50, y=505)
+        logout_lb.bind("<Button-1>", lambda e: self.realizar_logout(nova_janela))
 
         nova_janela.mainloop()
 
