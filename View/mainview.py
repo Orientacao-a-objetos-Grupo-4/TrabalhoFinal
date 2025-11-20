@@ -11,9 +11,7 @@ from datetime import date
 
 from Untils.Enums import StatusEmprestimo, StatusMulta
 
-
 root = CTk()
-
 class Aplication():
     def __init__(self):
         super().__init__()
@@ -73,8 +71,6 @@ class Aplication():
         self.label_status.grid(row=0, column=1, pady=430, sticky="n")
 
     #Função de verificação de login
-
-    #Função de verificação de login
     def verificar_login(self):
         usuario_login = self.label_username.get()
         senha = self.label_password.get()
@@ -84,7 +80,6 @@ class Aplication():
 
         # Autentica usuário
         usuario = self.userCtrl.autenticar_usuario(usuario_login, senha)
-
 
         if usuario:
             tipo = usuario.getTipo().name  
@@ -134,6 +129,7 @@ class Aplication():
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
         livro_icon = customtkinter.CTkImage(Image.open("View/images/book.png"), size=(22, 22))
+        logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
         
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
@@ -258,8 +254,8 @@ class Aplication():
             def load_emprestimos_cliente():
                  for item in tv_emprestimo_cliente.get_children():
                         tv_emprestimo_cliente.delete(item)
-            # insere os livros
-
+            
+            # insere os empréstimos
                  for emprestimo in self.emprestimosCtrl.pegarEmprestimosPorUsuario(usuario.getId()):
                         if emprestimo.getMulta() == None:
                             status = ""
@@ -318,7 +314,6 @@ class Aplication():
             tv_emprestimo_cliente.heading("DataEmprestimo", text="Data Empréstimo", anchor="center")
             tv_emprestimo_cliente.heading("DataPrevista", text="Data Prevista", anchor="center")
             tv_emprestimo_cliente.heading("Status", text="Status", anchor="center")
-            # tv_emprestimo_cliente.heading("IDMulta", text="")
             tv_emprestimo_cliente.heading("StatusMulta", text="Multa", anchor="center")
             tv_emprestimo_cliente.heading("ValorMulta", text="Valor Multa", anchor="center")
 
@@ -339,47 +334,6 @@ class Aplication():
                                    command=pagar_multa)
             btn_buscar.place(x=375, y=100)
             
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         def about_page():
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")
@@ -586,7 +540,6 @@ class Aplication():
         
             about_nexo_content()
 
-
         # Área principal das páginas
         page_frame = CTkFrame(nova_janela)
         page_frame.place(relwidth=1.0, relheight=1.0, x=50)
@@ -670,26 +623,6 @@ class Aplication():
         menu_bar_frame.configure(width=50, fg_color=menu_bar_color)
 
         nova_janela.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-    
 
     def janela_nova(self, usuario): 
     # Fecha completamente a janela de login
@@ -863,7 +796,6 @@ class Aplication():
                     messagebox.showinfo("Sucesso", f"Livro '{livro_desejado}' encontrado e selecionado na tabela.")
                     nome_livro.delete(0, 'end')
                     nome_livro.focus()
-                
                 
             def modal_add_exemplares():
                 modal = CTkToplevel(nova_janela)
@@ -1058,7 +990,6 @@ class Aplication():
                 id_emprestimo.delete(0, 'end')
                 id_emprestimo.insert(0, linha_emprestimo[0]) 
 
-
             def load_multas():
                 # limpa a tabela
                 for item in tv.get_children():
@@ -1069,10 +1000,8 @@ class Aplication():
 
                     cliente = multa.getCliente()
 
-
                     cliente_id = cliente.getId() if cliente else "N/A"
                     cliente_nome = cliente.getNomeUsuario() if cliente else "N/A"
-
                    
                     valor = multa.getValor()
                     
@@ -1087,8 +1016,6 @@ class Aplication():
                         status
                     ))
 
-                    
-
             def registrar_devolucao():
                 emprestimo = self.emprestimosCtrl.buscarPorId(id_emprestimo.get())
                 if  emprestimo == None:
@@ -1102,7 +1029,6 @@ class Aplication():
                 else:
                     messagebox.showerror("Erro", "Emprestimo ja devolvido")
                 
-
             btn_reg_devolucao = CTkButton(multas_page_fm,
                                      text="Registrar Devolução",
                                      width=130,
@@ -1164,7 +1090,6 @@ class Aplication():
 
             titulo_emprestimos = CTkLabel(multas_page_fm, text="Empréstimos Registrados", font=("Bold", 16))
             titulo_emprestimos.place(x=40, y=125)
-
 
             colunas_emp = ("id", "cliente", "livro", "data_emp", "data_prev", "status")
             tv_emp = tk.ttk.Treeview(multas_page_fm, columns=colunas_emp, show="headings", height=8)
@@ -1396,7 +1321,6 @@ class Aplication():
             btn_logo_nexo.grid(row=0, column=0, padx=30)
         
             about_nexo_content()
-
 
         # Área principal das páginas
         page_frame = CTkFrame(nova_janela)
