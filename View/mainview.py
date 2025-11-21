@@ -649,7 +649,7 @@ class Aplication():
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
         logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
-        usuario_icon = customtkinter.CTkImage(Image.open("View/images/listar_usuario.png"), size=(22, 22))
+        usuario_icon = customtkinter.CTkImage(Image.open("View/images/user-avatar.png"), size=(22, 22))
 
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
