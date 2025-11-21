@@ -10,6 +10,7 @@ from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
 
 from Untils.Enums import StatusEmprestimo, StatusMulta
+from Untils.Enums import TipoUsuario
 
 root = CTk()
 class Aplication():
@@ -189,9 +190,10 @@ class Aplication():
                             livro.getNExemplares()
                             ))
                         
-            livros_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            livros_page_fm = CTkFrame(page_frame)  
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo a Livro Page {usuario.getNomeUsuario()}! - [{usuario.getTipo().name}]", font=("Bold", 20))
             lb.place(x=45, y=40)
+
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro", width=200)
@@ -249,7 +251,7 @@ class Aplication():
         def emprestimos_page():
 
             emprestimos_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(emprestimos_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb = CTkLabel(emprestimos_page_fm, text=f"Bem-vindo a Emprestimos Page {usuario.getNomeUsuario()} ! - [{usuario.getTipo().name}]", font=("Bold", 20))
             lb.place(x=45, y=40)
             emprestimos_page_fm.pack(fill="both", expand=True)
 
@@ -638,6 +640,7 @@ class Aplication():
         nova_janela.title("Sistema de Biblioteca")
 
         menu_bar_color = '#2b2b2b'
+
         
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
@@ -646,12 +649,15 @@ class Aplication():
         about_icon = customtkinter.CTkImage(Image.open("View/images/about_icon.png"), size=(22, 22))
         close_btn_icon = customtkinter.CTkImage(Image.open("View/images/close_btn_icon.png"), size=(22, 22))
         logout = customtkinter.CTkImage(Image.open("View/images/logout.png"), size=(22, 22))
+        usuario_icon = customtkinter.CTkImage(Image.open("View/images/listar_usuario.png"), size=(22, 22))
 
         # Indicadores de botões
         def switch_indication(indicator_lb, page):
             home_btn_indicator.configure(fg_color=menu_bar_color)
             multas_btn_indicator.configure(fg_color=menu_bar_color)
             about_btn_indicator.configure(fg_color=menu_bar_color)
+            listar_btn_indicator.configure(fg_color=menu_bar_color)
+            
             
 
             indicator_lb.configure(fg_color='white')
@@ -704,12 +710,11 @@ class Aplication():
                             livro.getAutor(),
                             livro.getNExemplares()
                             ))
-            livros_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
-            lb.place(x=45, y=80)                  
-
             # Página de livros
-            livros_page_fm = CTkFrame(page_frame)   
+            livros_page_fm = CTkFrame(page_frame)                     
+            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo ao Livros Page {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
+            lb.place(x=45, y=40)                  
+
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro...", width=200)
@@ -926,7 +931,7 @@ class Aplication():
                                      fg_color = "#63C5A1",
                                      font=("Helvetica", 14, "bold"),
                                      text_color= "white")
-            btn_adcionar.place(x=375, y=120)
+            btn_adcionar.place(x=255, y=100)
             btn_adcionar.configure(command=add_livro)
 
             btn_remover = CTkButton(livros_page_fm,
@@ -935,7 +940,7 @@ class Aplication():
                                     fg_color = "#63C5A1",
                                     font=("Helvetica", 14, "bold"),
                                     text_color= "white")
-            btn_remover.place(x=520, y=120)
+            btn_remover.place(x=525, y=100)
             btn_remover.configure(command=delete_livro)
 
             btn_add_ex = CTkButton(livros_page_fm,
@@ -944,7 +949,7 @@ class Aplication():
                                    fg_color = "#63C5A1",
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white")
-            btn_add_ex.place(x=520, y=80)
+            btn_add_ex.place(x=660, y=100)
             btn_add_ex.configure(command=modal_add_exemplares)
 
             btn_buscar = CTkButton(livros_page_fm,
@@ -953,7 +958,7 @@ class Aplication():
                                    fg_color = "#63C5A1",
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white")
-            btn_buscar.place(x=375, y=80)
+            btn_buscar.place(x=390, y=100)
             btn_buscar.configure(command=buscar_livro)
             
         # Tabela de livros
@@ -984,7 +989,7 @@ class Aplication():
         def multas_page():
 
             multas_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(multas_page_fm, text=f"Bem-vindo {usuario.getNomeUsuario()} - {usuario.getTipo().name} ", font=("Bold", 20))
+            lb = CTkLabel(multas_page_fm, text=f"Bem-vindo ao Multas Page {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
             lb.place(x=40, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
@@ -1163,6 +1168,7 @@ class Aplication():
                         emprestimo.getStatus().name
                     ))
 
+            
             titulo_emprestimos = CTkLabel(multas_page_fm, text="Empréstimos Registrados", font=("Bold", 16))
             titulo_emprestimos.place(x=40, y=125)
 
@@ -1190,6 +1196,116 @@ class Aplication():
             load_emprestimos()
             
             tv_emp.bind("<ButtonRelease-1>", capturar_id_emprestimo)
+
+        def listar_usuarios():
+
+            usuarios_page_fm = CTkFrame(page_frame)
+            lb = CTkLabel(usuarios_page_fm, text=f"Bem-vindo ao Page Usuarios {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
+            lb.place(x=40, y=40)
+            usuarios_page_fm.pack(fill="both", expand=True)
+
+            # Carregar usuários
+            def load_usuarios():
+                #Limpa a Treeview
+                for item in tv_usu.get_children():
+                    tv_usu.delete(item)
+                # Insere os usuários
+                for user in self.userCtrl.listar_usuarios():
+                    tv_usu.insert("", "end", iid=user.getId(), values=(
+                        user.getId(),
+                        user.getNomeUsuario(),
+                        user.getTipo().name
+                    ))
+
+
+            def modal_cadastro():
+                modal = CTkToplevel(nova_janela)
+                modal.geometry("400x400")
+                modal.title("Cadastro de Usuário")
+                modal.grab_set()
+
+                lbl_title = CTkLabel(modal, text="Cadastrar Novo Usuário", font=("Bold", 16))
+                lbl_title.pack(pady=10)
+
+                entry_nome = CTkEntry(modal, placeholder_text="Nome do Usuário")
+                entry_nome.pack(pady=5)
+
+                entry_login = CTkEntry(modal, placeholder_text="Login do Usuário")
+                entry_login.pack(pady=5)
+
+                entry_senha = CTkEntry(modal, placeholder_text="Senha do Usuário", show="*")
+                entry_senha.pack(pady=5)
+
+                entry_tipo = CTkEntry(modal, placeholder_text="Tipo de Usuário (FUNCIONARIO/CLIENTE)")
+                entry_tipo.pack(pady=5)
+
+                def confirmar_cadastro():
+                    nome = entry_nome.get()
+                    tipo_str = entry_tipo.get().upper()
+
+                    if nome == "" or tipo_str == "":
+                        messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
+                        return
+
+                    if tipo_str not in ["ADMIN", "CLIENTE"]:
+                        messagebox.showerror("Erro", "Tipo de usuário inválido. Use 'ADMIN' ou 'CLIENTE'.")
+                        return
+
+                    self.userCtrl.cadastrar_usuario(nomeUsuario=nome,
+                                                    login=entry_login.get(),
+                                                    senha=entry_senha.get(),
+                                                    tipo=TipoUsuario[tipo_str],
+                                                    pessoaLogada=usuario
+                                                    )
+
+                    load_usuarios()
+
+                    modal.destroy()
+
+                btn_cadastrar = CTkButton(modal,
+                                          text="Cadastrar",
+                                          command=confirmar_cadastro,
+                                          width=130,
+                                          fg_color = "#63C5A1",
+                                          font=("Helvetica", 14, "bold"),
+                                          text_color= "white")    
+                btn_cadastrar.pack(pady=20)
+
+            def cadastro_usuario():
+                 modal_cadastro()
+            
+            titulo_usuarios = CTkLabel(usuarios_page_fm, text="Usuários Registrados", font=("Bold", 16))
+            titulo_usuarios.place(x=40, y=125)
+
+            colunas_usu = ("id", "nome", "tipo")
+            tv_usu = tk.ttk.Treeview(usuarios_page_fm, columns=colunas_usu, show="headings", height=15)
+            # Cabeçalhos
+            tv_usu.heading("id", text="ID Usuário")
+            tv_usu.heading("nome", text="Nome do Usuário")
+            tv_usu.heading("tipo", text="Tipo de Usuário")
+            
+            # Larguras
+            tv_usu.column("id", width=100)
+            tv_usu.column("nome", width=200)
+            tv_usu.column("tipo", width=150)
+
+            tv_usu.place(x=40, y=160, width=750, height=350)
+            tv_usu.scrollbar = tk.Scrollbar(usuarios_page_fm, orient="vertical", command=tv_usu.yview)
+            tv_usu.scrollbar.place(x=790, y=160, height=350)
+            tv_usu.configure(yscrollcommand=tv_usu.scrollbar.set)
+
+                        
+            btn_listar = CTkButton(usuarios_page_fm,
+                                    text="Cadastrar Usuário",
+                                    width=130, 
+                                    fg_color = "#63C5A1", 
+                                    font=("Helvetica", 14, "bold"), 
+                                    text_color= "white",
+                                    command=cadastro_usuario)
+            btn_listar.place(x=45, y=80)
+
+            load_usuarios()
+            
 
         def about_page():
             # Frame principal da página
@@ -1444,19 +1560,34 @@ class Aplication():
         multas_lb.place(x=50, y=195)
         multas_lb.bind("<Button-1>", lambda e: switch_indication(multas_btn_indicator, multas_page))
 
+        # Botão Usuarios
+        listar_btn = CTkButton(menu_bar_frame, image=usuario_icon, text="",
+                            fg_color=menu_bar_color, hover_color=menu_bar_color,
+                            command=lambda: switch_indication(listar_btn_indicator, listar_usuarios),
+                            width=30, height=40)
+        listar_btn.place(x=9, y=250)
+        
+        listar_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
+        listar_btn_indicator.place(x=3, y=250)
+
+        listar_lb = CTkLabel(menu_bar_frame, text="Usuários", fg_color=menu_bar_color,
+                            text_color="white", font=("Bold", 15), anchor="w")
+        listar_lb.place(x=50, y=250)
+        listar_lb.bind("<Button-1>", lambda e: switch_indication(about_btn_indicator, about_page))
+
         # Botão Sobre
         about_btn = CTkButton(menu_bar_frame, image=about_icon, text="",
                             fg_color=menu_bar_color, hover_color=menu_bar_color,
                             command=lambda: switch_indication(about_btn_indicator, about_page),
                             width=30, height=40)
-        about_btn.place(x=9, y=250)
+        about_btn.place(x=9, y=310)
         
         about_btn_indicator = CTkLabel(menu_bar_frame, text="", fg_color=menu_bar_color, width=3 , height=40)
-        about_btn_indicator.place(x=3, y=250)
+        about_btn_indicator.place(x=3, y=310)
 
         about_lb = CTkLabel(menu_bar_frame, text="Sobre", fg_color=menu_bar_color,
                             text_color="white", font=("Bold", 15), anchor="w")
-        about_lb.place(x=50, y=250)
+        about_lb.place(x=50, y=310)
         about_lb.bind("<Button-1>", lambda e: switch_indication(about_btn_indicator, about_page))
 
         # posicionando o menu bar frame
