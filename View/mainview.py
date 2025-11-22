@@ -854,6 +854,9 @@ class Aplication():
                                     validatecommand=vcmd)
                 entry_qtd.pack(pady=5)
 
+                lbl_info = CTkLabel(modal, text="", font=("Bold", 12))
+                lbl_info.pack(pady=5)
+
                 # Atualiza o título conforme o usuário digita
                 def atualizar_info(*args):
                     titulo = entry_titulo.get()
