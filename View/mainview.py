@@ -8,7 +8,6 @@ from Controller.LivroController import LivroController
 from Controller.MultaController import MultaController
 from Controller.EmprestimoLivroController import EmprestimoLivroController
 from datetime import date
-
 from Untils.Enums import StatusEmprestimo, StatusMulta
 from Untils.Enums import TipoUsuario
 
@@ -52,19 +51,32 @@ class Aplication():
         label_img = customtkinter.CTkLabel(self.root, image=image_login, text="")
         label_img.grid(row=0, column=0, padx=50, pady=100, sticky='n')
                                                   
-        label_title = customtkinter.CTkLabel(self.root, text="Bem-vindo ao Sistema", font=customtkinter.CTkFont(size=30, weight="bold"))
+        label_title = customtkinter.CTkLabel(self.root,
+                                             text="Bem-vindo ao Sistema",
+                                             font=customtkinter.CTkFont(size=30, weight="bold"))
         label_title.grid(row=0, column=1, padx=0, pady=180, sticky = 'n')
 
-        label_subtitle = customtkinter.CTkLabel(self.root, text="Por favor, faça o login para continuar", font=customtkinter.CTkFont(size=16))
+        label_subtitle = customtkinter.CTkLabel(self.root,
+                                                text="Por favor, faça o login para continuar",
+                                                font=customtkinter.CTkFont(size=16))
         label_subtitle.grid(row=0, column=1, padx=0, pady=230, sticky='n')
 
-        self.label_username = customtkinter.CTkEntry(self.root, placeholder_text="Nome de Usuário", width=250, height=40, border_width=2, corner_radius=10)
+        self.label_username = customtkinter.CTkEntry(self.root,
+                                                     placeholder_text="Nome de Usuário",
+                                                     width=250, height=40, border_width=2,
+                                                     corner_radius=10)
         self.label_username.grid(row=0, column=1, padx=0, pady=280, stick='n')
 
-        self.label_password = customtkinter.CTkEntry(self.root, placeholder_text="Digite sua senha", width=250, height=40, border_width=2, corner_radius=10, show="*")
+        self.label_password = customtkinter.CTkEntry(self.root,
+                                                     placeholder_text="Digite sua senha",
+                                                     width=250, height=40, border_width=2,
+                                                     corner_radius=10, show="*")
         self.label_password.grid(row=0, column=1, padx=0, pady=330, stick='n')
 
-        button_login = customtkinter.CTkButton(self.root, text="LOGIN", fg_color="#0844f4" ,width=100, height=40, corner_radius=10, command=self.verificar_login)
+        button_login = customtkinter.CTkButton(self.root, text="LOGIN",
+                                               fg_color="#0844f4" ,width=100,
+                                               height=40, corner_radius=10,
+                                               command=self.verificar_login)
         button_login.grid(row=0, column=1, padx=0, pady=390, stick='n')
         self.root.bind('<Return>', lambda e: self.verificar_login())
 
@@ -121,9 +133,6 @@ class Aplication():
         nova_janela.title("Sistema de Biblioteca")
 
         menu_bar_color = '#2b2b2b'
-
-
-        logout_command = lambda: self.realizar_logout(nova_janela)
         
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
@@ -173,7 +182,6 @@ class Aplication():
             folding_animation()
             toggle_menu_btn.configure(image=toggle_icon, command=extend_menu_bar)
 
-
         def livros_page_cliente():
 
             def load_livros_cliente():
@@ -191,13 +199,15 @@ class Aplication():
                             ))
                         
             livros_page_fm = CTkFrame(page_frame)  
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo a Livro Page {usuario.getNomeUsuario()}! - [{usuario.getTipo().name}]", font=("Bold", 20))
+            lb = CTkLabel(livros_page_fm,
+                          text=f"Bem-vindo ao Sistema {usuario.getNomeUsuario()} - [{usuario.getTipo().name}]",
+                          font=("Bold", 20))
             lb.place(x=45, y=40)
 
             livros_page_fm.pack(fill="both", expand=True)
 
             nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro", width=200)
-            nome_livro.place(x=45, y=100)
+            nome_livro.place(x=45, y=90)
 
             def buscar_livro_cliente():
                 livro_desejado = nome_livro.get()
@@ -221,7 +231,7 @@ class Aplication():
                                    fg_color = "#63C5A1",
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white")
-            btn_buscar.place(x=375, y=100)
+            btn_buscar.place(x=320, y=90)
             btn_buscar.configure(command=buscar_livro_cliente)
             
             tv_livro_cliente = tk.ttk.Treeview(livros_page_fm)
@@ -230,7 +240,7 @@ class Aplication():
             tv_livro_cliente['columns'] = ("ID", "Título", "Gênero", "Editora", "Autor", "Exemplares")
             tv_livro_cliente.column("ID", anchor="center", width=50)
             tv_livro_cliente.column("Título", anchor="w", width=200)
-            tv_livro_cliente.column("Gênero", anchor="center", width=100)
+            tv_livro_cliente.column("Gênero", anchor="w", width=100)
             tv_livro_cliente.column("Editora", anchor="w", width=150)
             tv_livro_cliente.column("Autor", anchor="w", width=150)
             tv_livro_cliente.column("Exemplares", anchor="center", width=100)
@@ -248,10 +258,15 @@ class Aplication():
             
             load_livros_cliente()
 
+            titulo_multas = CTkLabel(page_frame, text="Livros Disponíveis", font=("Bold", 16), fg_color="#CFCFCF")
+            titulo_multas.place(x=40, y=130)
+
         def emprestimos_page():
 
             emprestimos_page_fm = CTkFrame(page_frame)   
-            lb = CTkLabel(emprestimos_page_fm, text=f"Bem-vindo a Emprestimos Page {usuario.getNomeUsuario()} ! - [{usuario.getTipo().name}]", font=("Bold", 20))
+            lb = CTkLabel(emprestimos_page_fm,
+                          text=f"Bem-vindo ao Sistema {usuario.getNomeUsuario()} - [{usuario.getTipo().name}]",
+                          font=("Bold", 20))
             lb.place(x=45, y=40)
             emprestimos_page_fm.pack(fill="both", expand=True)
 
@@ -278,17 +293,19 @@ class Aplication():
                             valor
                             ))
                         
-            id_multa = CTkEntry(emprestimos_page_fm, placeholder_text="Digite o nome do livro", width=200)
-            id_multa.place(x=45, y=100)
+            id_multa = CTkEntry(emprestimos_page_fm, placeholder_text="Digite o ID da Multa", width=200)
+            id_multa.place(x=45, y=90)
                         
             def capturar_id_emprestimo(event):
 
                 item_selecionado = tv_emprestimo_cliente.selection()
-                id_emprestimo = item_selecionado[0]
-                linha_emprestimo = tv_emprestimo_cliente.item(id_emprestimo, 'values')
-                id_selecionado = linha_emprestimo[4]
-                id_multa.delete(0, END)
-                id_multa.insert(0, id_selecionado)
+                if item_selecionado != "":
+                    messagebox.showerror("Erro", item_selecionado)
+                    id_emprestimo = item_selecionado[0]
+                    linha_emprestimo = tv_emprestimo_cliente.item(id_emprestimo, 'values')
+                    id_selecionado = linha_emprestimo[4]
+                    id_multa.delete(0, END)
+                    id_multa.insert(0, id_selecionado)
 
             def pagar_multa():
                 if not id_multa.get():
@@ -303,7 +320,6 @@ class Aplication():
                     messagebox.showinfo("Pago", "Multa paga com sucesso.")
                     load_emprestimos_cliente()
                     
-
             tv_emprestimo_cliente = tk.ttk.Treeview(emprestimos_page_fm)
             tv_emprestimo_cliente.place(x=40, y=160, width=750, height=400)
             tv_emprestimo_cliente.column("#0", width=0, stretch="no")
@@ -316,7 +332,7 @@ class Aplication():
             tv_emprestimo_cliente.column("StatusMulta", anchor="w", width=100)
             tv_emprestimo_cliente.column("ValorMulta", anchor="center", width=80)
 
-            tv_emprestimo_cliente.heading("ID", text="ID", anchor="center")
+            tv_emprestimo_cliente.heading("ID", text="ID Empréstimo", anchor="center")
             tv_emprestimo_cliente.heading("DataEmprestimo", text="Data Empréstimo", anchor="center")
             tv_emprestimo_cliente.heading("DataPrevista", text="Data Prevista", anchor="center")
             tv_emprestimo_cliente.heading("Status", text="Status", anchor="center")
@@ -331,6 +347,9 @@ class Aplication():
 
             tv_emprestimo_cliente.bind("<ButtonRelease-1>", capturar_id_emprestimo)
 
+            titulo_emprestimos = CTkLabel(page_frame, text="Minhas Multas", font=("Bold", 16), fg_color="#CFCFCF")
+            titulo_emprestimos.place(x=40, y=130)
+
             btn_buscar = CTkButton(emprestimos_page_fm,
                                    text="Pagar Multa",
                                    width=130,
@@ -338,7 +357,7 @@ class Aplication():
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white",
                                    command=pagar_multa)
-            btn_buscar.place(x=375, y=100)
+            btn_buscar.place(x=320, y=90)
             
         def about_page():
             # Frame principal da página
@@ -641,7 +660,6 @@ class Aplication():
 
         menu_bar_color = '#2b2b2b'
 
-        
         # Ícones
         toggle_icon = customtkinter.CTkImage(Image.open("View/images/toggle_btn_icon.png"))
         home_icon = customtkinter.CTkImage(Image.open("View/images/home_icon.png"), size=(22, 22))
@@ -658,8 +676,6 @@ class Aplication():
             about_btn_indicator.configure(fg_color=menu_bar_color)
             listar_btn_indicator.configure(fg_color=menu_bar_color)
             
-            
-
             indicator_lb.configure(fg_color='white')
 
             #=if menu_bar_frame.winfo_width() >= 50:
@@ -712,13 +728,18 @@ class Aplication():
                             ))
             # Página de livros
             livros_page_fm = CTkFrame(page_frame)                     
-            lb = CTkLabel(livros_page_fm, text=f"Bem-vindo ao Livros Page {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
+            lb = CTkLabel(livros_page_fm,
+                          text=f"Bem-vindo ao Sistema {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ",
+                          font=("Bold", 20))
             lb.place(x=45, y=40)                  
 
             livros_page_fm.pack(fill="both", expand=True)
 
-            nome_livro = CTkEntry(livros_page_fm, placeholder_text="Digite o nome do livro...", width=200)
-            nome_livro.place(x=45, y=100)
+            nome_livro = CTkEntry(livros_page_fm,
+                                  placeholder_text="Digite o nome do livro",
+                                  width=200, fg_color="transparent",
+                                  bg_color="transparent")
+            nome_livro.place(x=45, y=80)
 
             # função do modal de adicionar livro
             def modal_add_livro():
@@ -812,7 +833,7 @@ class Aplication():
                 
             def modal_add_exemplares():
                 modal = CTkToplevel(nova_janela)
-                modal.geometry("400x300")
+                modal.geometry("300x300")
                 modal.title("Controle de Estoque")
                 modal.grab_set()
 
@@ -822,7 +843,7 @@ class Aplication():
 
                 vcmd = (modal.register(validar_numero), '%P')
 
-                CTkLabel(modal, text="Aumentar Quantidade", font=("Bold", 16)).pack(pady=10)
+                CTkLabel(modal, text="Ajustar Quantidade", font=("Bold", 16)).pack(pady=10)
 
                 entry_titulo = CTkEntry(modal, placeholder_text="Título do Livro")
                 entry_titulo.pack(pady=5)
@@ -832,9 +853,6 @@ class Aplication():
                                     validate="key", 
                                     validatecommand=vcmd)
                 entry_qtd.pack(pady=5)
-
-                lbl_info = CTkLabel(modal, text="", font=("Bold", 12))
-                lbl_info.pack(pady=5)
 
                 # Atualiza o título conforme o usuário digita
                 def atualizar_info(*args):
@@ -931,7 +949,7 @@ class Aplication():
                                      fg_color = "#63C5A1",
                                      font=("Helvetica", 14, "bold"),
                                      text_color= "white")
-            btn_adcionar.place(x=255, y=100)
+            btn_adcionar.place(x=255, y=80)
             btn_adcionar.configure(command=add_livro)
 
             btn_remover = CTkButton(livros_page_fm,
@@ -940,7 +958,7 @@ class Aplication():
                                     fg_color = "#63C5A1",
                                     font=("Helvetica", 14, "bold"),
                                     text_color= "white")
-            btn_remover.place(x=525, y=100)
+            btn_remover.place(x=525, y=80)
             btn_remover.configure(command=delete_livro)
 
             btn_add_ex = CTkButton(livros_page_fm,
@@ -949,7 +967,7 @@ class Aplication():
                                    fg_color = "#63C5A1",
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white")
-            btn_add_ex.place(x=660, y=100)
+            btn_add_ex.place(x=660, y=80)
             btn_add_ex.configure(command=modal_add_exemplares)
 
             btn_buscar = CTkButton(livros_page_fm,
@@ -958,8 +976,11 @@ class Aplication():
                                    fg_color = "#63C5A1",
                                    font=("Helvetica", 14, "bold"),
                                    text_color= "white")
-            btn_buscar.place(x=390, y=100)
+            btn_buscar.place(x=390, y=80)
             btn_buscar.configure(command=buscar_livro)
+
+            titulo_livros = CTkLabel(livros_page_fm, text="Livros Disponíveis", font=("Bold", 16))
+            titulo_livros.place(x=40, y=130)
             
         # Tabela de livros
             tv = tk.ttk.Treeview(livros_page_fm)
@@ -989,11 +1010,15 @@ class Aplication():
         def multas_page():
 
             multas_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(multas_page_fm, text=f"Bem-vindo ao Multas Page {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
-            lb.place(x=40, y=40)
+            lb = CTkLabel(multas_page_fm,
+                          text=f"Bem-vindo ao Sistema {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ",
+                          font=("Bold", 20))
+            lb.place(x=45, y=40)
             multas_page_fm.pack(fill="both", expand=True)
 
-            id_emprestimo = customtkinter.CTkEntry(multas_page_fm, placeholder_text="ID Emprestimos", width=200)
+            id_emprestimo = customtkinter.CTkEntry(multas_page_fm,
+                                                   placeholder_text="ID Emprestimo",
+                                                   width=200)
             id_emprestimo.place(x=45, y=80)
 
             def capturar_id_emprestimo(event):
@@ -1049,13 +1074,18 @@ class Aplication():
                 modal.title("Registrar Empréstimo")
 
                 lbl_title = CTkLabel(modal, text="Registrar Novo Empréstimo", font=("Bold", 16))
-                lbl_title.pack(pady=10)
+                lbl_title.pack(pady=8)
 
                 entry_cliente_id = CTkEntry(modal, placeholder_text="ID do Cliente")
-                entry_cliente_id.pack(pady=10)
+                entry_cliente_id.pack(pady=9)
 
                 entry_livro_ids = CTkEntry(modal, placeholder_text="IDs dos Livros (separados por vírgula)")
                 entry_livro_ids.pack(pady=10)
+
+                info_livros_emp = CTkLabel(modal,
+                                           text="*Digite os IDs dos livros separados por vírgula",
+                                           font=("Bold",11))
+                info_livros_emp.pack(pady=11)
 
                 def confirmar_emprestimo():
                     cliente_id = entry_cliente_id.get()
@@ -1084,7 +1114,7 @@ class Aplication():
                         messagebox.showinfo("Sucesso", "Empréstimo registrado com sucesso.")
                         load_emprestimos()
                     else:
-                        messagebox.showerror("Erro", "Falha ao registrar o empréstimo. Não pode pegar dois livros iguais emprestados ao mesmo tempo.")
+                        messagebox.showerror("Erro", "Falha ao registrar o empréstimo. Não são permitidos mais de um exemplar no mesmo empréstimo.")
                         return
                     modal.destroy()
 
@@ -1102,28 +1132,31 @@ class Aplication():
                 
             btn_reg_devolucao = CTkButton(multas_page_fm,
                                      text="Registrar Devolução",
-                                     width=130,
+                                     width=160,
                                      fg_color = "#63C5A1",
                                      font=("Helvetica", 14, "bold"),
                                      text_color= "white",
                                      command=registrar_devolucao)
-            btn_reg_devolucao.place(x=375, y=80)
+            btn_reg_devolucao.place(x=427, y=80)
 
             btn_reg_emprestimo = CTkButton(multas_page_fm,
                                      text="Registrar Emprestimo",
-                                     width=130,
+                                     width=160,
                                      fg_color = "#63C5A1",
                                      font=("Helvetica", 14, "bold"),
                                      text_color= "white",
                                      command=registrar_emprestimo)
-            btn_reg_emprestimo.place(x=550, y=80)
+            btn_reg_emprestimo.place(x=255, y=80)
 
-            titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas", font=("Bold", 16))
+            titulo_multa = CTkLabel(multas_page_fm, text="Multas Registradas",
+                                    font=("Bold", 16))
             titulo_multa.place(x=40, y=345)
 
             colunas = ("id", "cliente_id", "cliente", "Valor", "status")
 
-            tv = tk.ttk.Treeview(multas_page_fm, columns=colunas, show="headings", height=12)
+            tv = tk.ttk.Treeview(multas_page_fm, columns=colunas,
+                                 show="headings",
+                                 height=12)
 
             # Cabeçalhos
             tv.heading("id", text="ID Multa")
@@ -1139,7 +1172,8 @@ class Aplication():
             tv.column("Valor", width=120)
             tv.column("status", width=100)
 
-            tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv.yview)
+            tv.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical",
+                                        command=tv.yview)
             tv.scrollbar.place(x=790, y=380, height=200)
             tv.configure(yscrollcommand=tv.scrollbar.set)
             tv.place(x=40, y=380, width=750, height=200)
@@ -1168,12 +1202,16 @@ class Aplication():
                         emprestimo.getStatus().name
                     ))
 
-            
-            titulo_emprestimos = CTkLabel(multas_page_fm, text="Empréstimos Registrados", font=("Bold", 16))
+            titulo_emprestimos = CTkLabel(multas_page_fm,
+                                          text="Empréstimos Registrados",
+                                          font=("Bold", 16))
             titulo_emprestimos.place(x=40, y=125)
 
             colunas_emp = ("id", "cliente", "livro", "data_emp", "data_prev", "status")
-            tv_emp = tk.ttk.Treeview(multas_page_fm, columns=colunas_emp, show="headings", height=8)
+            tv_emp = tk.ttk.Treeview(multas_page_fm,
+                                     columns=colunas_emp,
+                                     show="headings",
+                                     height=8)
             # Cabeçalhos
             tv_emp.heading("id", text="ID Empréstimo")
             tv_emp.heading("cliente", text="Nome Cliente")
@@ -1189,7 +1227,9 @@ class Aplication():
             tv_emp.column("data_prev", width=120)
             tv_emp.column("status", width=100)
             tv_emp.place(x=40, y=160, width=750, height=180)
-            tv_emp.scrollbar = tk.Scrollbar(multas_page_fm, orient="vertical", command=tv_emp.yview)
+            tv_emp.scrollbar = tk.Scrollbar(multas_page_fm,
+                                            orient="vertical",
+                                            command=tv_emp.yview)
             tv_emp.scrollbar.place(x=790, y=160, height=180)
             tv_emp.configure(yscrollcommand=tv_emp.scrollbar.set)
 
@@ -1200,8 +1240,10 @@ class Aplication():
         def listar_usuarios():
 
             usuarios_page_fm = CTkFrame(page_frame)
-            lb = CTkLabel(usuarios_page_fm, text=f"Bem-vindo ao Page Usuarios {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ", font=("Bold", 20))
-            lb.place(x=40, y=40)
+            lb = CTkLabel(usuarios_page_fm,
+                          text=f"Bem-vindo ao Sistema {usuario.getNomeUsuario()} - [{usuario.getTipo().name}] ",
+                          font=("Bold", 20))
+            lb.place(x=45, y=40)
             usuarios_page_fm.pack(fill="both", expand=True)
 
             # Carregar usuários
@@ -1216,7 +1258,6 @@ class Aplication():
                         user.getNomeUsuario(),
                         user.getTipo().name
                     ))
-
 
             def modal_cadastro():
                 modal = CTkToplevel(nova_janela)
@@ -1247,7 +1288,7 @@ class Aplication():
                         messagebox.showerror("Erro", "Por favor, preencha todos os campos.")
                         return
 
-                    if tipo_str not in ["ADMIN", "CLIENTE"]:
+                    if tipo_str not in ["FUNCIONARIO", "CLIENTE"]:
                         messagebox.showerror("Erro", "Tipo de usuário inválido. Use 'ADMIN' ou 'CLIENTE'.")
                         return
 
@@ -1306,7 +1347,6 @@ class Aplication():
 
             load_usuarios()
             
-
         def about_page():
             # Frame principal da página
             about_page_fm = CTkFrame(page_frame, fg_color="white")

@@ -1,3 +1,14 @@
-5e8131;cuzcuz;mineri;almeida ;prado;348
-0859e3;Diário de um Banana;Compedia;Bananas;Bananao;56
-da1665;Tatu Bola;Cavucada;Mãe Natureza;deus;1281
+5e8131;O Labirinto de Vidro;Ficção Científica;Nexo Publishing;Elias Thorne;5
+0859e3;Crônicas da Névoa;Fantasia Épica;Alpha Centauri Ed.;Lyra Vesper;8
+da1665;O Código do Tempo Zero;Suspense;Sigma Livros;Dr. Alan Miles;3
+af3228;A Poção Esquecida;Romance Histórico;Nova Leitura;Isabelle Dubois;12
+7c48bb;A Máquina das Emoções;Filosofia;Academia Tech;Sofia Brandt;4
+2d435e;Ruínas de Silêncio;Poesia;Ecos Literários;Kaelen Stone;2
+f8c775;O Projeto Quimera;Thriller;Editora Zenith;David Vance;7
+8a4f84;Ascensão da IA;Tecnologia;Nexo Publishing;Alex Chen;10
+1785da;A Biblioteca Oculta;Mistério;Alpha Centauri Ed.;Clara Almeida;6
+6e4ed6;O Último Solstício;Fantasia Urbana;Sigma Livros;Maya Ríos;5
+a19f11;Guia para o Código Limpo;Programação;Academia Tech;Robert C. Martin;12
+58b269;A Sombra e o Relógio;Ficção Histórica;Nova Leitura;Eleanor Vance;3
+fdf2c3;Diário de um Nômade;Aventura;Ecos Literários;Marco Polo Jr.;9
+7d1a61;O Segredo de Birmingham;Arquitetura;Editora Zenith;John Smith;7
