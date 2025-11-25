@@ -300,7 +300,6 @@ class Aplication():
 
                 item_selecionado = tv_emprestimo_cliente.selection()
                 if item_selecionado != "":
-                    messagebox.showerror("Erro", item_selecionado)
                     id_emprestimo = item_selecionado[0]
                     linha_emprestimo = tv_emprestimo_cliente.item(id_emprestimo, 'values')
                     id_selecionado = linha_emprestimo[4]
