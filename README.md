@@ -51,6 +51,39 @@ python -m View.main
 - Controle de integridade dos dados
 - Análise de viabilidade financeira
 
+
+## 📁 Estrutura do Projeto
+
+```
+TRABALHOFINAL/
+├── 📂 Controller/
+│   ├── __init__.py
+│   ├── EmprestimoLivroController.py
+│   ├── LivroController.py
+│   ├── MultaController.py
+│   ├── UsuarioController.py
+│   └── __pycache__/
+├── 📂 Data/
+│   ├── emprestimos.txt
+│   ├── livros.txt
+│   ├── multas.txt
+│   └── usuarios.txt
+├── 📂 Model/
+│   ├── __init__.py
+│   ├── EmprestimoLivro.py
+│   ├── ItensEmprestimo.py
+│   ├── Livro.py
+│   ├── Multa.py
+│   ├── Usuario.py
+│   └── __pycache__/
+├── 📂 Untils/
+├── 📂 View/
+│   ├── main.py
+│   ├── mainview.py
+└── └── 📂 images/
+```
+
+
 ## 👥 Equipe de Desenvolvimento
 
 | Integrante | Função |
