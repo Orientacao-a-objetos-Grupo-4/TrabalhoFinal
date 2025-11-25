@@ -1,4 +1,4 @@
-# Biblioteca Autônoma
+# Acertvo Max: Biblioteca autônoma
 
 Um sistema inovador de gerenciamento de acervos bibliográficos que elimina a necessidade de um bibliotecário para o emprestimo de livros. Esta solução autônoma permite que usuários realizem seus proprios emprestimos na biblioteca, consultas, gerenciamentos de forma intuitiva e e pagamentos de suas multas de forma independente.
 
